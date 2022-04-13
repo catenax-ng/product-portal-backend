@@ -241,7 +241,7 @@ namespace CatenaX.NetworkServices.UserAdministration.Service.BusinessLogic
             return  _provisioningManager.ResetUserPasswordAsync(realm, userId, requiredActions);
         }
       
-        public Task<UserPasswordReset> GetUserPasswordResetInfo(Guid userId)
+        public Task<UserPasswordReset> GetUserPasswordResetInfo(string userId)
         {
             var userPasswordReset = new UserPasswordReset();
             var response = _provisioningDBAccess.GetUserPasswordResetInfo(userId);
@@ -259,13 +259,13 @@ namespace CatenaX.NetworkServices.UserAdministration.Service.BusinessLogic
 
         public bool CanResetPassword(string userId)
         {
-          var userInfo = GetUserPasswordResetInfo(Guid.Parse(userId));
+          var userInfo = GetUserPasswordResetInfo(userId);
           int resetCount = 0;
           int val =0;
           if(string.IsNullOrEmpty(userInfo.Result.ResetCount.ToString())||userInfo.Result.ResetCount==0)
           {
            val = resetCount + 1;
-           _provisioningDBAccess.SaveUserPasswordResetInfo(Guid.Parse(userId),DateTime.Now,val);//insert record
+           _provisioningDBAccess.SaveUserPasswordResetInfo(userId,DateTime.Now,val);//insert record
            return true;
           }
           else if(userInfo.Result.ResetCount >0)
@@ -276,12 +276,12 @@ namespace CatenaX.NetworkServices.UserAdministration.Service.BusinessLogic
             if(now< dt.AddHours(24) && resetCount<10)
             {
                 val = resetCount + 1;
-                _provisioningDBAccess.SetUserPassword(Guid.Parse(userId),val);
+                _provisioningDBAccess.SetUserPassword(userId,val);
                 return true;
             }
             else if(now> dt.AddHours(24))
             {
-                 _provisioningDBAccess.SetUserPassword(Guid.Parse(userId),DateTime.Now,1);
+                 _provisioningDBAccess.SetUserPassword(userId,DateTime.Now,1);
                 return true;
             }
             return false;

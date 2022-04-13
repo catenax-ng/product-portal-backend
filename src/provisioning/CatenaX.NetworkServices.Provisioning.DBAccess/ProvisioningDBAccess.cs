@@ -30,10 +30,10 @@ namespace CatenaX.NetworkServices.Provisioning.DBAccess
             return nextSequence.SequenceId;
         }
 
-        public  Task<bool> SaveUserPasswordResetInfo(Guid userEntityId, DateTime passwordModifiedAt,int resetCount)
+        public  Task<bool> SaveUserPasswordResetInfo(string userEntityId, DateTime passwordModifiedAt,int resetCount)
         {
-                _dbContext.UserPasswordResets.Add(new UserPasswordReset {
-                UserEntityId = userEntityId,
+            _dbContext.UserPasswordResets.Add(new UserPasswordReset {
+                SharedUserEntityId = userEntityId,
                 PasswordModifiedAt = passwordModifiedAt,
                 ResetCount = resetCount,
             });
@@ -41,10 +41,10 @@ namespace CatenaX.NetworkServices.Provisioning.DBAccess
           return Task.FromResult(true);
         }
 
-        public  Task<UserPasswordReset> GetUserPasswordResetInfo(Guid userId) 
+        public  Task<UserPasswordReset> GetUserPasswordResetInfo(string userId) 
         {
             var result = _dbContext.UserPasswordResets
-                .Where(x=>x.UserEntityId.ToString().ToLower() == userId.ToString().ToLower())
+                .Where(x=>x.SharedUserEntityId == userId)
                 .Select(
                     userPasswordReset => new UserPasswordReset {
                        
@@ -56,7 +56,7 @@ namespace CatenaX.NetworkServices.Provisioning.DBAccess
         }
         
           
-        public  Task<bool> SetUserPassword(Guid userEntityId,int count)
+        public  Task<bool> SetUserPassword(string userEntityId,int count)
         {
           var passwordReset =  _dbContext.UserPasswordResets.Find(userEntityId);
             passwordReset.ResetCount = count;
@@ -64,7 +64,7 @@ namespace CatenaX.NetworkServices.Provisioning.DBAccess
              return Task.FromResult(true);
         }
         
-         public  Task<bool> SetUserPassword(Guid userEntityId,DateTime dateReset,int count)
+        public  Task<bool> SetUserPassword(string userEntityId,DateTime dateReset,int count)
         {
           var passwordReset =  _dbContext.UserPasswordResets.Find(userEntityId);
                 
