@@ -4,12 +4,12 @@ namespace CatenaX.NetworkServices.Registration.Service.Model
 {
     public class UserInvitationData
     {
-        public UserInvitationData(string userName, string firstName, string lastName, string email)
+        private UserInvitationData()
         {
-            this.userName = userName;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
+            userName = null!;
+            firstName = null!;
+            lastName = null!;
+            email = null!;
         }
 
         [JsonPropertyName("userName")]

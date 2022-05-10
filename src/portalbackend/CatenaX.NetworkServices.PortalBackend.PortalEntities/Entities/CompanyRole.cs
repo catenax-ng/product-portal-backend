@@ -1,6 +1,7 @@
 ﻿using CatenaX.NetworkServices.PortalBackend.PortalEntities.Enums;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CatenaX.NetworkServices.PortalBackend.PortalEntities.Entities
 {

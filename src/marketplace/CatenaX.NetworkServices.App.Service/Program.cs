@@ -1,5 +1,4 @@
 using CatenaX.NetworkServices.App.Service.BusinessLogic;
-using CatenaX.NetworkServices.Framework.ErrorHandling;
 using CatenaX.NetworkServices.Keycloak.Authentication;
 using CatenaX.NetworkServices.Keycloak.Factory.Utils;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities;
@@ -77,7 +76,6 @@ if (app.Configuration.GetValue<bool?>("SwaggerEnabled") != null && app.Configura
 
 app.UseRouting();
 
-app.UseMiddleware<GeneralHttpErrorHandler>();
 app.UseAuthentication();
 app.UseAuthorization();
 

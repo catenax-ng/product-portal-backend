@@ -1,9 +1,9 @@
 ﻿using CatenaX.NetworkServices.App.Service.BusinessLogic;
-using CatenaX.NetworkServices.App.Service.InputModels;
 using CatenaX.NetworkServices.App.Service.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace CatenaX.NetworkServices.App.Service.Controllers
 {
@@ -14,14 +14,17 @@ namespace CatenaX.NetworkServices.App.Service.Controllers
     [ApiController]
     public class AppsController : ControllerBase
     {
+        private readonly ILogger<AppsController> logger;
         private readonly IAppsBusinessLogic appsBusinessLogic;
 
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <param name="logger">Logger dependency.</param>
         /// <param name="appsBusinessLogic">Logic dependency.</param>
-        public AppsController(IAppsBusinessLogic appsBusinessLogic)
+        public AppsController(ILogger<AppsController> logger, IAppsBusinessLogic appsBusinessLogic)
         {
+            this.logger = logger;
             this.appsBusinessLogic = appsBusinessLogic;
         }
 
@@ -64,22 +67,6 @@ namespace CatenaX.NetworkServices.App.Service.Controllers
             }
 
             return Ok(await this.appsBusinessLogic.GetAppDetailsByIdAsync(appId, userId, lang).ConfigureAwait(false));
-        }
-
-        /// <summary>
-        /// Creates an app according to input model.
-        /// </summary>
-        /// <param name="appInputModel">Input model for app creation.</param>
-        /// <returns>ID of created application.</returns>
-        /// <remarks>Example: POST: /api/apps</remarks>
-        /// <response code="201">Returns created app's ID.</response>
-        [HttpPost]
-        [Route("")]
-        [Authorize(Roles = "add_app")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-        public async Task<ActionResult<Guid>> CreateAppAsync([FromBody] AppInputModel appInputModel)
-        {
-            return CreatedAtRoute(string.Empty, await this.appsBusinessLogic.CreateAppAsync(appInputModel));
         }
 
         /// <summary>
@@ -133,6 +120,11 @@ namespace CatenaX.NetworkServices.App.Service.Controllers
             {
                 return BadRequest($"Parameters are invalid or app is already favourited.");
             }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
             
             return Ok();
         }
@@ -165,6 +157,11 @@ namespace CatenaX.NetworkServices.App.Service.Controllers
             {
                 return BadRequest($"Parameters are invalid or favourite does not exist.");
             }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
 
             return Ok();
         }
@@ -196,6 +193,11 @@ namespace CatenaX.NetworkServices.App.Service.Controllers
             catch (DbUpdateException)
             {
                 return BadRequest($"Parameters are invalid or app is already subscribed to.");
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
             return Ok();
