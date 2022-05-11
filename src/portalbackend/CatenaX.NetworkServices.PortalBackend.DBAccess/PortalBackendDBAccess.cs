@@ -169,11 +169,12 @@ namespace CatenaX.NetworkServices.PortalBackend.DBAccess
                     })
                 .AsAsyncEnumerable();
 
-        public IAsyncEnumerable<CompanyApplicationDetails> GetCompanyApplicationDetailsUntrackedAsync()
-        {
-            return _dbContext.CompanyApplications
+        public IAsyncEnumerable<CompanyApplicationDetails> GetCompanyApplicationDetailsUntrackedAsync(int skip, int take) =>
+            _dbContext.CompanyApplications
                 .AsNoTracking()
                 .OrderByDescending(application => application.DateCreated)
+                .Skip(skip)
+                .Take(take)
                 .Select(application => new CompanyApplicationDetails(
                     application.Id,
                     application.ApplicationStatusId,
@@ -191,7 +192,9 @@ namespace CatenaX.NetworkServices.PortalBackend.DBAccess
                     BusinessPartnerNumber = application.Company.Bpn
                 })
                 .AsAsyncEnumerable();
-        }
+
+        public Task<int> GetApplicationsCountAsync() =>
+            _dbContext.CompanyApplications.CountAsync();
 
         public Task<CompanyWithAddress> GetCompanyWithAdressUntrackedAsync(Guid companyApplicationId) =>
             _dbContext.CompanyApplications
