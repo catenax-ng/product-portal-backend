@@ -8,7 +8,7 @@ namespace CatenaX.NetworkServices.Provisioning.Library
         Task SetupSharedIdpAsync(string idpName, string organisationName);
         Task<string> CreateSharedUserLinkedToCentralAsync(string idpName, UserProfile userProfile, string companyName);
         Task AssignInvitedUserInitialRoles(string centralUserId);
-        Task AssignClientRolesToCentralUserAsync(string centralUserId, IDictionary<string,IEnumerable<string>> clientRoleNames);
+        Task AssignClientRolesToCentralUserAsync(string centralUserId, IDictionary<string, IEnumerable<string>> clientRoleNames);
         Task<IEnumerable<string>> GetClientRolesAsync(string clientId);
         Task<IEnumerable<string>> GetClientRolesCompositeAsync(string clientId);
         Task<string> GetOrganisationFromCentralIdentityProviderMapperAsync(string alias);
@@ -27,5 +27,6 @@ namespace CatenaX.NetworkServices.Provisioning.Library
         Task AddBpnAttributetoUserAsync(string centralUserId, IEnumerable<string> bpns);
         Task<bool> ResetSharedUserPasswordAsync(string realm, string userId);
         Task<IEnumerable<string>> GetClientRoleMappingsForUserAsync(string userId, string clientId);
+        Task UpdateRealm(string realm, RealmConfig config);
     }
 }

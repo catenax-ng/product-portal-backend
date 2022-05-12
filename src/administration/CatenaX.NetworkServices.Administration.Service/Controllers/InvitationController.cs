@@ -24,5 +24,6 @@ namespace CatenaX.NetworkServices.Administration.Service.Controllers
         [Authorize(Roles = "invite_new_partner")]
         public Task ExecuteInvitation([FromBody] CompanyInvitationData InvitationData) =>
             _logic.ExecuteInvitation(InvitationData);
+       
     }
 }

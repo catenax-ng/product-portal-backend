@@ -6,6 +6,7 @@ using CatenaX.NetworkServices.Provisioning.DBAccess;
 using CatenaX.NetworkServices.Provisioning.Library;
 using CatenaX.NetworkServices.Provisioning.Library.Models;
 using PasswordGenerator;
+
 namespace CatenaX.NetworkServices.Administration.Service.BusinessLogic
 {
     public class InvitationBusinessLogic : IInvitationBusinessLogic
@@ -16,7 +17,7 @@ namespace CatenaX.NetworkServices.Administration.Service.BusinessLogic
         private readonly IMailingService _mailingService;
         private readonly ILogger<InvitationBusinessLogic> _logger;
         private readonly string _registrationAppAddress;
-
+        private readonly IConfiguration _configuration;
         public InvitationBusinessLogic(
             IProvisioningManager provisioningManager,
             IProvisioningDBAccess provisioningDBAccess,
@@ -30,6 +31,7 @@ namespace CatenaX.NetworkServices.Administration.Service.BusinessLogic
             _portalDBAccess = portalDBAccess;
             _mailingService = mailingService;
             _logger = logger;
+            _configuration = configuration;
             _registrationAppAddress = configuration["RegistrationAppAddress"];
         }
 
@@ -49,7 +51,11 @@ namespace CatenaX.NetworkServices.Administration.Service.BusinessLogic
             ), invitationData.organisationName).ConfigureAwait(false);
 
             await _provisioningManager.AssignInvitedUserInitialRoles(centralUserId).ConfigureAwait(false);
-
+            var realmConfig = new RealmConfig();
+            realmConfig.BruteForceDetected = true;
+            realmConfig.MaxLoginFailure = Convert.ToInt32(_configuration["PasswordPolicy:FailureFactor"]);
+            realmConfig.PasswordPolicy = $"length({_configuration["PasswordPolicy:MinimumLength"]}) and forceExpiredPasswordChange({_configuration["PasswordPolicy:ExpireDays"]}) and lowerCase({_configuration["PasswordPolicy:LowerCase"]}) and digits({_configuration["PasswordPolicy:MinimumDigit"]}) and notUsername({_configuration["PasswordPolicy:NotUserName"]}) and notEmail({_configuration["PasswordPolicy:NotEmail"]})";
+            await _provisioningManager.UpdateRealm(idpName, realmConfig).ConfigureAwait(false);
             var company = _portalDBAccess.CreateCompany(invitationData.organisationName);
             var application = _portalDBAccess.CreateCompanyApplication(company, CompanyApplicationStatusId.CREATED);
             var companyUser = _portalDBAccess.CreateCompanyUser(invitationData.firstName, invitationData.lastName, invitationData.email, company.Id);
@@ -69,5 +75,6 @@ namespace CatenaX.NetworkServices.Administration.Service.BusinessLogic
 
             await _mailingService.SendMails(invitationData.email, mailParameters, new List<string> { "RegistrationTemplate", "PasswordForRegistrationTemplate" }).ConfigureAwait(false);
         }
+
     }
 }

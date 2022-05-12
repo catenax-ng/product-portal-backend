@@ -8,6 +8,7 @@ using CatenaX.NetworkServices.Provisioning.DBAccess;
 using CatenaX.NetworkServices.Provisioning.Library.Models;
 using CatenaX.NetworkServices.Keycloak.DBAccess;
 using System;
+using Keycloak.Net.Models.RealmsAdmin;
 
 namespace CatenaX.NetworkServices.Provisioning.Library
 {
@@ -209,7 +210,7 @@ namespace CatenaX.NetworkServices.Provisioning.Library
         public async Task<bool> ResetSharedUserPasswordAsync(string realm, string userId)
         {
             var providerUserId = await GetProviderUserIdForCentralUserIdAsync(userId).ConfigureAwait(false);
-            return await _SharedIdp.SendUserUpdateAccountEmailAsync(realm, providerUserId, Enumerable.Repeat("UPDATE_PASSWORD",1)).ConfigureAwait(false);
+            return await _SharedIdp.SendUserUpdateAccountEmailAsync(realm, providerUserId, Enumerable.Repeat("UPDATE_PASSWORD", 1)).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<string>> GetClientRoleMappingsForUserAsync(string userId, string clientId)
@@ -217,6 +218,15 @@ namespace CatenaX.NetworkServices.Provisioning.Library
             var idOfClient = await GetIdOfClientFromClientIDAsync(clientId).ConfigureAwait(false);
             return (await _CentralIdp.GetClientRoleMappingsForUserAsync(_Settings.CentralRealm, userId, idOfClient).ConfigureAwait(false))
                 .Where(r => r.Composite == true).Select(x => x.Name);
+        }
+
+        public async Task UpdateRealm(string realm, RealmConfig config)
+        {
+            var realmConfig = new Realm();
+            realmConfig.BruteForceProtected = config.BruteForceDetected;
+            realmConfig.PasswordPolicy = config.PasswordPolicy;
+            realmConfig.FailureFactor = config.MaxLoginFailure;
+            await _SharedIdp.UpdateRealmAsync(realm, realmConfig).ConfigureAwait(false);
         }
     }
 }
