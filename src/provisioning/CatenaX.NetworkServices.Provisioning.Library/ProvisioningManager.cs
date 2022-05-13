@@ -219,14 +219,6 @@ namespace CatenaX.NetworkServices.Provisioning.Library
             return (await _CentralIdp.GetClientRoleMappingsForUserAsync(_Settings.CentralRealm, userId, idOfClient).ConfigureAwait(false))
                 .Where(r => r.Composite == true).Select(x => x.Name);
         }
-
-        public async Task UpdateRealm(string realm, RealmConfig config)
-        {
-            var realmConfig = new Realm();
-            realmConfig.BruteForceProtected = config.BruteForceDetected;
-            realmConfig.PasswordPolicy = config.PasswordPolicy;
-            realmConfig.FailureFactor = config.MaxLoginFailure;
-            await _SharedIdp.UpdateRealmAsync(realm, realmConfig).ConfigureAwait(false);
-        }
+        
     }
 }

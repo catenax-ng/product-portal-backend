@@ -27,6 +27,6 @@ namespace CatenaX.NetworkServices.Provisioning.Library
         Task AddBpnAttributetoUserAsync(string centralUserId, IEnumerable<string> bpns);
         Task<bool> ResetSharedUserPasswordAsync(string realm, string userId);
         Task<IEnumerable<string>> GetClientRoleMappingsForUserAsync(string userId, string clientId);
-        Task UpdateRealm(string realm, RealmConfig config);
+        
     }
 }

@@ -51,11 +51,6 @@ namespace CatenaX.NetworkServices.Administration.Service.BusinessLogic
             ), invitationData.organisationName).ConfigureAwait(false);
 
             await _provisioningManager.AssignInvitedUserInitialRoles(centralUserId).ConfigureAwait(false);
-            var realmConfig = new RealmConfig();
-            realmConfig.BruteForceDetected = true;
-            realmConfig.MaxLoginFailure = Convert.ToInt32(_configuration["PasswordPolicy:FailureFactor"]);
-            realmConfig.PasswordPolicy = $"length({_configuration["PasswordPolicy:MinimumLength"]}) and forceExpiredPasswordChange({_configuration["PasswordPolicy:ExpireDays"]}) and lowerCase({_configuration["PasswordPolicy:LowerCase"]}) and digits({_configuration["PasswordPolicy:MinimumDigit"]}) and notUsername({_configuration["PasswordPolicy:NotUserName"]}) and notEmail({_configuration["PasswordPolicy:NotEmail"]})";
-            await _provisioningManager.UpdateRealm(idpName, realmConfig).ConfigureAwait(false);
             var company = _portalDBAccess.CreateCompany(invitationData.organisationName);
             var application = _portalDBAccess.CreateCompanyApplication(company, CompanyApplicationStatusId.CREATED);
             var companyUser = _portalDBAccess.CreateCompanyUser(invitationData.firstName, invitationData.lastName, invitationData.email, company.Id);
