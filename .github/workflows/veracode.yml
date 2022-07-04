@@ -9,9 +9,9 @@ on:
   # paths-ignore:
   #   - "**/*.md"
   #   - "**/*.txt"
-  schedule:
+  # schedule:
     # Once a day
-    - cron: "0 0 * * *"
+    # - cron: "0 0 * * 0"
   workflow_dispatch:
   # Trigger manually
 
@@ -45,7 +45,25 @@ jobs:
           dotnet publish -c Debug  -p:PublishDir=.\publish
 
       - name: "Bundle files to scan"
-        run: zip -r portal-backend.zip src/administration/CatenaX.NetworkServices.Administration.Service/.publish src/framework/CatenaX.NetworkServices.Framework.DBAccess/.publish src/framework/CatenaX.NetworkServices.Framework.ErrorHandling/.publish src/framework/CatenaX.NetworkServices.Framework.Models/.publish src/framework/CatenaX.NetworkServices.Framework.Swagger/.publish src/keycloak/CatenaX.NetworkServices.Keycloak.Authentication/.publish src/keycloak/CatenaX.NetworkServices.Keycloak.Factory/.publish src/mailing/CatenaX.NetworkServices.Mailing.SendMail/.publish src/mailing/CatenaX.NetworkServices.Mailing.Template/.publish src/marketplace/CatenaX.NetworkServices.App.Service/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.DBAccess/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.Migrations/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.PortalEntities/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.DBAccess/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Library/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Mail/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.ProvisioningEntities/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Service/.publish src/registration/CatenaX.NetworkServices.Registration.Service/.publish -x src/administration/CatenaX.NetworkServices.Administration.Service/.publish/CatenaX.NetworkServices.Administration.Service src/marketplace/CatenaX.NetworkServices.App.Service/.publish/CatenaX.NetworkServices.App.Service src/provisioning/CatenaX.NetworkServices.Provisioning.Service/.publish/CatenaX.NetworkServices.Provisioning.Service src/registration/CatenaX.NetworkServices.Registration.Service/.publish/CatenaX.NetworkServices.Registration.Service
+        run: >
+          zip -r portal-backend.zip
+          src/administration/CatenaX.NetworkServices.Administration.Service/.publish
+          src/framework/CatenaX.NetworkServices.Framework.DBAccess/.publish src/framework/CatenaX.NetworkServices.Framework.ErrorHandling/.publish
+          src/framework/CatenaX.NetworkServices.Framework.Models/.publish src/framework/CatenaX.NetworkServices.Framework.Swagger/.publish
+          src/keycloak/CatenaX.NetworkServices.Keycloak.Authentication/.publish src/keycloak/CatenaX.NetworkServices.Keycloak.Factory/.publish
+          src/mailing/CatenaX.NetworkServices.Mailing.SendMail/.publish src/mailing/CatenaX.NetworkServices.Mailing.Template/.publish
+          src/marketplace/CatenaX.NetworkServices.App.Service/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.DBAccess/.publish
+          src/portalbackend/CatenaX.NetworkServices.PortalBackend.Migrations/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.PortalEntities/.publish
+          src/provisioning/CatenaX.NetworkServices.Provisioning.DBAccess/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Library/.publish
+          src/provisioning/CatenaX.NetworkServices.Provisioning.Mail/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.ProvisioningEntities/.publish
+          src/provisioning/CatenaX.NetworkServices.Provisioning.Service/.publish src/registration/CatenaX.NetworkServices.Registration.Service/.publish
+          src/maintenance/CatenaX.NetworkServices.Maintenance.App/.publish
+          -x
+          src/administration/CatenaX.NetworkServices.Administration.Service/.publish/CatenaX.NetworkServices.Administration.Service
+          src/marketplace/CatenaX.NetworkServices.App.Service/.publish/CatenaX.NetworkServices.App.Service
+          src/provisioning/CatenaX.NetworkServices.Provisioning.Service/.publish/CatenaX.NetworkServices.Provisioning.Service
+          src/registration/CatenaX.NetworkServices.Registration.Service/.publish/CatenaX.NetworkServices.Registration.Service
+          src/maintenance/CatenaX.NetworkServices.Maintenance.App/.publish/runtimes
 
       - name: Run Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.1
@@ -57,4 +75,4 @@ jobs:
           filepath: "portal-backend.zip"
           vid: "${{ secrets.ORG_VERACODE_API_ID }}"
           vkey: "${{ secrets.ORG_VERACODE_API_KEY }}"
-          include: 'CatenaX.NetworkServices.*.dll'
+          include: 'CatenaX.NetworkServices.*'
