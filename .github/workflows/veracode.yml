@@ -1,0 +1,60 @@
+name: "Veracode"
+
+on:
+  push:
+    branches: [ feature/CPLP-1078_auto_vercode_scan ]
+  # pull_request:
+  # The branches below must be a subset of the branches above
+  # branches: [ main ]
+  # paths-ignore:
+  #   - "**/*.md"
+  #   - "**/*.txt"
+  schedule:
+    # Once a day
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  # Trigger manually
+
+env:
+  DOTNET_VERSION: '6.0' # The .NET SDK version to use
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dependencies
+        run: dotnet restore src
+
+      - name: Build and publish
+        run: |
+          cd src
+          dotnet build --no-restore
+          dotnet publish -c Debug  -p:PublishDir=.\publish
+
+      - name: "Bundle files to scan"
+        run: zip -r portal-backend.zip src/administration/CatenaX.NetworkServices.Administration.Service/.publish src/framework/CatenaX.NetworkServices.Framework.DBAccess/.publish src/framework/CatenaX.NetworkServices.Framework.ErrorHandling/.publish src/framework/CatenaX.NetworkServices.Framework.Models/.publish src/framework/CatenaX.NetworkServices.Framework.Swagger/.publish src/keycloak/CatenaX.NetworkServices.Keycloak.Authentication/.publish src/keycloak/CatenaX.NetworkServices.Keycloak.DBAccess/.publish src/keycloak/CatenaX.NetworkServices.Keycloak.Factory/.publish src/mailing/CatenaX.NetworkServices.Mailing.SendMail/.publish src/mailing/CatenaX.NetworkServices.Mailing.Template/.publish src/maintenance/CatenaX.NetworkServices.Maintenance.App/.publish src/marketplace/CatenaX.NetworkServices.App.Service/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.DBAccess/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.Migrations/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.PortalEntities/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.DBAccess/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Library/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Mail/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.ProvisioningEntities/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Service/.publish src/provisioning/CatenaX.NetworkServices.Provisioning.Utils/.publish src/registration/CatenaX.NetworkServices.Registration.Service/.publish
+
+      - name: Run Veracode Upload And Scan
+        uses: veracode/veracode-uploadandscan-action@0.2.1
+        with:
+          # Specify Veracode application name
+          appname: "Portal Backend"
+          createprofile: false
+          # Specify path to upload
+          filepath: "portal-backend.zip"
+          vid: "${{ secrets.ORG_VERACODE_API_ID }}"
+          vkey: "${{ secrets.ORG_VERACODE_API_KEY }}"
+          include: 'CatenaX.NetworkServices.*.dll'
