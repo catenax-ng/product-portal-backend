@@ -48,15 +48,8 @@ jobs:
         run: >
           zip -r portal-backend.zip
           src/administration/CatenaX.NetworkServices.Administration.Service/.publish
-          src/marketplace/CatenaX.NetworkServices.App.Service/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.DBAccess/.publish
-          src/portalbackend/CatenaX.NetworkServices.PortalBackend.Migrations/.publish src/portalbackend/CatenaX.NetworkServices.PortalBackend.PortalEntities/.publish
-          src/provisioning/CatenaX.NetworkServices.Provisioning.Service/.publish src/registration/CatenaX.NetworkServices.Registration.Service/.publish
-          src/registration/CatenaX.NetworkServices.Registration.Service/.publish
           -x
           src/administration/CatenaX.NetworkServices.Administration.Service/.publish/CatenaX.NetworkServices.Administration.Service
-          src/marketplace/CatenaX.NetworkServices.App.Service/.publish/CatenaX.NetworkServices.App.Service
-          src/provisioning/CatenaX.NetworkServices.Provisioning.Service/.publish/CatenaX.NetworkServices.Provisioning.Service
-          src/registration/CatenaX.NetworkServices.Registration.Service/.publish/CatenaX.NetworkServices.Registration.Service
 
       - name: Run Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.1
