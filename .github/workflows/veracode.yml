@@ -61,4 +61,4 @@ jobs:
           filepath: "portal-backend.zip"
           vid: "${{ secrets.ORG_VERACODE_API_ID }}"
           vkey: "${{ secrets.ORG_VERACODE_API_KEY }}"
-          include: 'CatenaX.NetworkServices.*'
+          include: 'CatenaX.NetworkServices.Administration.Service.dll'
