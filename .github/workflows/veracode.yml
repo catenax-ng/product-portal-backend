@@ -2,7 +2,7 @@ name: "Veracode"
 
 on:
   push:
-    branches: [ feature/CPLP-1078_auto_vercode_scan ]
+    # branches: [ feature/CPLP-1078_auto_vercode_scan ]
   # pull_request:
   # The branches below must be a subset of the branches above
   # branches: [ main ]
@@ -226,7 +226,7 @@ jobs:
 
       - name: "Bundle files to scan"
         run: >
-          zip -r portal-backend-marketplace-app.zip
+          zip -r portal-backend-portal-migrations.zip
           src/portalbackend/CatenaX.NetworkServices.PortalBackend.Migrations/.publish
 
       - name: Run Veracode Upload And Scan
@@ -269,7 +269,7 @@ jobs:
 
       - name: "Bundle files to scan"
         run: >
-          zip -r portal-backend-provisioning-service.zip
+          zip -r portal-backend-maintenance-service.zip
           src/maintenance/CatenaX.NetworkServices.Maintenance.App/.publish
 
       - name: Run Veracode Upload And Scan
