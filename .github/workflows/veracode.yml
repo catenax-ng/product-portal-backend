@@ -154,6 +154,7 @@ jobs:
           # Specify Veracode application name
           appname: "Portal-Backend_Registration-Service"
           createprofile: true
+          teams: 'portal'
           # Specify path to upload
           filepath: "portal-backend-registration-service.zip"
           vid: "${{ secrets.ORG_VERACODE_API_ID }}"
