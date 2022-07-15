@@ -45,8 +45,7 @@ public class UserRepository : IUserRepository
         string? userEntityId = null,
         string? firstName = null,
         string? lastName = null,
-        string? email = null,
-        CompanyUserStatusId? status = null) =>
+        string? email = null) =>
             _dbContext.CompanyUsers
                 .Where(companyUser => companyUser.IamUser!.UserEntityId == adminUserId)
                 .SelectMany(companyUser => companyUser.Company!.CompanyUsers)
@@ -55,8 +54,7 @@ public class UserRepository : IUserRepository
                     && companyUserId.HasValue ? companyUser.Id == companyUserId!.Value : true
                     && firstName != null ? companyUser.Firstname == firstName : true
                     && lastName != null ? companyUser.Lastname == lastName : true
-                    && email != null ? companyUser.Email == email : true
-                    && status.HasValue ? companyUser.CompanyUserStatusId == status : true);
+                    && email != null ? companyUser.Email == email : true);
 
     public Task<bool> IsOwnCompanyUserWithEmailExisting(string email, string adminUserId) =>
         _dbContext.IamUsers
@@ -103,6 +101,19 @@ public class UserRepository : IUserRepository
             .Select(iamUser =>
                 iamUser.CompanyUser!.Company!.Id)
             .SingleOrDefaultAsync();
+
+    public Task<(Guid CompanyId, string? CompanyName, string? BusinessPartnerNumber, string? IdpAlias)> GetCompanyNameIdpAliasUntrackedAsync(string iamUserId) =>
+        _dbContext.IamUsers
+            .AsNoTracking()
+            .Where(iamUser => iamUser.UserEntityId == iamUserId)
+            .Select(iamUser => iamUser!.CompanyUser!.Company)
+            .Select(company => ((Guid CompanyId, string? CompanyName, string? BusinessPartnerNumber, string? IdpAlias))new (
+                company!.Id,
+                company.Name,
+                company!.BusinessPartnerNumber,
+                company!.IdentityProviders
+                    .Where(identityProvider => identityProvider.IdentityProviderCategoryId == IdentityProviderCategoryId.KEYCLOAK_SHARED)
+                    .SingleOrDefault()!.IamIdentityProvider!.IamIdpAlias)).SingleOrDefaultAsync();
 
     /// <inheritdoc/>
     public Task<CompanyIamUser?> GetIdpUserByIdUntrackedAsync(Guid companyUserId, string adminUserId) =>
