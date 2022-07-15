@@ -1,19 +1,20 @@
 name: "Veracode"
 
 on:
-  push:
-    # branches: [ feature/CPLP-1078_auto_vercode_scan ]
+  # push:
+    # branches: [ main ]
   # pull_request:
   # The branches below must be a subset of the branches above
   # branches: [ main ]
   # paths-ignore:
   #   - "**/*.md"
   #   - "**/*.txt"
-  # schedule:
-    # Once a day
-    # - cron: "0 0 * * 0"
-  workflow_dispatch:
   # Trigger manually
+  workflow_dispatch:
+  # Triggered once a week
+  schedule:
+   - cron: "0 0 * * 0"
+
 
 env:
   DOTNET_VERSION: '6.0' # The .NET SDK version to use
@@ -107,7 +108,7 @@ jobs:
           filepath: "portal-backend-registration-service.zip"
           vid: "${{ secrets.ORG_VERACODE_API_ID }}"
           vkey: "${{ secrets.ORG_VERACODE_API_KEY }}"
-          include: 'CatenaX.NetworkServices.Registration.Service.dll'
+          include: 'CatenaX.NetworkServices.Registration.Service.dll, CatenaX.NetworkServices.Framework.Models.dll'
 
   analyze-provisioning-service:
     runs-on: ubuntu-latest
@@ -197,7 +198,7 @@ jobs:
           filepath: "portal-backend-marketplace-app.zip"
           vid: "${{ secrets.ORG_VERACODE_API_ID }}"
           vkey: "${{ secrets.ORG_VERACODE_API_KEY }}"
-          include: 'CatenaX.NetworkServices.App.dll'
+          include: 'CatenaX.NetworkServices.App.Service.dll, CatenaX.NetworkServices.Framework.DBAccess.dll, CatenaX.NetworkServices.Framework.Models.dll'
 
   analyze-portal-migrations:
     runs-on: ubuntu-latest
