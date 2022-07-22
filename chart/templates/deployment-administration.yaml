@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.administration.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.administration.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.administration.name }}
+    spec:
+      containers:
+      - name: {{ .Values.administration.name }}
+        image: {{ .Values.administration.image }}
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: {{ .Values.portContainer }}
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Kubernetes"
+        volumeMounts:
+        - name: secrets
+          mountPath: /app/secrets
+          readOnly: true
+      volumes:
+      - name: secrets
+        secret:
+          secretName: {{ .Values.administration.secret.name }}

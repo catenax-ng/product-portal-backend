@@ -1,0 +1,64 @@
+domain: dev.demo.catena-x.net
+corsOrigins: http://localhost:3000, https://*.dev.demo.catena-x.net
+
+postgresql:
+  secret:
+    pathinit: portal/data/dev/postgres
+    pathinitdbuser: portal/data/dev/postgres-db-user
+
+registration:
+  image: ghcr.io/catenax-ng/product-portal-backend_registration-service:latest
+  secret:
+    path: portal/data/dev/registration
+
+administration:
+  image: ghcr.io/catenax-ng/product-portal-backend_administration-service:latest
+  secret:
+    path: portal/data/dev/administration
+
+provisioning:
+  image: ghcr.io/catenax-ng/product-portal-backend_provisioning-service:latest
+  secret:
+    path: portal/data/dev/provisioning
+
+appmarketplace:
+  image: ghcr.io/catenax-ng/product-portal-backend_marketplace-app-service:latest
+  secret:
+    path: portal/data/dev/appmarketplace
+
+portalmigrations:
+  image: ghcr.io/catenax-ng/product-portal-backend_portal-migrations:latest
+  secret:
+    path: portal/data/dev/portal-migrations
+
+portalmaintenance:
+  image: ghcr.io/catenax-ng/product-portal-backend_maintenance-service:latest
+  secret:
+    path: portal/data/dev/portal-maintenance
+
+notification:
+  image: ghcr.io/catenax-ng/product-portal-backend_notification-service:latest
+  secret:
+    path: portal/data/dev/notification
+
+pgadmin4:
+  enabled: true
+  secret:
+    path: portal/data/dev/pgadmin4
+  env:
+    email: portal@catena-x.net
+  existingSecret: secret-pgadmin4
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - host: portal-pgadmin4.dev.demo.catena-x.net
+        paths:
+        - path: /
+          pathType: Prefix
+    tls:
+      - hosts:
+        - portal-pgadmin4.dev.demo.catena-x.net
+        secretName: portal-pgadmin4.dev.demo.catena-x.net-tls

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appmarketplace.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appmarketplace.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appmarketplace.name }}
+    spec:
+      containers:
+      - name: {{ .Values.appmarketplace.name }}
+        image: {{ .Values.appmarketplace.image }}
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: {{ .Values.portContainer }}
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Kubernetes"
+        volumeMounts:
+        - name: secrets
+          mountPath: /app/secrets
+          readOnly: true
+      volumes:
+      - name: secrets
+        secret:
+          secretName: {{ .Values.appmarketplace.secret.name }}

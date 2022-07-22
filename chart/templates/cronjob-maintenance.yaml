@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.portalmaintenance.name }}
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: {{ .Values.portalmaintenance.name }}
+            image: {{ .Values.portalmaintenance.image }}
+            imagePullPolicy: "Always"
+            ports:
+            - containerPort: {{ .Values.portContainer }}
+            env:
+            - name: "DOTNET_ENVIRONMENT"
+              value: "Kubernetes"
+            volumeMounts:
+            - name: secrets
+              mountPath: /app/secrets
+              readOnly: true
+          volumes:
+          - name: secrets
+            secret:
+              secretName: {{ .Values.portalmaintenance.secret.name }}

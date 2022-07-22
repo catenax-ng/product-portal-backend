@@ -1,0 +1,20 @@
+apiVersion: v2
+name: portal-backend
+description: Helm chart for Catena-X registration backend service
+type: application
+version: 0.0.1
+appVersion: "0.0.1"
+dependencies:
+  - condition: postgresql.enabled
+    name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 11.x.x
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: 1.x.x
+  - condition: pgadmin4.enabled
+    name: pgadmin4
+    repository: https://helm.runix.net
+    version: 1.x.x
