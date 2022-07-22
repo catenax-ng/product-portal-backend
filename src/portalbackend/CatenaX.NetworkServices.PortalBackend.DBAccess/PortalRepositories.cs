@@ -87,6 +87,10 @@ public class PortalRepositories : IPortalRepositories
         {
             return To<RepositoryType>(new IdentityProviderRepository(_dbContext));
         }
+        if (repositoryType == typeof(INotificationRepository))
+        {
+            return To<RepositoryType>(new NotificationRepository(_dbContext));
+        }
         if (repositoryType == typeof(IServiceAccountsRepository))
         {
             return To<RepositoryType>(new ServiceAccountRepository(_dbContext));

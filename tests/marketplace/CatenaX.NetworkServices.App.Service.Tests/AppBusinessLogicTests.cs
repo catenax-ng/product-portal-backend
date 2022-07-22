@@ -50,6 +50,10 @@ namespace CatenaX.NetworkServices.App.Service.Tests
         public AppBusinessLogicTests()
         {
             _fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { ConfigureMembers = true });
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             _portalRepositories = A.Fake<IPortalRepositories>();
             _companyAssignedAppsRepository = A.Fake<ICompanyAssignedAppsRepository>();
             _appRepository = A.Fake<IAppRepository>();
