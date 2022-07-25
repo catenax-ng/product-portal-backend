@@ -5,14 +5,10 @@ on:
       - feature/CPLP-1281-sonarcloud-workflow
   pull_request:
     types: [opened, synchronize, reopened]
-
-env:
-  DOTNET_VERSION: '6.0' # The .NET SDK version to use
-
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -21,10 +17,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -40,7 +32,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar-scanner
       - name: Install SonarCloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: bash
+        shell: powershell
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
@@ -48,7 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: bash
+        shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"catenax-ng_product-portal-backend" /o:"catenax-ng" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build src/CatenaX.NetworkServices.sln
