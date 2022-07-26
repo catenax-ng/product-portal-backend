@@ -57,6 +57,7 @@ namespace CatenaX.NetworkServices.Registration.Service.BusinessLogic
         public Task SetIdpAsync(SetIdp idpToSet) =>
             _dbAccess.SetIdp(idpToSet);
 
+        //TODO Test for SonarCloud.
         public async Task<int> UploadDocumentAsync(Guid applicationId, IFormFile document, DocumentTypeId documentTypeId, string iamUserId)
         {
             if (string.IsNullOrEmpty(document.FileName))
