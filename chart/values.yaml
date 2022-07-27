@@ -14,8 +14,8 @@ postgresql:
     existingSecret: secret-postgres-init
   secret:
     password: ""
-    replication-password: ""
-    init-user-db-sql: ""
+    replicationPassword: ""
+    initUserDbSql: ""
   architecture: replication
   audit:
     pgAuditLog: write, ddl
@@ -28,7 +28,7 @@ registration:
     tag: 0.4.5
   secret:
     name: secret-registration
-    appsettings: "{}"
+    appsettings: "'{}'"
 
 administration:
   name: administration-service
@@ -37,7 +37,7 @@ administration:
     tag: 0.4.5
   secret:
     name: secret-administration
-    appsettings: "{}"
+    appsettings: "'{}'"
 
 provisioning:
   name: provisioning-service
@@ -46,7 +46,7 @@ provisioning:
     tag: 0.4.5
   secret:
     name: secret-provisioning
-    appsettings: "{}"
+    appsettings: "'{}'"
 
 appmarketplace:
   name: marketplace-app-service
@@ -55,7 +55,7 @@ appmarketplace:
     tag: 0.4.5
   secret:
     name: secret-appmarketplace
-    appsettings: "{}"
+    appsettings: "'{}'"
 
 portalmigrations:
   name: portal-migrations
@@ -64,7 +64,7 @@ portalmigrations:
     tag: 0.4.5
   secret:
     name: secret-portal-migrations
-    appsettings: "{}"
+    appsettings: "'{}'"
 
 portalmaintenance:
   name: portal-maintenance
@@ -73,7 +73,7 @@ portalmaintenance:
     tag: 0.4.5
   secret:
     name: secret-portal-maintenance
-    appsettings: "{}"
+    appsettings: "'{}'"
 
 notification:
   name: notification-service
@@ -82,7 +82,7 @@ notification:
     tag: latest
   secret:
     name: secret-notification
-    appsettings: "{}"
+    appsettings: "'{}'"
 
 pgadmin4:
   enabled: false
