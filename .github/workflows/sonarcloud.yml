@@ -22,7 +22,7 @@ name: Sonarcloud
 on:
   push:
     branches:
-      - main
+      - feature/CPLP-1281-sonarcloud-workflow-4
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -62,7 +62,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
+          dotnet tool install --global dotnet-coverage
+          cd src
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"catenax-ng_product-portal-backend" /o:"catenax-ng" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build src
-          dotnet test src --collect "Code Coverage"
+          dotnet build
+          dotnet-coverage collect 'dotnet test' -f xml -o 'coverage.xml'
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
