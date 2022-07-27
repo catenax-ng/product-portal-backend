@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.notification.name }}
-        image: "{{ .Values.notification.image.name }}:{{ .Values.notification.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.notification.image.repository }}:{{ .Values.notification.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: "Always"
         ports:
         - containerPort: {{ .Values.portContainer }}

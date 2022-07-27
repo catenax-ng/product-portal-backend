@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.appmarketplace.name }}
-        image: "{{ .Values.appmarketplace.image.name }}:{{ .Values.appmarketplace.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.appmarketplace.image.repository }}:{{ .Values.appmarketplace.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: "Always"
         ports:
         - containerPort: {{ .Values.portContainer }}

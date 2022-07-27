@@ -11,7 +11,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: {{ .Values.portalmaintenance.name }}
-            image: "{{ .Values.portalmaintenance.image.name }}:{{ .Values.portalmaintenance.image.tag | default .Chart.AppVersion }}"
+            image: "{{ .Values.portalmaintenance.image.repository }}:{{ .Values.portalmaintenance.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: "Always"
             ports:
             - containerPort: {{ .Values.portContainer }}
