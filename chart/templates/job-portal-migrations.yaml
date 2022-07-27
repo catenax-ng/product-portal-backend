@@ -12,7 +12,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: {{ .Values.portalmigrations.name }}
-        image: {{ .Values.portalmigrations.image }}
+        image: "{{ .Values.portalmigrations.image.name }}:{{ .Values.portalmigrations.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: "Always"
         ports:
         - containerPort: {{ .Values.portContainer }}
