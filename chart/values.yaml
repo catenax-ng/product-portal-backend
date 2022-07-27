@@ -1,10 +1,12 @@
-domain: int.demo.catena-x.net
-corsOrigins: http://localhost:3000, https://*.int.demo.catena-x.net
+corsOrigins: http://localhost:3000
 issuer: letsencrypt-prod
 name: portal-backend
 portContainer: 80
 portService: 8080
 replicaCount: 1
+
+ingress:
+  enabled: false
 
 postgresql:
   enabled: true
@@ -118,3 +120,4 @@ pgadmin4:
       - hosts:
         - portal-pgadmin4.int.demo.catena-x.net
         secretName: portal-pgadmin4.int.demo.catena-x.net-tls
+

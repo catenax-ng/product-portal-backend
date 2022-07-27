@@ -1,60 +1,61 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := .Values.name -}}
+{{- $svcPort := .Values.portService -}}
+{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
-  name: {{ .Values.name }}
+  name: {{ $fullName }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    cert-manager.io/cluster-issuer: {{ .Values.issuer }}
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: {{ .Values.corsOrigins }}
-    nginx.ingress.kubernetes.io/proxy-body-size: 8m
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
+  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
   tls:
-  - hosts:
-    - {{ .Values.name }}.{{ .Values.domain }}
-    secretName: {{ .Values.name }}.{{ .Values.domain }}-tls
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
   rules:
-  - host: {{ .Values.name }}.{{ .Values.domain }}
-    http:
-      paths:
-
-      - path: /api/registration
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.registration.name }}
-            port:
-              number: {{ .Values.portService }}
-
-      - path: /api/administration
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.administration.name }}
-            port:
-              number: {{ .Values.portService }}
-
-      - path: /api/notification
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.notification.name }}
-            port:
-              number: {{ .Values.portService }}
-
-      - path: /api/provisioning
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.provisioning.name }}
-            port:
-              number: {{ .Values.portService }}
-
-      - path: /api/apps
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.appmarketplace.name }}
-            port:
-              number: {{ .Values.portService }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+          {{- end }}
+    {{- end }}
+{{- end }}
