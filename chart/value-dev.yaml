@@ -60,51 +60,51 @@ postgresql:
     pathinitdbuser: portal/data/dev/postgres-db-user
 
 registration:
-  image: 
+  image:
     tag: latest
   secret:
-    path: portal/data/dev/registration
+    appsettings: "<path:portal/data/dev/registration#appsettings.json>"
 
 administration:
-  image: 
+  image:
     tag: latest
   secret:
-    path: portal/data/dev/administration
+    appsettings: "<path:portal/data/dev/administration#appsettings.json>"
 
 provisioning:
-  image: 
+  image:
     tag: latest
   secret:
-    path: portal/data/dev/provisioning
+    appsettings: "<path:portal/data/dev/provisioning#appsettings.json>"
 
 appmarketplace:
-  image: 
+  image:
     tag: latest
   secret:
-    path: portal/data/dev/appmarketplace
+    appsettings: "<path:portal/data/dev/appmarketplace#appsettings.json>"
 
 portalmigrations:
-  image: 
+  image:
     tag: latest
   secret:
-    path: portal/data/dev/portal-migrations
+    appsettings: "<path:portal/data/dev/portal-migrations#appsettings.json>"
 
 portalmaintenance:
   image: 
     tag: latest
   secret:
-    path: portal/data/dev/portal-maintenance
+    appsettings: "<path:portal/data/dev/portal-maintenance#appsettings.json>"
 
 notification:
   image: 
     tag: latest
   secret:
-    path: portal/data/dev/notification
+    appsettings: "<path:portal/data/dev/notification#appsettings.json>"
 
 pgadmin4:
   enabled: true
   secret:
-    path: portal/data/dev/pgadmin4
+    password: "<path:portal/data/dev/pgadmin4#password>"
   env:
     email: portal@catena-x.net
   existingSecret: secret-pgadmin4
