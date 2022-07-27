@@ -57,7 +57,7 @@ registration:
     tag: 0.4.5
   secret:
     name: secret-registration
-    path: portal/data/int/registration
+    appsettings: "{}"
 
 administration:
   name: administration-service
@@ -66,7 +66,7 @@ administration:
     tag: 0.4.5
   secret:
     name: secret-administration
-    path: portal/data/int/administration
+    appsettings: "{}"
 
 provisioning:
   name: provisioning-service
@@ -75,7 +75,7 @@ provisioning:
     tag: 0.4.5
   secret:
     name: secret-provisioning
-    path: portal/data/int/provisioning
+    appsettings: "{}"
 
 appmarketplace:
   name: marketplace-app-service
@@ -84,7 +84,7 @@ appmarketplace:
     tag: 0.4.5
   secret:
     name: secret-appmarketplace
-    path: portal/data/int/appmarketplace
+    appsettings: "{}"
 
 portalmigrations:
   name: portal-migrations
@@ -93,7 +93,7 @@ portalmigrations:
     tag: 0.4.5
   secret:
     name: secret-portal-migrations
-    path: portal/data/int/portal-migrations
+    appsettings: "{}"
 
 portalmaintenance:
   name: portal-maintenance
@@ -102,7 +102,7 @@ portalmaintenance:
     tag: 0.4.5
   secret:
     name: secret-portal-maintenance
-    path: portal/data/int/portal-maintenance
+    appsettings: "{}"
 
 notification:
   name: notification-service
@@ -111,27 +111,9 @@ notification:
     tag: latest
   secret:
     name: secret-notification
-    path: portal/data/int/notification
+    appsettings: "{}"
 
 pgadmin4:
-  enabled: true
-  secret:
-    path: portal/data/int/pgadmin4
-  env:
-    email: portal@catena-x.net
-  existingSecret: secret-pgadmin4
+  enabled: false
   ingress:
-    enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-      kubernetes.io/ingress.class: nginx
-    hosts:
-      - host: portal-pgadmin4.int.demo.catena-x.net
-        paths:
-        - path: /
-          pathType: Prefix
-    tls:
-      - hosts:
-        - portal-pgadmin4.int.demo.catena-x.net
-        secretName: portal-pgadmin4.int.demo.catena-x.net-tls
-
+    enabled: false
