@@ -57,8 +57,8 @@ ingress:
 postgresql:
   secret:
     password: "<path:portal/data/dev/postgres#postgres-password>"
-    replication-password: "<path:portal/data/dev/postgres#replication-password>"
-    init-user-db-sql: "<path:portal/data/dev/postgres-db-user#01-init-user-db.sql>"
+    replicationPassword: "<path:portal/data/dev/postgres#replication-password>"
+    initUserDbSql: "<path:portal/data/dev/postgres-db-user#01-init-user-db.sql>"
   primary:
     extraVolumeMounts:
       - name: initdb
