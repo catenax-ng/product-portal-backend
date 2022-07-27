@@ -3,7 +3,7 @@ name: portal-backend
 description: Helm chart for Catena-X registration backend service
 type: application
 version: 0.0.1
-appVersion: "0.0.1"
+appVersion: "0.4.5"
 # dependencies:
 #   - condition: postgresql.enabled
 #     name: postgresql

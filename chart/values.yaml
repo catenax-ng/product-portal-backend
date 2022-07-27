@@ -52,49 +52,63 @@ postgresql:
 
 registration:
   name: registration-service
-  image: ghcr.io/catenax-ng/product-portal-backend_registration-service:latest
+  image: 
+    repository: ghcr.io/catenax-ng/product-portal-backend_registration-service
+    tag: 0.4.5
   secret:
     name: secret-registration
     path: portal/data/int/registration
 
 administration:
   name: administration-service
-  image: ghcr.io/catenax-ng/product-portal-backend_administration-service:latest
+  image: 
+    repository: ghcr.io/catenax-ng/product-portal-backend_administration-service
+    tag: 0.4.5
   secret:
     name: secret-administration
     path: portal/data/int/administration
 
 provisioning:
   name: provisioning-service
-  image: ghcr.io/catenax-ng/product-portal-backend_provisioning-service:latest
+  image: 
+    repository: ghcr.io/catenax-ng/product-portal-backend_provisioning-service
+    tag: 0.4.5
   secret:
     name: secret-provisioning
     path: portal/data/int/provisioning
 
 appmarketplace:
   name: marketplace-app-service
-  image: ghcr.io/catenax-ng/product-portal-backend_marketplace-app-service:latest
+  image: 
+    repository: ghcr.io/catenax-ng/product-portal-backend_marketplace-app-service
+    tag: 0.4.5
   secret:
     name: secret-appmarketplace
     path: portal/data/int/appmarketplace
 
 portalmigrations:
   name: portal-migrations
-  image: ghcr.io/catenax-ng/product-portal-backend_portal-migrations:latest
+  image: 
+    repository: ghcr.io/catenax-ng/product-portal-backend_portal-migrations
+    tag: 0.4.5
   secret:
     name: secret-portal-migrations
     path: portal/data/int/portal-migrations
 
 portalmaintenance:
   name: portal-maintenance
-  image: ghcr.io/catenax-ng/product-portal-backend_maintenance-service:latest
+  image: 
+    registry: ghcr.io/catenax-ng/product-portal-backend_maintenance-service
+    tag: 0.4.5
   secret:
     name: secret-portal-maintenance
     path: portal/data/int/portal-maintenance
 
 notification:
   name: notification-service
-  image: ghcr.io/catenax-ng/product-portal-backend_notification-service:latest
+  image: 
+    repository: ghcr.io/catenax-ng/product-portal-backend_notification-service
+    tag: latest
   secret:
     name: secret-notification
     path: portal/data/int/notification
