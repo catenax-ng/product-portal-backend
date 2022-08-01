@@ -1,3 +1,4 @@
+name: portal-backend-release-chart
 domain: dev.demo.catena-x.net
 corsOrigins: http://localhost:3000, https://*.dev.demo.catena-x.net
 
@@ -12,11 +13,11 @@ ingress:
     nginx.ingress.kubernetes.io/cors-allow-origin: http://localhost:3000
     nginx.ingress.kubernetes.io/proxy-body-size: 8m
   tls: 
-    - secretName: portal-backend.dev.demo.catena-x.net-tls
+    - secretName: portal-backend-release-chart.dev.demo.catena-x.net-tls
       hosts:
-        - portal-backend.dev.demo.catena-x.net
+        - portal-backend-release-chart.dev.demo.catena-x.net
   hosts:
-    - host: portal-backend.dev.demo.catena-x.net
+    - host: portal-backend-release-chart.dev.demo.catena-x.net
       paths:
         - path: /api/registration
           pathType: Prefix
@@ -132,7 +133,7 @@ notification:
     appsettings: "<path:portal/data/dev/notification#appsettings.json>"
 
 pgadmin4:
-  enabled: true
+  enabled: false
   secret:
     password: "<path:portal/data/dev/pgadmin4#password>"
   env:
