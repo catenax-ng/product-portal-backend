@@ -9,7 +9,7 @@ ingress:
   enabled: false
 
 postgresql:
-  enabled: true    
+  enabled: true
   auth:
     existingSecret: secret-postgres-init
   secret:
