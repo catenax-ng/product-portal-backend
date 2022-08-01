@@ -6,13 +6,14 @@ ingress:
   enabled: true
   className: ""
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-origin: http://localhost:3000
     nginx.ingress.kubernetes.io/proxy-body-size: 8m
   tls: 
-    - secretName: tls-secret
+    - secretName: portal-backend-release-chart.dev.demo.catena-x.net-tls
       hosts:
         - portal-backend-release-chart.dev.demo.catena-x.net
   hosts:
@@ -141,6 +142,7 @@ pgadmin4:
   ingress:
     enabled: true
     annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
       kubernetes.io/ingress.class: nginx
     hosts:
       - host: portal-release-chart-pgadmin4.dev.demo.catena-x.net
@@ -150,4 +152,4 @@ pgadmin4:
     tls:
       - hosts:
         - portal-release-chart-pgadmin4.dev.demo.catena-x.net
-        secretName: tls-secret
+        secretName: portal-release-chart-pgadmin4.dev.demo.catena-x.net-tls
