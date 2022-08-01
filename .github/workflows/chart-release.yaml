@@ -3,6 +3,8 @@ name: Release Chart
 on:
   workflow_dispatch:
   push:
+    branches:
+      - feature/build-backend-helm-chart-release-eg
     tags:
       - 'v*'
 
