@@ -132,7 +132,7 @@ notification:
     appsettings: "<path:portal/data/dev/notification#appsettings.json>"
 
 pgadmin4:
-  enabled: false
+  enabled: true
   secret:
     password: "<path:portal/data/dev/pgadmin4#password>"
   env:
