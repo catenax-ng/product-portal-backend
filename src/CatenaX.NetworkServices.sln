@@ -88,6 +88,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatenaX.NetworkServices.Key
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatenaX.NetworkServices.Framework.ErrorHandling.Tests", "..\tests\framework\CatenaX.NetworkServices.Framework.ErrorHandling.Tests\CatenaX.NetworkServices.Framework.ErrorHandling.Tests.csproj", "{4542285F-DA31-4A07-B88E-43B820B33C96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keycloak.Net.Tests", "..\keycloak\test\Keycloak.Net.Tests\Keycloak.Net.Tests.csproj", "{71415FEE-C2EF-4700-9AE4-3E3DC4926295}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -482,6 +484,18 @@ Global
 		{4542285F-DA31-4A07-B88E-43B820B33C96}.Release|x64.Build.0 = Release|Any CPU
 		{4542285F-DA31-4A07-B88E-43B820B33C96}.Release|x86.ActiveCfg = Release|Any CPU
 		{4542285F-DA31-4A07-B88E-43B820B33C96}.Release|x86.Build.0 = Release|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Debug|x64.Build.0 = Debug|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Debug|x86.Build.0 = Debug|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Release|x64.ActiveCfg = Release|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Release|x64.Build.0 = Release|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Release|x86.ActiveCfg = Release|Any CPU
+		{71415FEE-C2EF-4700-9AE4-3E3DC4926295}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
