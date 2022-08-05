@@ -30,7 +30,7 @@ namespace Keycloak.Net
             _url = url;
         }
 
-        public KeycloakClient(string url, string userName, string password, string authRealm)
+        public KeycloakClient(string url, string userName, string password, string authRealm = null)
             : this(url)
         {
             _userName = userName;
