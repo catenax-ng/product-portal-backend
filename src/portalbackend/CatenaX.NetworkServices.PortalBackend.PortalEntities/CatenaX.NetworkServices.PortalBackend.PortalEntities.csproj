@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>377e9692-ccd4-476d-8852-0065c2097e2e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,4 +22,5 @@
       <Value>AuditCompanyUser.cs</Value>
     </SonarQubeSetting>
   </ItemGroup>
+
 </Project>

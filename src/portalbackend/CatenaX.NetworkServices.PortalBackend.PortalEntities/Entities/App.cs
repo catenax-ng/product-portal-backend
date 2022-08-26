@@ -19,13 +19,15 @@
  ********************************************************************************/
 
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Enums;
+using CatenaX.NetworkServices.PortalBackend.PortalEntities.Auditing;
 using System.ComponentModel.DataAnnotations;
 
 namespace CatenaX.NetworkServices.PortalBackend.PortalEntities.Entities;
 
-public class App
+public class App : IAuditable
 {
-    private App()
+    
+    public App()
     {
         Provider = null!;
         Agreements = new HashSet<Agreement>();
@@ -60,7 +62,7 @@ public class App
         DateCreated = dateCreated;
     }
     
-    public Guid Id { get; private set; }
+    public Guid Id { get; set; }
 
     [MaxLength(255)]
     public string? Name { get; set; }
@@ -90,9 +92,11 @@ public class App
 
     public Guid? ProviderCompanyId { get; set; }
 
+    /// <inheritdoc />
+    public Guid? LastEditorId { get; set; }
     public AppStatusId AppStatusId { get; set; }
 
-    public DateTimeOffset? DateLastChanged { get; set; }
+    public DateTimeOffset DateLastChanged { get; set; }
 
     // Navigation properties
     public virtual AppStatus? AppStatus{ get; set; }

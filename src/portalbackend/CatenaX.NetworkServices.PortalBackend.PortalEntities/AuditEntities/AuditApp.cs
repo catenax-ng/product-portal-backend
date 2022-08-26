@@ -22,18 +22,18 @@ using CatenaX.NetworkServices.PortalBackend.PortalEntities.Auditing;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Entities;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Enums;
 
+/// <summary>
+/// Audit entity for <see cref="App"/> only needed for configuration purposes
+/// </summary>
 namespace CatenaX.NetworkServices.PortalBackend.PortalEntities.AuditEntities;
- /// <summary>
- /// Audit entity for <see cref="CompanyUserAssignedRole"/> only needed for configuration purposes
- /// </summary>
-public class AuditCompanyUserAssignedRole : CompanyUserAssignedRole, IAuditEntity
+public class AuditApp : App, IAuditEntity
 {
     /// <inheritdoc />
     public Guid AuditId { get; set; }
 
     /// <inheritdoc />
     public AuditOperationId AuditOperationId { get; set; }
-    
+
     /// <inheritdoc />
-    public  DateTimeOffset DateLastChanged { get; set; }
+    public new DateTimeOffset DateLastChanged { get; set; }
 }

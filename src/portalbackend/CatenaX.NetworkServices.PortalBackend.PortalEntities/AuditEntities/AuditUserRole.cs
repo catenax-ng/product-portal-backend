@@ -22,11 +22,11 @@ using CatenaX.NetworkServices.PortalBackend.PortalEntities.Auditing;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Entities;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Enums;
 
+/// <summary>
+/// Audit entity for <see cref="UserRole"/> only needed for configuration purposes
+/// </summary>
 namespace CatenaX.NetworkServices.PortalBackend.PortalEntities.AuditEntities;
- /// <summary>
- /// Audit entity for <see cref="CompanyUserAssignedRole"/> only needed for configuration purposes
- /// </summary>
-public class AuditCompanyUserAssignedRole : CompanyUserAssignedRole, IAuditEntity
+public class AuditUserRole : UserRole, IAuditEntity
 {
     /// <inheritdoc />
     public Guid AuditId { get; set; }

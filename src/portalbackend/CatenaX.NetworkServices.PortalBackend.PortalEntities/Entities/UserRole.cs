@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CatenaX.NetworkServices.PortalBackend.PortalEntities.Auditing;
 
 namespace CatenaX.NetworkServices.PortalBackend.PortalEntities.Entities;
 
-public class UserRole
+public class UserRole : IAuditable
 {
-    private UserRole()
+    protected UserRole()
     {
         UserRoleText = null!;
         CompanyUsers = new HashSet<CompanyUser>();
@@ -20,13 +21,16 @@ public class UserRole
         AppId = appId;
     }
 
-    public Guid Id { get; private set; }
+    public Guid Id { get; set; }
 
     [MaxLength(255)]
     [Column("user_role")]
     public string UserRoleText { get; set; }
 
     public Guid AppId { get; set; }
+    
+    /// <inheritdoc />
+    public Guid? LastEditorId { get; set; }
 
     // Navigation properties
     public virtual App? App { get; set; }
