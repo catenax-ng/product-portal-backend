@@ -21,6 +21,8 @@
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Auditing;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Entities;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>
 /// Audit entity for <see cref="UserRole"/> only needed for configuration purposes
@@ -36,6 +38,7 @@ public class AuditUserRole : UserRole, IAuditEntity
     
     /// <inheritdoc />
     public  DateTimeOffset DateLastChanged { get; set; }
-
+    
+    [Column("user_role")]
     public new string UserRoleText { get; set; }
 }
