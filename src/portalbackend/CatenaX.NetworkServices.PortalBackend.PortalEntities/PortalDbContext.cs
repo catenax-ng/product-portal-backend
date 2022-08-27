@@ -285,6 +285,30 @@ public class PortalDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
             entity.ToTable("apps");
         });
+        
+        modelBuilder.Entity<AuditApp>(x =>
+        {
+            x.HasBaseType((Type?)null);
+
+            x.Ignore(x => x.AppStatus);
+            x.Ignore(x => x.Agreements);
+            x.Ignore(x => x.AppDescriptions);
+            x.Ignore(x => x.AppDetailImages);
+            x.Ignore(x => x.AppInstances);
+            x.Ignore(x => x.AppLicenses);
+            x.Ignore(x => x.Companies);
+            x.Ignore(x => x.CompanyAssignedApps);
+            x.Ignore(x => x.CompanyUsers);
+            x.Ignore(x => x.Documents);
+            x.Ignore(x => x.ProviderCompany);
+            x.Ignore(x => x.SalesManager);
+            x.Ignore(x => x.SupportedLanguages);
+            x.Ignore(x => x.Tags);
+            x.Ignore(x => x.UseCases);
+            x.Ignore(x => x.UserRoles);
+            
+            x.ToTable("audit_apps_cplp_1313_db_audit_apps");
+        });
 
         modelBuilder.Entity<AppInstance>(entity =>
         {
@@ -509,7 +533,7 @@ public class PortalDbContext : DbContext
             x.Ignore(x => x.CompanyUsers);
             x.Ignore(x => x.CompanyServiceAccounts);
             x.Ignore(x => x.UserRoleDescriptions);         
-            x.ToTable("audit_app_user_roles_cplp_1313_db_audit_apps");
+            x.ToTable("audit_user_roles_cplp_1313_db_audit_apps");
         });
 
         modelBuilder.Entity<CompanyServiceAccountStatus>()
@@ -610,29 +634,7 @@ public class PortalDbContext : DbContext
             x.ToTable("audit_company_user_assigned_roles_cplp_1255_audit_company_applications");
         });
 
-        modelBuilder.Entity<AuditApp>(x =>
-        {
-            x.HasBaseType((Type?)null);
-
-            x.Ignore(x => x.AppStatus);
-            x.Ignore(x => x.Agreements);
-            x.Ignore(x => x.AppDescriptions);
-            x.Ignore(x => x.AppDetailImages);
-            x.Ignore(x => x.AppInstances);
-            x.Ignore(x => x.AppLicenses);
-            x.Ignore(x => x.Companies);
-            x.Ignore(x => x.CompanyAssignedApps);
-            x.Ignore(x => x.CompanyUsers);
-            x.Ignore(x => x.Documents);
-            x.Ignore(x => x.ProviderCompany);
-            x.Ignore(x => x.SalesManager);
-            x.Ignore(x => x.SupportedLanguages);
-            x.Ignore(x => x.Tags);
-            x.Ignore(x => x.UseCases);
-            x.Ignore(x => x.UserRoles);
-            
-            x.ToTable("audit_apps_cplp_1313_db_audit_apps");
-        });
+        
 
         modelBuilder.Entity<CompanyUserAssignedBusinessPartner>()
             .HasKey(e => new { e.CompanyUserId, e.BusinessPartnerNumber });
