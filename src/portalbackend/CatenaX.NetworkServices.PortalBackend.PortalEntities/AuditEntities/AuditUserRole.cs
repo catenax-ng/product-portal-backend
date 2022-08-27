@@ -36,4 +36,6 @@ public class AuditUserRole : UserRole, IAuditEntity
     
     /// <inheritdoc />
     public  DateTimeOffset DateLastChanged { get; set; }
+
+    public new string UserRoleText { get; set; }
 }
