@@ -39,6 +39,4 @@ public class AuditUserRole : UserRole, IAuditEntity
     /// <inheritdoc />
     public  DateTimeOffset DateLastChanged { get; set; }
     
-    [Column("user_role")]
-    public new string UserRoleText { get; set; }
 }
