@@ -53,5 +53,31 @@ public class AppReleaseRepository : IAppReleaseRepository
     ///<inheritdoc/>
     public AppAssignedDocument CreateAppAssignedDocument(Guid appId, Guid documentId) =>
         _context.AppAssignedDocuments.Add(new AppAssignedDocument(appId, documentId)).Entity;
+    
+    ///<inheritdoc/>
+    public Task<Guid> GetAppRolesAsync(Guid appId, string userId) =>
+        _context.Apps
+             .Where(a => a.Id == appId)
+             .Select(x => x.ProviderCompany!.CompanyUsers.First(companyUser => companyUser.IamUser!.UserEntityId == userId).Id)
+             .SingleOrDefaultAsync();
+
+    ///<inheritdoc/>
+    public UserRole CreateAppUserRole(Guid appId, string role) =>
+         _context.UserRoles.Add(
+            new UserRole(
+                Guid.NewGuid(),
+                role,
+                appId
+            )).Entity;
+
+    ///<inheritdoc/>
+    public UserRoleDescription CreateAppUserRoleDescription(Guid roleId, string languageCode, string description) =>
+               _context.UserRoleDescriptions.Add(
+            new UserRoleDescription(
+                roleId,
+                languageCode,
+                description
+            )).Entity;
+    
 
 }

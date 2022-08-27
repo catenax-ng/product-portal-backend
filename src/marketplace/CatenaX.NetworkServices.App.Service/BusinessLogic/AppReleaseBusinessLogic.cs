@@ -91,7 +91,7 @@ public class AppReleaseBusinessLogic : IAppReleaseBusinessLogic
     }
 
     /// <inheritdoc/>
-    public Task UpdateAppDocumentAsync(Guid appId, DocumentTypeId documentTypeId, IFormFile document, string userId)
+    public Task<int> UpdateAppDocumentAsync(Guid appId, DocumentTypeId documentTypeId, IFormFile document, string userId)
     {
         if (appId == Guid.Empty)
         {
@@ -113,7 +113,7 @@ public class AppReleaseBusinessLogic : IAppReleaseBusinessLogic
         return UploadAppDoc(appId, documentTypeId, document, userId);
     }
 
-    private async Task UploadAppDoc(Guid appId, DocumentTypeId documentTypeId, IFormFile document, string userId)
+    private async Task<int> UploadAppDoc(Guid appId, DocumentTypeId documentTypeId, IFormFile document, string userId)
     {
         var companyUserId = await _portalRepositories.GetInstance<IAppReleaseRepository>().GetCompanyUserIdForAppUntrackedAsync(appId, userId).ConfigureAwait(false);
         if (companyUserId == Guid.Empty)
@@ -134,9 +134,46 @@ public class AppReleaseBusinessLogic : IAppReleaseBusinessLogic
                 }
                 var doc = _portalRepositories.GetInstance<IDocumentRepository>().CreateDocument(companyUserId, documentName, documentContent, hash, documentTypeId);
                 _portalRepositories.GetInstance<IAppReleaseRepository>().CreateAppAssignedDocument(appId, doc.Id);
-                await _portalRepositories.SaveAsync().ConfigureAwait(false);
+                return await _portalRepositories.SaveAsync().ConfigureAwait(false);
             }
         }
+    }
+    
+    /// <inheritdoc/>
+    public Task AddAppUserRoleAsync(Guid appId, IEnumerable<AppUserRole> appAssignedDesc, string userId)
+    {
+        if (appId == Guid.Empty)
+        {
+            throw new ArgumentException($"AppId must not be empty");
+        }
+        var descriptions = appAssignedDesc.SelectMany(x => x.descriptions).Where(item => !String.IsNullOrWhiteSpace(item.languageCode)).Distinct();
+        if (!descriptions.Any())
+        {
+            throw new ArgumentException($"Language Code must not be empty");
+        }
+
+        return InsertAppUserRoleAsync(appId, appAssignedDesc, userId);
+    }
+
+    private async Task InsertAppUserRoleAsync(Guid appId, IEnumerable<AppUserRole> appAssignedDesc, string userId)
+    {
+        var companyUserId = await _portalRepositories.GetInstance<IAppReleaseRepository>().GetAppRolesAsync(appId, userId).ConfigureAwait(false);
+
+        if (companyUserId == Guid.Empty)
+        {
+            throw new NotFoundException($"Cannot identify companyId or appId : User CompanyId is not associated with the same company as AppCompanyId");
+        }
+
+        foreach (var indexItem in appAssignedDesc)
+        {
+            var appRole = _portalRepositories.GetInstance<IAppReleaseRepository>().CreateAppUserRole(appId, indexItem.role);
+            foreach (var item in indexItem.descriptions)
+            {
+                _portalRepositories.GetInstance<IAppReleaseRepository>().CreateAppUserRoleDescription(appRole.Id, item.languageCode, item.description);
+            }
+        }
+        
+        await _portalRepositories.SaveAsync().ConfigureAwait(false);
     }
 }
 

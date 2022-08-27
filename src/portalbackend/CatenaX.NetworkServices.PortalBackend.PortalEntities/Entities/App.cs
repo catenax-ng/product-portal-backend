@@ -115,4 +115,5 @@ public class App : IAuditable
     public virtual ICollection<AppTag> Tags { get; private set; }
     public virtual ICollection<UseCase> UseCases { get; private set; }
     public virtual ICollection<UserRole> UserRoles { get; private set; }
+
 }

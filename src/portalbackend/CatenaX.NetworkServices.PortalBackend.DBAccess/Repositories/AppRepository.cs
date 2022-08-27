@@ -181,7 +181,7 @@ public class AppRepository : IAppRepository
     public IAsyncEnumerable<AllAppData> GetProvidedAppsData(string iamUserId) =>
         _context.Apps
             .AsNoTracking()
-            .Where(app=>app.ProviderCompany!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUserId))
+            .Where(app => app.ProviderCompany!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUserId))
             .Select(app => new AllAppData(
                 app.Id,
                 app.Name,
@@ -206,14 +206,14 @@ public class AppRepository : IAppRepository
             )).AsAsyncEnumerable();
 
     /// <inheritdoc />
-    public  Task<(IEnumerable<AppDescription> descriptions, IEnumerable<AppDetailImage> images)> GetAppByIdAsync(Guid appId, string userId)
+    public Task<(IEnumerable<AppDescription> descriptions, IEnumerable<AppDetailImage> images)> GetAppByIdAsync(Guid appId, string userId)
     =>
         _context.Apps
              .Where(a => a.Id == appId && a.AppStatusId == AppStatusId.CREATED
              && a.ProviderCompany!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == userId))
              .Select(a => new ValueTuple<IEnumerable<AppDescription>, IEnumerable<AppDetailImage>>(
-                a.AppDescriptions.Select(d => new AppDescription(appId,d.LanguageShortName,d.DescriptionLong,d.DescriptionShort)),
-                       a.AppDetailImages.Select(adi => new AppDetailImage(appId,adi.ImageUrl))
+                a.AppDescriptions.Select(d => new AppDescription(appId, d.LanguageShortName, d.DescriptionLong, d.DescriptionShort)),
+                       a.AppDetailImages.Select(adi => new AppDetailImage(appId, adi.ImageUrl))
                        ))
              .SingleOrDefaultAsync();
 
