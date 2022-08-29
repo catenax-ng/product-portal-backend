@@ -3,6 +3,8 @@ using CatenaX.NetworkServices.PortalBackend.PortalEntities.Auditing;
 using CatenaX.NetworkServices.PortalBackend.PortalEntities.Enums;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Newtonsoft.Json.Serialization;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Microsoft.EntityFrameworkCore.Migrations;
 
@@ -17,9 +19,11 @@ public static class MigrationBuilderExtensions
         var snakeCaseStrategy = new SnakeCaseNamingStrategy();
         var sb = new StringBuilder();
         var properties = typeof(TEntity).GetProperties()
-            .Where(x => !x.GetAccessors().Any(a => a.IsVirtual) && x.Name != nameof(IAuditEntity.DateLastChanged))
-            .Select(x => snakeCaseStrategy.GetPropertyName(x.Name, false))
+            .Where(x => !x.GetAccessors().Any(a => a.IsVirtual) && x.Name != nameof(IAuditEntity.DateLastChanged)
+            && x.CustomAttributes.All(y => y.AttributeType != typeof(NotMappedAttribute)))
+            .Select(x => snakeCaseStrategy.GetPropertyName(x.CustomAttributes.All(y => y.AttributeType != typeof(ColumnAttribute)) ? x.Name : x.GetCustomAttribute<ColumnAttribute>()!.Name , false))
             .ToList();
+        
         var auditTableName = $"{snakeCaseStrategy.GetPropertyName(typeof(TEntity).Name, false)}s";
         var tableName = auditTableName.Replace("audit_", string.Empty);
         sb.AppendLine($"CREATE OR REPLACE FUNCTION portal.process_{tableName}_audit() RETURNS TRIGGER AS ${auditTableName}$");
@@ -39,6 +43,15 @@ public static class MigrationBuilderExtensions
         sb.AppendLine($"FOR EACH ROW EXECUTE FUNCTION portal.process_{tableName}_audit();");
 
         migrationBuilder.Sql(sb.ToString());
+    }
+
+    private static string GetColumnName(ColumnAttribute attribute)
+    {
+        if (attribute != null)
+        {
+            return attribute.Name;
+        }
+        return string.Empty;
     }
 
     public static void DropAuditTrigger<TEntity>(this MigrationBuilder migrationBuilder)
