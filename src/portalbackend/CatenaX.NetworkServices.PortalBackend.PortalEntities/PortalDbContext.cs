@@ -307,7 +307,7 @@ public class PortalDbContext : DbContext
             x.Ignore(x => x.UseCases);
             x.Ignore(x => x.UserRoles);
             
-            x.ToTable("audit_apps_cplp-1313-audit-app-user-role");
+            x.ToTable("audit_apps_cplp_1313_audit_app_user_role");
         });
 
         modelBuilder.Entity<AppInstance>(entity =>
@@ -533,7 +533,7 @@ public class PortalDbContext : DbContext
             x.Ignore(x => x.CompanyUsers);
             x.Ignore(x => x.CompanyServiceAccounts);
             x.Ignore(x => x.UserRoleDescriptions);         
-            x.ToTable("audit_user_roles_cplp-1313-audit-app-user-role");
+            x.ToTable("audit_user_roles_cplp_1313_audit_app_user_role");
         });
 
         modelBuilder.Entity<CompanyServiceAccountStatus>()
