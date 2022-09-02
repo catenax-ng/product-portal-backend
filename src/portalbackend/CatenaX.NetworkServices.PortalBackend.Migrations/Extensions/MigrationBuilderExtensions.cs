@@ -45,15 +45,6 @@ public static class MigrationBuilderExtensions
         migrationBuilder.Sql(sb.ToString());
     }
 
-    private static string GetColumnName(ColumnAttribute attribute)
-    {
-        if (attribute != null)
-        {
-            return attribute.Name;
-        }
-        return string.Empty;
-    }
-
     public static void DropAuditTrigger<TEntity>(this MigrationBuilder migrationBuilder)
         where TEntity : class, IAuditEntity
     {
