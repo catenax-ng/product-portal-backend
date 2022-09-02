@@ -38,3 +38,4 @@ public class AuditCompanyAssignedApp : CompanyAssignedApp, IAuditEntity
     /// <inheritdoc />
     public AuditOperationId AuditOperationId { get; set; }
 }
+

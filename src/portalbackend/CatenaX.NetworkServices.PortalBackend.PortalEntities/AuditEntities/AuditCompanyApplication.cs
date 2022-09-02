@@ -37,3 +37,4 @@ public class AuditCompanyApplication : CompanyApplication, IAuditEntity
     /// <inheritdoc />
     public new DateTimeOffset DateLastChanged { get; set; }
 }
+
