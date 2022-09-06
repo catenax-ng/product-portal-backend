@@ -96,4 +96,16 @@ public record AppDetailsData(string Title, string LeadPictureUri, string Provide
     /// Languages that the app is available in.
     /// </summary>
     public IEnumerable<string> Languages { get; set; } = new List<string>();
+
+    /// <summary>
+    /// app assigned documents.
+    /// </summary>
+    public IEnumerable<DocumentDatails> DocumentType { get; set; }
 }
+
+public record DocumentDatails(
+            DocumentTypeId? DocumentTypeName,
+            IEnumerable<Guid> DocumentId,
+            IEnumerable<string> DocumentName);
+
+

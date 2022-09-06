@@ -129,7 +129,13 @@ public class AppRepository : IAppRepository
                     .SelectMany(company => company.CompanyAssignedApps.Where(x => x.AppId == appId))
                     .Select(x => x.AppSubscriptionStatusId)
                     .FirstOrDefault(),
-                Languages = a.SupportedLanguages.Select(l => l.ShortName)
+                Languages = a.SupportedLanguages.Select(l => l.ShortName),
+                DocumentType = a.AppAssignedDocuments
+                                    .Select(appDoc => new DocumentDatails(
+                                        appDoc.Document!.DocumentTypeId,
+                                        appDoc.App!.Document.Select(doc => doc.Id),
+                                        appDoc.App!.Document.Select(doc => doc.DocumentName)
+                                    ))
             })
             .SingleAsync().ConfigureAwait(false);
 
@@ -149,7 +155,8 @@ public class AppRepository : IAppRepository
             DetailPictureUris = app.DetailPictureUris,
             ContactEmail = app.ContactEmail,
             ContactNumber = app.ContactNumber,
-            Languages = app.Languages
+            Languages = app.Languages,
+            DocumentType = app.DocumentType
         };
     }
 
