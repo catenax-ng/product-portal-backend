@@ -283,19 +283,6 @@ public class PortalDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        modelBuilder.Entity<AppAssignedDocument>(entity =>
-        {
-            entity.HasOne(d => d.Document!)
-                .WithMany()
-                .HasForeignKey(d => d.DocumentId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(d => d.App!)
-                .WithMany()
-                .HasForeignKey(d => d.AppId)
-                .OnDelete(DeleteBehavior.SetNull);
-        });
-
         modelBuilder.Entity<AppInstance>(entity =>
         {
             entity.HasOne(x => x.App)
