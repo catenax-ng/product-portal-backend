@@ -130,12 +130,12 @@ public class AppRepository : IAppRepository
                     .Select(x => x.AppSubscriptionStatusId)
                     .FirstOrDefault(),
                 Languages = a.SupportedLanguages.Select(l => l.ShortName),
-                DocumentType = a.AppAssignedDocuments
-                                    .Select(appDoc => new DocumentDatails(
-                                        appDoc.Document!.DocumentTypeId,
-                                        appDoc.App!.Document.Select(doc => doc.Id),
-                                        appDoc.App!.Document.Select(doc => doc.DocumentName)
-                                    ))
+                DocumentType = a.Documents
+                                     .Select(appDoc => new DocumentDatails(
+                                         appDoc.DocumentTypeId,
+                                         appDoc.Id,
+                                         appDoc.DocumentName
+                                     ))
             })
             .SingleAsync().ConfigureAwait(false);
 
@@ -149,7 +149,7 @@ public class AppRepository : IAppRepository
             )
         {
             Id = app.Id,
-            IsSubscribed = app.IsPurchased,
+            IsSubscribed = app.IsPurchased == 0 ? null : app.IsPurchased,
             Tags = app.Tags,
             UseCases = app.UseCases,
             DetailPictureUris = app.DetailPictureUris,

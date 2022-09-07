@@ -41,7 +41,6 @@ public class App
         Documents = new HashSet<Document>();
         UserRoles = new HashSet<UserRole>();
         AppInstances = new HashSet<AppInstance>();
-        AppAssignedDocuments = new HashSet<AppAssignedDocument>();
     }
 
     /// <summary>
@@ -106,7 +105,6 @@ public class App
     public virtual ICollection<CompanyAssignedApp> CompanyAssignedApps { get; private set; }
     public virtual ICollection<CompanyUser> CompanyUsers { get; private set; }
     public virtual ICollection<Document> Documents { get; private set; }
-    public virtual ICollection<AppAssignedDocument> AppAssignedDocuments { get; private set; }
     public virtual Company? ProviderCompany { get; set; }
     public virtual CompanyUser? SalesManager { get; set; }
     public virtual ICollection<Language> SupportedLanguages { get; private set; }
