@@ -100,12 +100,12 @@ public record AppDetailsData(string Title, string LeadPictureUri, string Provide
     /// <summary>
     /// app assigned documents.
     /// </summary>
-    public IEnumerable<DocumentDatails> DocumentType { get; set; }
+    public IEnumerable<DocumentDatails> DocumentType { get; set; } = new List<DocumentDatails>();
 }
 
 public record DocumentDatails(
-            DocumentTypeId? DocumentTypeName,
-            IEnumerable<Guid> DocumentId,
-            IEnumerable<string> DocumentName);
+    DocumentTypeId? DocumentTypeName,
+    Guid DocumentId,
+    string DocumentName);
 
 
