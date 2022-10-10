@@ -12,7 +12,7 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities;
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.Migrations.Migrations
 {
     [DbContext(typeof(PortalDbContext))]
-    [Migration("20221010072035_CPLP-1313-AuditOffer")]
+    [Migration("20221010092958_CPLP-1313-AuditOffer")]
     partial class CPLP1313AuditOffer
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

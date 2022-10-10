@@ -26,7 +26,7 @@ namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.AuditEntiti
 
 public class AuditOffer20221010 : IAuditEntityV1
 {
-    private AuditOffer20221010()
+    public AuditOffer20221010()
     {
         Provider = null!;
     }
