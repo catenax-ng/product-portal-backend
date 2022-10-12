@@ -2,10 +2,8 @@
 using System.Text;
 using System.Threading.Tasks;
 using FakeItEasy;
-using Microsoft.AspNetCore.Mvc;
 using Org.CatenaX.Ng.Portal.Backend.Administration.Service.BusinessLogic;
 using Org.CatenaX.Ng.Portal.Backend.Administration.Service.Controllers;
-using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.Tests.Shared.Extensions;
 using Xunit;
 
