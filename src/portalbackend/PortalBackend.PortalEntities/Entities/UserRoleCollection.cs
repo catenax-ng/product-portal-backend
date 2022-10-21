@@ -24,19 +24,20 @@ public class UserRoleCollection
 {
     private UserRoleCollection()
     {
+        Name = null!;
         UserRoles = new HashSet<UserRole>();
         UserRoleCollectionDescriptions = new HashSet<UserRoleCollectionDescription>();
     }
 
-    public UserRoleCollection(Guid id, string label) : this()
+    public UserRoleCollection(Guid id, string name) : this()
     {
         Id = id;
-        Label = label;
+        Name = name;
     }
 
     public Guid Id { get; set; }
 
-    public string Label { get; set; }
+    public string Name { get; set; }
 
     // Navigation properties
     public virtual CompanyRole CompanyRole { get; set; } = null!;
