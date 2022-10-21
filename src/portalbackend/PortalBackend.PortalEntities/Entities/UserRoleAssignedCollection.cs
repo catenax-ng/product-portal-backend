@@ -18,40 +18,20 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
-using System.ComponentModel.DataAnnotations;
-
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 
-public class CompanyRole
+public class UserRoleAssignedCollection
 {
-    private CompanyRole()
+    public UserRoleAssignedCollection(Guid userRoleId, Guid userRoleCollectionId)
     {
-        Companies = new HashSet<Company>();
-        AgreementAssignedCompanyRoles = new HashSet<AgreementAssignedCompanyRole>();
-        CompanyRoleDescriptions = new HashSet<CompanyRoleDescription>();
-    }
-
-    public CompanyRole(CompanyRoleId companyRoleId, Guid userRoleCollectionId, bool isRegistrationRole) : this()
-    {
-        Id = companyRoleId;
-        Label = companyRoleId.ToString();
+        UserRoleId = userRoleId;
         UserRoleCollectionId = userRoleCollectionId;
-        IsRegistrationRole = isRegistrationRole;
     }
 
-    public CompanyRoleId Id { get; private set; }
-
-    [MaxLength(255)]
-    public string Label { get; private set; } = null!;
-
+    public Guid UserRoleId { get; private set; }
     public Guid UserRoleCollectionId { get; private set; }
 
-    public bool IsRegistrationRole { get; private set; }
-
     // Navigation properties
-    public virtual UserRoleCollection UserRoleCollection { get; set; } = null!;
-    public virtual ICollection<AgreementAssignedCompanyRole> AgreementAssignedCompanyRoles { get; private set; }
-    public virtual ICollection<Company> Companies { get; private set; }
-    public virtual ICollection<CompanyRoleDescription> CompanyRoleDescriptions { get; private set; }
+    public virtual UserRoleCollection UserRoleCollection { get; private set; } = null!;
+    public virtual UserRole UserRole{ get; private set; } = null!;
 }

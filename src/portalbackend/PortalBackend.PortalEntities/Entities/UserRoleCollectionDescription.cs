@@ -18,40 +18,27 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 
-public class CompanyRole
+public class UserRoleCollectionDescription
 {
-    private CompanyRole()
+    public UserRoleCollectionDescription(Guid userRoleCollectionId, string languageShortName, string description)
     {
-        Companies = new HashSet<Company>();
-        AgreementAssignedCompanyRoles = new HashSet<AgreementAssignedCompanyRole>();
-        CompanyRoleDescriptions = new HashSet<CompanyRoleDescription>();
-    }
-
-    public CompanyRole(CompanyRoleId companyRoleId, Guid userRoleCollectionId, bool isRegistrationRole) : this()
-    {
-        Id = companyRoleId;
-        Label = companyRoleId.ToString();
         UserRoleCollectionId = userRoleCollectionId;
-        IsRegistrationRole = isRegistrationRole;
+        LanguageShortName = languageShortName;
+        Description = description;
     }
-
-    public CompanyRoleId Id { get; private set; }
-
-    [MaxLength(255)]
-    public string Label { get; private set; } = null!;
 
     public Guid UserRoleCollectionId { get; private set; }
 
-    public bool IsRegistrationRole { get; private set; }
+    [StringLength(2, MinimumLength = 2)]
+    public string LanguageShortName { get; private set; }
 
-    // Navigation properties
-    public virtual UserRoleCollection UserRoleCollection { get; set; } = null!;
-    public virtual ICollection<AgreementAssignedCompanyRole> AgreementAssignedCompanyRoles { get; private set; }
-    public virtual ICollection<Company> Companies { get; private set; }
-    public virtual ICollection<CompanyRoleDescription> CompanyRoleDescriptions { get; private set; }
+    [MaxLength(255)]
+    public string Description { get; set; }
+
+    public virtual UserRoleCollection? UserRoleCollection { get; private set; }
+    public virtual Language? Language { get; private set; }
 }

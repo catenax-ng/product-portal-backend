@@ -60,7 +60,7 @@ public class CompanyRolesRepository : ICompanyRolesRepository
     public IAsyncEnumerable<AgreementsAssignedCompanyRoleData> GetAgreementAssignedCompanyRolesUntrackedAsync(IEnumerable<CompanyRoleId> companyRoleIds) =>
         _dbContext.CompanyRoles
             .AsNoTracking()
-            .Where(companyRole => companyRoleIds.Contains(companyRole.Id))
+            .Where(companyRole => companyRole.IsRegistrationRole && companyRoleIds.Contains(companyRole.Id))
             .Select(companyRole => new AgreementsAssignedCompanyRoleData(
                 companyRole.Id,
                 companyRole.AgreementAssignedCompanyRoles!.Select(agreementAssignedCompanyRole => agreementAssignedCompanyRole.AgreementId)
@@ -84,6 +84,7 @@ public class CompanyRolesRepository : ICompanyRolesRepository
     {
         await foreach (var role in _dbContext.CompanyRoles
             .AsNoTracking()
+            .Where(companyRole => companyRole.IsRegistrationRole)
             .Select(companyRole => new
             {
                 Id = companyRole.Id,
@@ -104,6 +105,7 @@ public class CompanyRolesRepository : ICompanyRolesRepository
     public IAsyncEnumerable<CompanyRolesDetails> GetCompanyRolesAsync(string? languageShortName = null) =>
         _dbContext.CompanyRoles
             .AsNoTracking()
+            .Where(companyRole => companyRole.IsRegistrationRole)
             .Select(companyRole => new CompanyRolesDetails(
                 companyRole.Label,
                 companyRole.CompanyRoleDescriptions.SingleOrDefault(desc =>
