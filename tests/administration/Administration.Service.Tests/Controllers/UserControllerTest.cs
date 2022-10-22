@@ -52,14 +52,14 @@ public class UserControllerTest
         //Arrange
         var appId = new Guid("8d4bfde6-978f-4d82-86ce-8d90d52fbf3f");
         var userRoleInfo = new UserRoleInfo(CompanyUserId, new[] { "Company Admin" });
-        A.CallTo(() => _logic.ModifyUserRoleAsync(A<Guid>._, A<UserRoleInfo>._, A<string>._))
+        A.CallTo(() => _logic.ModifyOfferUserRolesAsync(A<Guid>._, A<UserRoleInfo>._, A<string>._))
                   .ReturnsLazily(() => new List<UserRoleWithId>());
 
         //Act
-        var result = await this._controller.ModifyUserRolesAsync(appId, userRoleInfo).ConfigureAwait(false);
+        var result = await this._controller.ModifyOfferUserRolesAsync(appId, userRoleInfo).ConfigureAwait(false);
 
         //Assert
-        A.CallTo(() => _logic.ModifyUserRoleAsync(A<Guid>.That.Matches(x => x == appId), A<UserRoleInfo>.That.Matches(x => x.CompanyUserId == CompanyUserId && x.Roles.Count() == 1), A<string>.That.Matches(x => x == IamUserId))).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _logic.ModifyOfferUserRolesAsync(A<Guid>.That.Matches(x => x == appId), A<UserRoleInfo>.That.Matches(x => x.CompanyUserId == CompanyUserId && x.Roles.Count() == 1), A<string>.That.Matches(x => x == IamUserId))).MustHaveHappenedOnceExactly();
         Assert.IsType<List<UserRoleWithId>>(result);
         result.Should().BeEmpty();
     }

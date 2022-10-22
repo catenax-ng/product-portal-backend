@@ -411,8 +411,8 @@ public class UserController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<UserRoleWithId>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public Task<IEnumerable<UserRoleWithId>> ModifyUserRolesAsync([FromRoute] Guid appId, [FromBody] UserRoleInfo userRoleInfo) =>
-        this.WithIamUserId(adminUserId => _logic.ModifyUserRoleAsync(appId, userRoleInfo, adminUserId));
+    public Task<IEnumerable<UserRoleWithId>> ModifyOfferUserRolesAsync([FromRoute] Guid appId, [FromBody] UserRoleInfo userRoleInfo) =>
+        this.WithIamUserId(adminUserId => _logic.ModifyOfferUserRolesAsync(appId, userRoleInfo, adminUserId));
 
     /// <summary>
     /// Delete BPN assigned to user from DB and Keycloack.

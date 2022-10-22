@@ -262,16 +262,26 @@ public class RegistrationBusinessLogic : IRegistrationBusinessLogic
             true
         );
 
-        var userCreationInfoIdps = new [] { new UserCreationInfoIdp(
+        IEnumerable<UserRoleData>? userRoleDatas = null;
+
+        if (userCreationInfo.Roles.Any())
+        {
+            var clientRoles = new Dictionary<string,IEnumerable<string>> {
+                { _settings.KeyCloakClientID, userCreationInfo.Roles }
+            };
+            userRoleDatas = await _userProvisioningService.GetRoleDatas(clientRoles).ToListAsync().ConfigureAwait(false);
+        }
+
+        var userCreationInfoIdps = new [] { new UserCreationRoleDataIdpInfo(
             userCreationInfo.firstName ?? "",
             userCreationInfo.lastName ?? "",
             userCreationInfo.eMail,
-            userCreationInfo.Roles,
+            userRoleDatas ?? Enumerable.Empty<UserRoleData>(),
             userCreationInfo.userName ?? userCreationInfo.eMail,
             ""
         )}.ToAsyncEnumerable();
 
-        var (companyUserId, _, password, error) = await _userProvisioningService.CreateOwnCompanyIdpUsersAsync(companyNameIdpAliasData, _settings.KeyCloakClientID, userCreationInfoIdps).SingleAsync().ConfigureAwait(false);
+        var (companyUserId, _, password, error) = await _userProvisioningService.CreateOwnCompanyIdpUsersAsync(companyNameIdpAliasData, userCreationInfoIdps).SingleAsync().ConfigureAwait(false);
 
         if (error != null)
         {
