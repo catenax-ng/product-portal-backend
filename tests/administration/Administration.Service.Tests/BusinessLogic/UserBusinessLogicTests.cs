@@ -66,7 +66,7 @@ public class UserBusinessLogicTests
     private readonly Func<CompanyUser,CompanyUser> _companyUserSelectFunction;
     private readonly Exception _error;
     private readonly Random _random;
-
+    private readonly UserSettings _settings;
     public UserBusinessLogicTests()
     {
         _fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { ConfigureMembers = true });
@@ -99,8 +99,13 @@ public class UserBusinessLogicTests
 
         _processLine = A.Fake<Func<UserCreationInfoIdp,(Guid CompanyUserId, string UserName, string? Password, Exception? Error)>>();
         _companyUserSelectFunction = A.Fake<Func<CompanyUser,CompanyUser>>();
-
+        _settings = A.Fake<UserSettings>();
         _error = _fixture.Create<TestException>();
+        _settings.CompanyUserStatusIds = new List<CompanyUserStatusId>
+        {
+            CompanyUserStatusId.ACTIVE,
+            CompanyUserStatusId.INACTIVE
+        };
     }
 
     #region CreateOwnCompanyUsersAsync
@@ -1015,11 +1020,11 @@ public class UserBusinessLogicTests
                 .With(x => x.CompanyUserId, _companyUserId)
                 .Create());
 
-        A.CallTo(() => _userRolesRepository.GetCompanyUserRolesIamUsersAsync(A<IEnumerable<Guid>>._,A<Guid>._))
+        A.CallTo(() => _userRolesRepository.GetCompanyUserRolesIamUsersAsync(A<IEnumerable<Guid>>._,A<Guid>._,A<IEnumerable<CompanyUserStatusId>>._))
             .Returns(Enumerable.Empty<CompanyUser>().ToAsyncEnumerable());
-        A.CallTo(() => _userRolesRepository.GetCompanyUserRolesIamUsersAsync(A<IEnumerable<Guid>>._,A<Guid>.That.IsEqualTo(_companyUserId)))
-            .ReturnsLazily((IEnumerable<Guid> companyUserIds, Guid adminId) =>
-                companyUserIds.Select(id => _fixture.Build<CompanyUser>().With(x => x.Id, id).Create())
+        A.CallTo(() => _userRolesRepository.GetCompanyUserRolesIamUsersAsync(A<IEnumerable<Guid>>._, A<Guid>.That.IsEqualTo(_companyUserId), A<IEnumerable<CompanyUserStatusId>>._))
+            .ReturnsLazily((IEnumerable<Guid> companyUserIds, Guid adminId, IEnumerable<CompanyUserStatusId> companyUserStatuses) =>
+                companyUserIds.Select(id => _fixture.Build<CompanyUser>().With(x => x.Id, id).With(x=>x.CompanyUserStatus).Create())
                     .Select(u => _companyUserSelectFunction(u))
                     .ToAsyncEnumerable());
         A.CallTo(() => _companyUserSelectFunction(A<CompanyUser>._)).ReturnsLazily(

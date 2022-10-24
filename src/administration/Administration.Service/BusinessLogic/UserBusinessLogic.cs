@@ -373,7 +373,7 @@ public class UserBusinessLogic : IUserBusinessLogic
         }
         var (iamIdpAlias, adminUserId) = iamIdpAliasData;
 
-        await foreach (var companyUser in _portalRepositories.GetInstance<IUserRolesRepository>().GetCompanyUserRolesIamUsersAsync(companyUserIds, adminUserId).ConfigureAwait(false))
+        await foreach (var companyUser in _portalRepositories.GetInstance<IUserRolesRepository>().GetCompanyUserRolesIamUsersAsync(companyUserIds, adminUserId, _settings.CompanyUserStatusIds).ConfigureAwait(false))
         {
             var success = false;
             try

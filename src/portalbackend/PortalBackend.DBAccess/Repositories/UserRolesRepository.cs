@@ -23,6 +23,7 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Microsoft.EntityFrameworkCore;
 using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
+using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 
@@ -66,10 +67,10 @@ public class UserRolesRepository : IUserRolesRepository
                 userRoleId
             )).Entity;
 
-    public IAsyncEnumerable<CompanyUser> GetCompanyUserRolesIamUsersAsync(IEnumerable<Guid> companyUserIds, Guid companyUserId) =>
+    public IAsyncEnumerable<CompanyUser> GetCompanyUserRolesIamUsersAsync(IEnumerable<Guid> companyUserIds, Guid companyUserId, IEnumerable<CompanyUserStatusId> companyUserStatus) =>
         _dbContext.Companies
             .Where(company => company.CompanyUsers.Any(cu => cu.Id == companyUserId))
-            .SelectMany(company => company.CompanyUsers.Where(companyUser => companyUserIds.Contains(companyUser.Id)))
+            .SelectMany(company => company.CompanyUsers.Where(companyUser => companyUserIds.Contains(companyUser.Id) && companyUserStatus.Contains(companyUser.CompanyUserStatusId)))
             .Include(companyUser => companyUser.CompanyUserAssignedRoles)
             .Include(companyUser => companyUser.IamUser)
             .AsAsyncEnumerable();
