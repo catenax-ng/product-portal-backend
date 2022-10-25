@@ -37,7 +37,7 @@ public class UserSettings
     public int ApplicationsMaxPageSize { get; set; }
 
     /// <summary>
-    /// Document Type Id
+    /// Company User Status Id
     /// </summary>
     /// <value></value>
     [Required]
