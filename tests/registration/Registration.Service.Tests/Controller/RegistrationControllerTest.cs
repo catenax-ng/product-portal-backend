@@ -33,13 +33,11 @@ public class RegistrationControllerTest
     private readonly IFixture _fixture;
     private readonly RegistrationController controller;
     private readonly IRegistrationBusinessLogic registrationBusineesLogicFake;
-    private readonly ILogger<RegistrationController> registrationLoggerFake;
     public RegistrationControllerTest()
     {
         _fixture = new Fixture();
         registrationBusineesLogicFake = A.Fake<IRegistrationBusinessLogic>();
-        registrationLoggerFake = A.Fake<ILogger<RegistrationController>>();
-        this.controller = new RegistrationController(registrationLoggerFake, registrationBusineesLogicFake);
+        this.controller = new RegistrationController(registrationBusineesLogicFake);
     }
 
     [Fact]

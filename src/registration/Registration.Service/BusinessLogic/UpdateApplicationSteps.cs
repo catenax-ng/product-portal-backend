@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.Registration.Service.BusinessLogic;
 
-public enum UpdateApplicationSteps : int
+public enum UpdateApplicationSteps
 {
     CompanyWithAddress = 1,
     CompanyRoleAgreementConsents = 2,

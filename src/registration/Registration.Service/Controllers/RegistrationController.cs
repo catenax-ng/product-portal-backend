@@ -39,17 +39,14 @@ namespace Org.CatenaX.Ng.Portal.Backend.Registration.Service.Controllers
     [Consumes("application/json")]
     public class RegistrationController : ControllerBase
     {
-        private readonly ILogger<RegistrationController> _logger;
         private readonly IRegistrationBusinessLogic _registrationBusinessLogic;
 
         /// <summary>
         /// Creates a new instance of <see cref="RegistrationController"/>
         /// </summary>
-        /// <param name="logger">The logger</param>
         /// <param name="registrationBusinessLogic">Access to the business logic</param>
-        public RegistrationController(ILogger<RegistrationController> logger, IRegistrationBusinessLogic registrationBusinessLogic)
+        public RegistrationController(IRegistrationBusinessLogic registrationBusinessLogic)
         {
-            _logger = logger;
             _registrationBusinessLogic = registrationBusinessLogic;
         }
 

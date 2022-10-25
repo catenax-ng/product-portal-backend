@@ -335,7 +335,7 @@ public class RegistrationBusinessLogic : IRegistrationBusinessLogic
 
             userBusinessPartnersRepository.CreateCompanyUserAssignedBusinessPartner(userData.CompanyUserId, businessPartnerNumber);
             await _provisioningManager
-                .AddBpnAttributetoUserAsync(userData.UserEntityId, Enumerable.Repeat(businessPartnerNumber, 1))
+                .AddBpnAttributeToUserAsync(userData.UserEntityId, Enumerable.Repeat(businessPartnerNumber, 1))
                 .ConfigureAwait(false);
         }
 

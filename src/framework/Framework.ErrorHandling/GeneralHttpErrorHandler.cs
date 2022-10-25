@@ -136,14 +136,15 @@ public class GeneralHttpErrorHandler
         );
     }
 
-    private class MetaData
+    private sealed class MetaData
     {
         public MetaData(string url, string description)
         {
             Url = url;
             Description = description;
         }
-        public string Url;
-        public string Description;
+
+        public string Url { get; }
+        public string Description { get; }
     }
 }

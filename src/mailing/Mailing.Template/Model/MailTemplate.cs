@@ -18,19 +18,18 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-namespace Org.CatenaX.Ng.Portal.Backend.Mailing.Template.Model
+namespace Org.CatenaX.Ng.Portal.Backend.Mailing.Template.Model;
+
+public class MailTemplate
 {
-    public class MailTemplate
+    public MailTemplate(string id, string subject, string body)
     {
-        public MailTemplate(string id, string subject, string body)
-        {
-            Id = id;
-            Subject = subject;
-            Body = body;
-        }
-        
-        public string Id { get; }
-        public string Subject { get; }
-        public string Body { get; }
+        Id = id;
+        Subject = subject;
+        Body = body;
     }
+        
+    public string Id { get; }
+    public string Subject { get; }
+    public string Body { get; }
 }

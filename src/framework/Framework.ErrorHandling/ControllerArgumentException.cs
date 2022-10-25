@@ -33,7 +33,7 @@ public class ControllerArgumentException : Exception
     }
 
     public ControllerArgumentException(string message, string paramName)
-        : base(String.Format("{0} (Parameter '{1}')", message, paramName))
+        : base($"{message} (Parameter '{paramName}')")
     {
         ParamName = paramName;
     }

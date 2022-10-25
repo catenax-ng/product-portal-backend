@@ -27,7 +27,8 @@ namespace Org.CatenaX.Ng.Portal.Backend.Provisioning.Library.Models
             this.RedirectUri = RedirectUri;
             this.JwksUrl = JwksUrl;
         }
-        public string RedirectUri;
-        public string JwksUrl;
+
+        public string RedirectUri { get; }
+        public string JwksUrl { get; }
     }
 }

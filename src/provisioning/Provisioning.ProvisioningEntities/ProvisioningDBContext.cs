@@ -39,10 +39,6 @@ namespace Org.CatenaX.Ng.Portal.Backend.Provisioning.ProvisioningEntities
         public virtual DbSet<IdentityProviderSequence> IdentityProviderSequences { get; set; }
         public virtual DbSet<UserPasswordReset> UserPasswordResets { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "en_US.utf8");
@@ -86,10 +82,6 @@ namespace Org.CatenaX.Ng.Portal.Backend.Provisioning.ProvisioningEntities
                     .HasColumnName("reset_count")
                     .HasDefaultValue(0);
             });
-
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

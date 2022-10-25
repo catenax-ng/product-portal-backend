@@ -27,30 +27,29 @@ public static class AsyncGroupByExtensions
         var enumerator = Data.GetAsyncEnumerator();
 
         bool hasNext = await enumerator.MoveNextAsync().ConfigureAwait(false);
-        if (hasNext)
+        if (!hasNext) yield break;
+
+        var key = KeySelector(enumerator.Current);
+        TKey nextKey = default!;
+        while(true)
         {
-            var key = KeySelector(enumerator.Current);
-            TKey nextKey = default!;
-            while(true)
+            var values = new LinkedList<TElement>();
+            do
             {
-                var values = new LinkedList<TElement>();
-                do
+                values.AddLast(ElementSelector(enumerator.Current));
+                hasNext = await enumerator.MoveNextAsync().ConfigureAwait(false);
+                if (hasNext)
                 {
-                    values.AddLast(ElementSelector(enumerator.Current));
-                    hasNext = await enumerator.MoveNextAsync().ConfigureAwait(false);
-                    if (hasNext)
-                    {
-                        nextKey = KeySelector(enumerator.Current);
-                    }
+                    nextKey = KeySelector(enumerator.Current);
                 }
-                while(hasNext && nextKey.Equals(key));
-                yield return new Grouping<TKey,TElement>(key, values);
-                if (!hasNext)
-                {
-                    yield break;
-                }
-                key = nextKey;
             }
+            while(hasNext && nextKey.Equals(key));
+            yield return new Grouping<TKey,TElement>(key, values);
+            if (!hasNext)
+            {
+                yield break;
+            }
+            key = nextKey;
         }
         yield break;
     }

@@ -287,11 +287,11 @@ public class RegistrationBusinessLogicTest
         A.CallTo(() => _provisioningManager.AssignClientRolesToCentralUserAsync(CentralUserId3.ToString(), clientRoleNames))
             .Returns(Task.FromResult(clientRoleNames));
 
-        A.CallTo(() => _provisioningManager.AddBpnAttributetoUserAsync(CentralUserId1.ToString(), businessPartnerNumbers))
+        A.CallTo(() => _provisioningManager.AddBpnAttributeToUserAsync(CentralUserId1.ToString(), businessPartnerNumbers))
             .Returns(Task.CompletedTask);
-        A.CallTo(() => _provisioningManager.AddBpnAttributetoUserAsync(CentralUserId2.ToString(), businessPartnerNumbers))
+        A.CallTo(() => _provisioningManager.AddBpnAttributeToUserAsync(CentralUserId2.ToString(), businessPartnerNumbers))
             .Returns(Task.CompletedTask);
-        A.CallTo(() => _provisioningManager.AddBpnAttributetoUserAsync(CentralUserId3.ToString(), businessPartnerNumbers))
+        A.CallTo(() => _provisioningManager.AddBpnAttributeToUserAsync(CentralUserId3.ToString(), businessPartnerNumbers))
             .Returns(Task.CompletedTask);
 
         A.CallTo(() => _rolesRepository.CreateCompanyUserAssignedRole(CompanyUserId1, CompanyUserRoleId))

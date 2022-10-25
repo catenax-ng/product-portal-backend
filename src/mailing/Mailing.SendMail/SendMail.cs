@@ -23,45 +23,38 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using MailKit.Net.Proxy;
 
-namespace Org.CatenaX.Ng.Portal.Backend.Mailing.SendMail
+namespace Org.CatenaX.Ng.Portal.Backend.Mailing.SendMail;
+
+public class SendMail : ISendMail
 {
-    public class SendMail : ISendMail
+    private readonly MailSettings _mailSettings;
+
+    public SendMail(IOptions<MailSettings> mailSettings)
     {
-        private MailSettings _MailSettings;
+        _mailSettings = mailSettings.Value;
+    }
 
-        public SendMail(IOptions<MailSettings> mailSettings)
-        {
-            _MailSettings = mailSettings.Value;
-        }
+    Task ISendMail.Send(string sender, string recipient, string subject, string body, bool useHtml)
+    {
+        var message = new MimeMessage();
+        message.From.Add(MailboxAddress.Parse(sender));
+        message.To.Add(MailboxAddress.Parse(recipient));
+        message.Subject = subject;
+        message.Body = useHtml ? 
+            new TextPart("html") { Text = body } :
+            new TextPart("plain") { Text = body };
+        return _send(message);
+    }
 
-        Task ISendMail.Send(string sender, string recipient, string subject, string body, bool useHtml)
-        {
-            var message = new MimeMessage();
-            message.From.Add(MailboxAddress.Parse(sender));
-            message.To.Add(MailboxAddress.Parse(recipient));
-            message.Subject = subject;
-            if(useHtml)
-            {
-                message.Body = new TextPart("html") { Text = body };
-            }
-            else
-            {
-                message.Body = new TextPart("plain") { Text = body };
-            }
-            return _send(message);
+    private async Task _send(MimeMessage message)
+    {
+        using var client = new SmtpClient();
+        if (_mailSettings.HttpProxy != null) {
+            client.ProxyClient = new HttpProxyClient(_mailSettings.HttpProxy, _mailSettings.HttpProxyPort);
         }
-
-        private async Task _send(MimeMessage message)
-        {
-            using (var client = new SmtpClient()) {
-                if (_MailSettings.HttpProxy != null) {
-                    client.ProxyClient = new HttpProxyClient(_MailSettings.HttpProxy, _MailSettings.HttpProxyPort);
-                }
-                await client.ConnectAsync(_MailSettings.SmtpHost, _MailSettings.SmtpPort);
-                await client.AuthenticateAsync(_MailSettings.SmtpUser, _MailSettings.SmtpPassword);
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-            }
-        }
+        await client.ConnectAsync(_mailSettings.SmtpHost, _mailSettings.SmtpPort);
+        await client.AuthenticateAsync(_mailSettings.SmtpUser, _mailSettings.SmtpPassword);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
     }
 }

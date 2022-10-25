@@ -283,7 +283,7 @@ public class UserBusinessLogic : IUserBusinessLogic
         }
 
         var businessPartnerRepository = _portalRepositories.GetInstance<IUserBusinessPartnerRepository>();
-        await _provisioningManager.AddBpnAttributetoUserAsync(user.UserEntityId, businessPartnerNumbers).ConfigureAwait(false);
+        await _provisioningManager.AddBpnAttributeToUserAsync(user.UserEntityId, businessPartnerNumbers).ConfigureAwait(false);
         foreach (var businessPartnerToAdd in businessPartnerNumbers.Except(user.AssignedBusinessPartnerNumbers))
         {
             businessPartnerRepository.CreateCompanyUserAssignedBusinessPartner(companyUserId, businessPartnerToAdd);
@@ -433,7 +433,7 @@ public class UserBusinessLogic : IUserBusinessLogic
         {
             try
             {
-                await _provisioningManager.AddBpnAttributetoUserAsync(user.UserId, user.BusinessPartnerNumbers).ConfigureAwait(false);
+                await _provisioningManager.AddBpnAttributeToUserAsync(user.UserId, user.BusinessPartnerNumbers).ConfigureAwait(false);
             }
             catch (Exception e)
             {

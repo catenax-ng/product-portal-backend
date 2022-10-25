@@ -139,7 +139,7 @@ public partial class ProvisioningManager : IProvisioningManager
         return clientId;
     }
 
-    public async Task AddBpnAttributetoUserAsync(string userId, IEnumerable<string> bpns)
+    public async Task AddBpnAttributeToUserAsync(string userId, IEnumerable<string> bpns)
     {
         var user = await _CentralIdp.GetUserAsync(_Settings.CentralRealm, userId).ConfigureAwait(false);
         user.Attributes ??= new Dictionary<string, IEnumerable<string>>();

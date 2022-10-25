@@ -99,7 +99,7 @@ public class Pagination
                 count,
                 count / size + Math.Clamp(count % size, 0, 1),
                 page,
-                data.Count()),
+                data.Count),
             data);
     }
 
