@@ -32,7 +32,7 @@ public class CompanyInvitedUserData
 
     public Guid CompanyUserId { get; set; }
     public string UserEntityId { get; set; }
-    public IEnumerable<string> BusinessPartnerNumbers;
-    public IEnumerable<Guid> RoleIds;
+    public IEnumerable<string> BusinessPartnerNumbers { get; set; }
+    public IEnumerable<Guid> RoleIds { get; set; }
 
 }

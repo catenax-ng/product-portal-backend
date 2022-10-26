@@ -74,7 +74,7 @@ public class IdentityProviderRepository : IIdentityProviderRepository
     public Task<IdpUser?> GetIdpCategoryIdByUserIdAsync(Guid companyUserId, string adminUserId) =>
         _context.CompanyUsers.AsNoTracking()
             .Where(companyUser => companyUser.Id == companyUserId
-                && companyUser.Company!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == adminUserId))
+                && companyUser.Company!.CompanyUsers.Any(cu => cu.IamUser!.UserEntityId == adminUserId))
             .Select(companyUser => new IdpUser
             {
                 TargetIamUserId = companyUser.IamUser!.UserEntityId,
@@ -174,7 +174,7 @@ public class IdentityProviderRepository : IIdentityProviderRepository
                     .Where(identityProvider => identityProvider.Id == identityProviderId)
                     .Select(identityProvider => identityProvider.IamIdentityProvider!.IamIdpAlias)
                     .SingleOrDefault(),
-                companyUser.Company!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUserId)))
+                companyUser.Company!.CompanyUsers.Any(cu => cu.IamUser!.UserEntityId == iamUserId)))
             .SingleOrDefaultAsync();
 
     public Task<((Guid CompanyId, string? CompanyName, string? BusinessPartnerNumber) Company,
@@ -204,8 +204,8 @@ public class IdentityProviderRepository : IIdentityProviderRepository
             .AsNoTracking()
             .Where(iamUser => iamUser.UserEntityId == iamUserId)
             .Select(iamUser => new {
-                Company = iamUser!.CompanyUser!.Company,
-                CompanyUser = iamUser.CompanyUser,
+                iamUser!.CompanyUser!.Company,
+                iamUser.CompanyUser,
                 IdentityProvider = iamUser!.CompanyUser!.Company!.IdentityProviders.SingleOrDefault(identityProvider => identityProvider.Id == identityProviderId)
             })
             .Select(s => new ValueTuple<Guid,string?,string?,Guid,string?,bool>(
@@ -223,8 +223,8 @@ public class IdentityProviderRepository : IIdentityProviderRepository
             .AsNoTracking()
             .Where(iamUser => iamUser.UserEntityId == iamUserId)
             .Select(iamUser => new {
-                Company = iamUser!.CompanyUser!.Company,
-                CompanyUser = iamUser.CompanyUser,
+                iamUser!.CompanyUser!.Company,
+                iamUser.CompanyUser,
                 IdentityProvider = iamUser!.CompanyUser!.Company!.IdentityProviders.SingleOrDefault(identityProvider => identityProvider.IdentityProviderCategoryId == IdentityProviderCategoryId.KEYCLOAK_SHARED)
             })
             .Select(s => new ValueTuple<Guid,string?,string?,Guid,string?>(

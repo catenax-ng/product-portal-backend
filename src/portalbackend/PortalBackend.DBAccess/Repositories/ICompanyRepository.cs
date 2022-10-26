@@ -55,7 +55,7 @@ public interface ICompanyRepository
     /// Get all member companies bpn
     /// </summary>
     /// <returns> Business partner numbers of all active companies</returns>
-    IAsyncEnumerable<string?> GetAllMemberCompaniesBPNAsync();
+    IAsyncEnumerable<string?> GetAllMemberCompaniesBpnAsync();
     Task<CompanyWithAddress?> GetOwnCompanyDetailsAsync(string iamUserId);
 
     /// <summary>
@@ -80,6 +80,7 @@ public interface ICompanyRepository
     /// Gets the service provider company details data
     /// </summary>
     /// <param name="serviceProviderDetailDataId">Id of the details</param>
+    /// <param name="companyRoleId">Id of the companyRole</param>
     /// <param name="iamUserId">Id of the iam user</param>
     /// <returns>Returns the details data</returns>
     Task<(ServiceProviderDetailReturnData ServiceProviderDetailReturnData, bool IsServiceProviderCompany, bool IsCompanyUser)> GetServiceProviderCompanyDetailAsync(Guid serviceProviderDetailDataId, CompanyRoleId companyRoleId, string iamUserId);

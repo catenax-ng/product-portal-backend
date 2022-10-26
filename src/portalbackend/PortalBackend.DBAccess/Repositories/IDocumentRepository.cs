@@ -57,11 +57,12 @@ public interface IDocumentRepository
     /// <param name="iamUserId">Id of the user</param>
     /// <returns>A collection of documents</returns>
     IAsyncEnumerable<UploadDocuments> GetUploadedDocumentsAsync(Guid applicationId, DocumentTypeId documentTypeId, string iamUserId);
-    
+
     /// <summary>
     /// Gets the documents userid by the document id
     /// </summary>
     /// <param name="documentId">id of the document the user id should be selected for</param>
+    /// <param name="iamUserId">Id of the iam user</param>
     /// <returns>Returns the user id if a document is found for the given id, otherwise null</returns>
     Task<(Guid DocumentId, bool IsSameUser)> GetDocumentIdCompanyUserSameAsIamUserAsync(Guid documentId, string iamUserId);
 

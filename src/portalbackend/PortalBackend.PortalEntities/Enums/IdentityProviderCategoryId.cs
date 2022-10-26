@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum IdentityProviderCategoryId : int
+public enum IdentityProviderCategoryId
 {
     KEYCLOAK_SHARED = 1,
     KEYCLOAK_OIDC = 2,

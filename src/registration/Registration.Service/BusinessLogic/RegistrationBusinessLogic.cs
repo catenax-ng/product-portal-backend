@@ -155,7 +155,7 @@ public class RegistrationBusinessLogic : IRegistrationBusinessLogic
 
     public async Task<CompanyWithAddress> GetCompanyWithAddressAsync(Guid applicationId)
     {
-        var result = await _portalRepositories.GetInstance<IApplicationRepository>().GetCompanyWithAdressUntrackedAsync(applicationId).ConfigureAwait(false);
+        var result = await _portalRepositories.GetInstance<IApplicationRepository>().GetCompanyWithAddressUntrackedAsync(applicationId).ConfigureAwait(false);
         if (result == null)
         {
             throw new NotFoundException($"CompanyApplication {applicationId} not found");
@@ -181,7 +181,7 @@ public class RegistrationBusinessLogic : IRegistrationBusinessLogic
         {
             throw new ArgumentException("CountryAlpha2Code must be 2 chars");
         }
-        var companyApplicationData = await _portalRepositories.GetInstance<IApplicationRepository>().GetCompanyApplicationWithCompanyAdressUserDataAsync(applicationId, companyWithAddress.CompanyId, iamUserId).ConfigureAwait(false);
+        var companyApplicationData = await _portalRepositories.GetInstance<IApplicationRepository>().GetCompanyApplicationWithCompanyAddressUserDataAsync(applicationId, companyWithAddress.CompanyId, iamUserId).ConfigureAwait(false);
         if (companyApplicationData == null)
         {
             throw new NotFoundException($"CompanyApplication {applicationId} for CompanyId {companyWithAddress.CompanyId} not found");

@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum CompanyRoleId : int
+public enum CompanyRoleId
 {
     ACTIVE_PARTICIPANT = 1,
     APP_PROVIDER = 2,

@@ -96,7 +96,7 @@ public class CompanyRepository : ICompanyRepository
         .Select(company => company.Id)
         .SingleOrDefaultAsync();
 
-    public IAsyncEnumerable<string?> GetAllMemberCompaniesBPNAsync() =>
+    public IAsyncEnumerable<string?> GetAllMemberCompaniesBpnAsync() =>
         _context.Companies
             .AsNoTracking()
             .Where(company => company.CompanyStatusId == CompanyStatusId.ACTIVE)

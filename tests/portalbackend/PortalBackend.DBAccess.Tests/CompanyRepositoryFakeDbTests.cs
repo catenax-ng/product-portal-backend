@@ -118,7 +118,7 @@ public class CompanyRepositoryFakeDbTests
         var sut = _fixture.Create<CompanyRepository>();
 
         // Act
-        var results = await sut.GetAllMemberCompaniesBPNAsync().ToListAsync();
+        var results = await sut.GetAllMemberCompaniesBpnAsync().ToListAsync();
 
         // Assert
         results.Should().NotBeNullOrEmpty();

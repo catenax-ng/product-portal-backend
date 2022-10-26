@@ -83,7 +83,7 @@ public class NotificationRepository : INotificationRepository
         _dbContext.Notifications
             .AsNoTracking()
             .Where(notification => notification.Id == notificationId)
-            .Select(notification => ((bool IsUserReceiver, NotificationDetailData NotificationDetailData)) new (
+            .Select(notification => new ValueTuple<bool, NotificationDetailData>(
                 notification.Receiver!.IamUser!.UserEntityId == iamUserId,
                 new NotificationDetailData(
                     notification.Id,
@@ -99,7 +99,7 @@ public class NotificationRepository : INotificationRepository
         _dbContext.CompanyUsers
             .AsNoTracking()
             .Where(companyUser => companyUser.IamUser!.UserEntityId == iamUserId)
-            .Select(companyUser => ((bool IsUserExisting, int Count)) new (
+            .Select(companyUser => new ValueTuple<bool, int>(
                 true,
                 companyUser.Notifications
                     .Count(notification => isRead.HasValue ? notification.IsRead == isRead.Value : true)))
@@ -110,7 +110,7 @@ public class NotificationRepository : INotificationRepository
         _dbContext.Notifications
             .AsNoTracking()
             .Where(notification => notification.Id == notificationId)
-            .Select(notification => ((bool IsUserReceiver, bool IsNotificationExisting)) new (
+            .Select(notification => new ValueTuple<bool, bool>(
                 notification.Receiver!.IamUser!.UserEntityId == iamUserId,
                 true))
             .SingleOrDefaultAsync();

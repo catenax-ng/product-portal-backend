@@ -33,7 +33,7 @@ public class CompanyServiceAccountWithRoleDataClientId
     }
     
     public CompanyServiceAccount CompanyServiceAccount { get; set; }
-    public string ClientId;
+    public string ClientId { get; set; }
     public string ClientClientId { get; set; }
     public IEnumerable<UserRoleData> UserRoleDatas { get; set; }
 }

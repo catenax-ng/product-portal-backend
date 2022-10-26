@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum ConsentStatusId : int
+public enum ConsentStatusId
 {
     ACTIVE = 1,
     INACTIVE = 2

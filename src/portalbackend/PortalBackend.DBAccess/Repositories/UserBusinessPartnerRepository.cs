@@ -53,10 +53,10 @@ public class UserBusinessPartnerRepository : IUserBusinessPartnerRepository
         _dbContext.CompanyUsers
             .AsNoTracking()
             .Where(companyUser => companyUser.Id == companyUserId)
-            .Select(companyUser => ((string? UserEntityId, CompanyUserAssignedBusinessPartner? AssignedBusinessPartner, bool IsValidUser)) new (
+            .Select(companyUser => new ValueTuple<string?, CompanyUserAssignedBusinessPartner?, bool>(
                 companyUser.IamUser!.UserEntityId,
-                companyUser.CompanyUserAssignedBusinessPartners!.SingleOrDefault(assignedPartner => assignedPartner.BusinessPartnerNumber == businessPartnerNumber),
-                companyUser.Company!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == adminUserId)
+                companyUser.CompanyUserAssignedBusinessPartners.SingleOrDefault(assignedPartner => assignedPartner.BusinessPartnerNumber == businessPartnerNumber),
+                companyUser.Company!.CompanyUsers.Any(cu => cu.IamUser!.UserEntityId == adminUserId)
             ))
             .SingleOrDefaultAsync();
 }

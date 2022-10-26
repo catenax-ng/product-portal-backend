@@ -94,13 +94,13 @@ public class ServiceAccountRepository : IServiceAccountRepository
             .Include(serviceAccount => serviceAccount.CompanyServiceAccountAssignedRoles)
             .SingleOrDefaultAsync();
 
-    public Task<CompanyServiceAccountDetailedData?> GetOwnCompanyServiceAccountDetailedDataUntrackedAsync(Guid serviceAccountId, string adminUserId) =>
+    public Task<CompanyServiceAccountDetailedData?> GetOwnCompanyServiceAccountDetailedDataUntrackedAsync(Guid serviceAccountId, string iamAdminId) =>
         _dbContext.CompanyServiceAccounts
             .AsNoTracking()
             .Where(serviceAccount =>
                 serviceAccount.Id == serviceAccountId
                 && serviceAccount.CompanyServiceAccountStatusId == CompanyServiceAccountStatusId.ACTIVE
-                && serviceAccount.Company!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == adminUserId))
+                && serviceAccount.Company!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamAdminId))
             .Select(serviceAccount => new CompanyServiceAccountDetailedData(
                     serviceAccount.Id,
                     serviceAccount.IamServiceAccount!.ClientId,
@@ -120,7 +120,7 @@ public class ServiceAccountRepository : IServiceAccountRepository
         _dbContext.Companies
             .AsNoTracking()
             .Where(company =>
-                company!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == adminUserId))
+                company.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == adminUserId))
             .SelectMany(company => company.CompanyServiceAccounts)
             .Where(serviceAccount => serviceAccount.CompanyServiceAccountStatusId == CompanyServiceAccountStatusId.ACTIVE);
 }

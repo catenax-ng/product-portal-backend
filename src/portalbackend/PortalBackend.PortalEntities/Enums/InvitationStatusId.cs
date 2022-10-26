@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum InvitationStatusId : int
+public enum InvitationStatusId
 {
     CREATED = 1,
     PENDING = 2,

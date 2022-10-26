@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum CompanyServiceAccountStatusId : int
+public enum CompanyServiceAccountStatusId
 {
     ACTIVE = 1,
     INACTIVE = 2

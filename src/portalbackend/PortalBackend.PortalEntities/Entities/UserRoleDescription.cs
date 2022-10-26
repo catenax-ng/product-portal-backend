@@ -26,7 +26,6 @@ public class UserRoleDescription
 {
     private UserRoleDescription()
     {
-        UserRoleId = default!;
         LanguageShortName = null!;
         Description = null!;
     }

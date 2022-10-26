@@ -58,7 +58,7 @@ public interface IConsentRepository
     /// Gets the details of the consent
     /// </summary>
     /// <param name="consentId">Id of the Consent</param>
-    /// <param name="offerTypeId">OfferTypeId the consent must be assiciated with</param>
+    /// <param name="offerTypeId">OfferTypeId the consent must be associated with</param>
     /// <returns>Returns the detail data of the consent</returns>
     Task<ConsentDetailData?> GetConsentDetailData(Guid consentId, OfferTypeId offerTypeId);
 }

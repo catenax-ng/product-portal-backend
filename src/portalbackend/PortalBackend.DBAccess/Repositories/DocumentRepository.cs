@@ -61,8 +61,7 @@ public class DocumentRepository : IDocumentRepository
         _dbContext.Documents
             .AsNoTracking()
             .Where(x => x.Id == documentId)
-            .Select(document => ((Guid DocumentId, DocumentStatusId DocumentStatusId, IEnumerable<Guid> ConsentIds, bool IsSameUser))
-                new (document.Id,
+            .Select(document => new ValueTuple<Guid, DocumentStatusId, IEnumerable<Guid>, bool>(document.Id,
                     document.DocumentStatusId,
                     document.Consents.Select(consent => consent.Id),
                     document.CompanyUser!.IamUser!.UserEntityId == iamUserId))
@@ -77,15 +76,15 @@ public class DocumentRepository : IDocumentRepository
             .SelectMany(iamUser => iamUser.CompanyUser!.Documents.Where(docu => docu.DocumentTypeId == documentTypeId && docu.DocumentStatusId != DocumentStatusId.INACTIVE))
             .Select(document =>
                 new UploadDocuments(
-                    document!.Id,
-                    document!.DocumentName))
+                    document.Id,
+                    document.DocumentName))
             .AsAsyncEnumerable();
 
     /// <inheritdoc />
     public Task<(Guid DocumentId, bool IsSameUser)> GetDocumentIdCompanyUserSameAsIamUserAsync(Guid documentId, string iamUserId) =>
         this._dbContext.Documents
             .Where(x => x.Id == documentId)
-            .Select(x => ((Guid DocumentId, bool IsSameUser))new (x.Id, x.CompanyUser!.IamUser!.UserEntityId == iamUserId))
+            .Select(x => new ValueTuple<Guid, bool>(x.Id, x.CompanyUser!.IamUser!.UserEntityId == iamUserId))
             .SingleOrDefaultAsync();
 
     /// <inheritdoc />

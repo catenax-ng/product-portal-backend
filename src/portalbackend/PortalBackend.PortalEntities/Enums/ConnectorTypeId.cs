@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum ConnectorTypeId : int
+public enum ConnectorTypeId
 {
     COMPANY_CONNECTOR = 1,
     CONNECTOR_AS_A_SERVICE = 2

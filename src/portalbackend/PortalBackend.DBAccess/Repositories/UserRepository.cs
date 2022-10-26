@@ -65,9 +65,9 @@ public class UserRepository : IUserRepository
             .Select(company => new RegistrationData(
                 company!.Id,
                 company.Name,
-                company.CompanyAssignedRoles!.Select(companyAssignedRole => companyAssignedRole.CompanyRoleId),
-                company.CompanyUsers.SelectMany(companyUser => companyUser!.Documents!.Select(document => new RegistrationDocumentNames(document.DocumentName))),
-                company.Consents.Where(consent => consent.ConsentStatusId == PortalBackend.PortalEntities.Enums.ConsentStatusId.ACTIVE)
+                company.CompanyAssignedRoles.Select(companyAssignedRole => companyAssignedRole.CompanyRoleId),
+                company.CompanyUsers.SelectMany(companyUser => companyUser.Documents.Select(document => new RegistrationDocumentNames(document.DocumentName))),
+                company.Consents.Where(consent => consent.ConsentStatusId == ConsentStatusId.ACTIVE)
                     .Select(consent => new AgreementConsentStatusForRegistrationData(
                         consent.AgreementId, consent.ConsentStatusId)))
             {
@@ -194,7 +194,7 @@ public class UserRepository : IUserRepository
         _dbContext.IamUsers
             .Where(iamUser => iamUser.UserEntityId == adminUserId)
             .SelectMany(iamUser => iamUser.CompanyUser!.Company!.CompanyUsers)
-            .AnyAsync(companyUser => companyUser!.Email == email);
+            .AnyAsync(companyUser => companyUser.Email == email);
 
     public Task<CompanyUserDetails?> GetOwnCompanyUserDetailsUntrackedAsync(Guid companyUserId, string iamUserId) =>
         _dbContext.CompanyUsers
@@ -282,7 +282,7 @@ public class UserRepository : IUserRepository
     public Task<CompanyUserWithIdpBusinessPartnerData?> GetUserWithCompanyIdpAsync(string iamUserId) =>
         _dbContext.CompanyUsers
             .Where(companyUser => companyUser.IamUser!.UserEntityId == iamUserId
-                                  && companyUser!.Company!.IdentityProviders
+                                  && companyUser.Company!.IdentityProviders
                                       .Any(identityProvider =>
                                           identityProvider.IdentityProviderCategoryId ==
                                           IdentityProviderCategoryId.KEYCLOAK_SHARED))
@@ -361,7 +361,7 @@ public class UserRepository : IUserRepository
                     .Select(x => x!)
             )
             .Select(app => new BusinessAppData(
-                app!.Id,
+                app.Id,
                 app.Name ?? Constants.ErrorString,
                 app.OfferSubscriptions.FirstOrDefault(x => x.OfferId == app.Id) == null ? Constants.ErrorString : app.OfferSubscriptions.First(x => x.OfferId == app.Id).AppSubscriptionDetail!.AppSubscriptionUrl ?? Constants.ErrorString,
                 app.ThumbnailUrl ?? Constants.ErrorString,
@@ -422,9 +422,9 @@ public class UserRepository : IUserRepository
         var regex = new Regex(@"(?=[\%\\_])", RegexOptions.IgnorePatternWhitespace);
 
         firstName = firstName == null ? null : regex.Replace(firstName, @"\"); 
-        lastName = lastName == null ? null : regex.Replace(lastName!, @"\"); 
-        email = email == null ? null : regex.Replace(email!, @"\"); 
-        roleName = roleName == null ? null : regex.Replace(roleName!, @"\");
+        lastName = lastName == null ? null : regex.Replace(lastName, @"\"); 
+        email = email == null ? null : regex.Replace(email, @"\"); 
+        roleName = roleName == null ? null : regex.Replace(roleName, @"\");
 
         return _dbContext.CompanyUsers.AsNoTracking()
             .Where(companyUser => companyUser.UserRoles.Any(userRole => userRole.Offer!.Id == appId) &&

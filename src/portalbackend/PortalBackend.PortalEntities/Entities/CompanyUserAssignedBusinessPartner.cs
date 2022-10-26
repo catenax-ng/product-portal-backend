@@ -30,10 +30,10 @@ public class CompanyUserAssignedBusinessPartner
         BusinessPartnerNumber = businessPartnerNumber;
     }
 
-    public Guid CompanyUserId;
+    public Guid CompanyUserId { get; private set; }
 
     [MaxLength(20)]
-    public string BusinessPartnerNumber;
+    public string BusinessPartnerNumber { get; private set; }
 
     // Navigation properties
     public virtual CompanyUser? CompanyUser { get; set; }

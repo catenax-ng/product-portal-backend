@@ -72,7 +72,7 @@ public class RegistrationBusinessLogic : IRegistrationBusinessLogic
     }
     private async Task<CompanyWithAddress> GetCompanyWithAddressAsyncInternal(Guid applicationId)
     {
-        var companyWithAddress = await _portalRepositories.GetInstance<IApplicationRepository>().GetCompanyWithAdressUntrackedAsync(applicationId).ConfigureAwait(false);
+        var companyWithAddress = await _portalRepositories.GetInstance<IApplicationRepository>().GetCompanyWithAddressUntrackedAsync(applicationId).ConfigureAwait(false);
         if (companyWithAddress == null)
         {
             throw new NotFoundException($"no company found for applicationId {applicationId}");

@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum CompanyApplicationStatusId : int
+public enum CompanyApplicationStatusId
 {
     CREATED = 1,
     ADD_COMPANY_DATA = 2,

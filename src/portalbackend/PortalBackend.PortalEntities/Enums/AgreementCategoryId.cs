@@ -20,7 +20,7 @@
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-public enum AgreementCategoryId : int
+public enum AgreementCategoryId
 {
     CX_FRAME_CONTRACT = 1,
     APP_CONTRACT = 2,

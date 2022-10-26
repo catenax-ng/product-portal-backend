@@ -59,11 +59,11 @@ public class UserRolesRepository : IUserRolesRepository
             ))
             .Entity;
 
-    public CompanyUserAssignedRole CreateCompanyUserAssignedRole(Guid companyUserId, Guid userRoleId) =>
+    public CompanyUserAssignedRole CreateCompanyUserAssignedRole(Guid companyUserId, Guid companyUserRoleId) =>
         _dbContext.CompanyUserAssignedRoles.Add(
             new CompanyUserAssignedRole(
                 companyUserId,
-                userRoleId
+                companyUserRoleId
             )).Entity;
 
     public IAsyncEnumerable<CompanyUser> GetCompanyUserRolesIamUsersAsync(IEnumerable<Guid> companyUserIds, Guid companyUserId) =>

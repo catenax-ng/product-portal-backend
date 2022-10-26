@@ -50,7 +50,7 @@ public class ConnectorsRepository : IConnectorsRepository
         _context.Connectors
             .AsNoTracking()
             .Where(connector => connector.Id == connectorId)
-            .Select(connector => ((ConnectorData ConnectorData, bool IsProviderUser)) new (
+            .Select(connector => new ValueTuple<ConnectorData, bool>(
                 new ConnectorData(connector.Name, connector.Location!.Alpha2Code, connector.Id, connector.TypeId, connector.StatusId),
                 connector.Provider!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUser)
             ))

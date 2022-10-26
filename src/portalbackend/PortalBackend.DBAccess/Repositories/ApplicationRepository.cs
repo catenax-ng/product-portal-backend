@@ -91,7 +91,7 @@ public class ApplicationRepository : IApplicationRepository
             })
             .SingleOrDefaultAsync();
 
-    public Task<CompanyWithAddress?> GetCompanyWithAdressUntrackedAsync(Guid companyApplicationId) =>
+    public Task<CompanyWithAddress?> GetCompanyWithAddressUntrackedAsync(Guid companyApplicationId) =>
         _dbContext.CompanyApplications
             .Where(companyApplication => companyApplication.Id == companyApplicationId)
             .Select(
@@ -121,7 +121,7 @@ public class ApplicationRepository : IApplicationRepository
             .SelectMany(company => company.CompanyApplications.Where(companyApplication =>
                 applicationStatusIds != null ? applicationStatusIds.Contains(companyApplication.ApplicationStatusId) : true));
 
-    public Task<CompanyApplicationWithCompanyAddressUserData?> GetCompanyApplicationWithCompanyAdressUserDataAsync (Guid applicationId, Guid companyId, string iamUserId) =>
+    public Task<CompanyApplicationWithCompanyAddressUserData?> GetCompanyApplicationWithCompanyAddressUserDataAsync (Guid applicationId, Guid companyId, string iamUserId) =>
         _dbContext.CompanyApplications
             .Where(application => application.Id == applicationId
                 && application.CompanyId == companyId)

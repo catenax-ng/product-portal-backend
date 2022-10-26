@@ -40,5 +40,5 @@ public class PartnerNetworkBusinessLogic : IPartnerNetworkBusinessLogic
 
     /// <inheritdoc/>
     public IAsyncEnumerable<string?> GetAllMemberCompaniesBPNAsync() =>
-        _portalRepositories.GetInstance<ICompanyRepository>().GetAllMemberCompaniesBPNAsync();
+        _portalRepositories.GetInstance<ICompanyRepository>().GetAllMemberCompaniesBpnAsync();
 }

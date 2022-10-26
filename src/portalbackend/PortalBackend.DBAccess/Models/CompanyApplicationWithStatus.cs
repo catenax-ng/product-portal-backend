@@ -24,7 +24,7 @@ namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models
 {
     public class CompanyApplicationWithStatus
     {
-        public Guid ApplicationId;
-        public CompanyApplicationStatusId? ApplicationStatus; //FIXME - this should not be nullable!
+        public Guid ApplicationId { get; set; }
+        public CompanyApplicationStatusId? ApplicationStatus { get; set; } //FIXME - this should not be nullable!
     }
 }
