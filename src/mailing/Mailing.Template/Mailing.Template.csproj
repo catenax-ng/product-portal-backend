@@ -72,6 +72,9 @@
 	 <None Update="EmailTemplates\registration_declined.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+	 <None Update="EmailTemplates\testTemplate.html">
+	   <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	 </None>
   </ItemGroup>
 
 <ItemGroup>

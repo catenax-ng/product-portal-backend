@@ -20,9 +20,9 @@
 
 using Org.CatenaX.Ng.Portal.Backend.Administration.Service.BusinessLogic;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
-using Org.CatenaX.Ng.Portal.Backend.Keycloak.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Org.CatenaX.Ng.Portal.Backend.Administration.Service.Models;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Administration.Service.Controllers;
 
@@ -76,4 +76,23 @@ public class StaticDataController : ControllerBase
     [ProducesResponseType(typeof(IAsyncEnumerable<LanguageData>), StatusCodes.Status200OK)]
     public IAsyncEnumerable<LanguageData> GetLanguages() =>
         _logic.GetAllLanguage();
+
+    /// <summary>
+    /// Sends the given email template to the given email
+    /// </summary>
+    /// <returns>Returns ok</returns>
+    /// <remarks>
+    /// Example: GET: /api/administration/staticdata/languagetags
+    /// the "lang" parameter is an optional parameter and if not set "en" will be used
+    /// </remarks>
+    /// <response code="200">Returns a list of all of the Language i.e german and english</response>
+    [HttpPost]
+    // [Authorize(Roles = "view_app_language")]
+    [Route("mail")]
+    [ProducesResponseType(typeof(IAsyncEnumerable<LanguageData>), StatusCodes.Status200OK)]
+    public async Task<OkResult> SendMail([FromBody] TestMailData data)
+    {
+        await _logic.SendMail(data).ConfigureAwait(false);
+        return Ok();
+    }
 }

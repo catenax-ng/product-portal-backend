@@ -18,7 +18,10 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
- 
+
+using Org.CatenaX.Ng.Portal.Backend.Administration.Service.Models;
+using Org.CatenaX.Ng.Portal.Backend.Mailing.SendMail;
+using Org.CatenaX.Ng.Portal.Backend.Mailing.Template.Enums;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess;
@@ -31,14 +34,17 @@ namespace Org.CatenaX.Ng.Portal.Backend.Administration.Service.BusinessLogic;
 public class StaticDataBusinessLogic : IStaticDataBusinessLogic
 {
     private readonly IPortalRepositories _portalRepositories;
+    private readonly IMailingService _mailService;
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="portalRepositories"></param>
-    public StaticDataBusinessLogic(IPortalRepositories portalRepositories)
+    /// <param name="mailService"></param>
+    public StaticDataBusinessLogic(IPortalRepositories portalRepositories, IMailingService mailService)
     {
         _portalRepositories = portalRepositories;
+        _mailService = mailService;
     }
 
     /// <inheritdoc/>
@@ -47,5 +53,9 @@ public class StaticDataBusinessLogic : IStaticDataBusinessLogic
 
     /// <inheritdoc/>
     public IAsyncEnumerable<LanguageData> GetAllLanguage() =>
-        _portalRepositories.GetInstance<IStaticDataRepository>().GetAllLanguage();  
+        _portalRepositories.GetInstance<IStaticDataRepository>().GetAllLanguage();
+
+    /// <inheritdoc />
+    public Task SendMail(TestMailData data) =>
+        _mailService.SendMails(data.Email, new Dictionary<string, string>(), new List<string> { data.Template });
 }

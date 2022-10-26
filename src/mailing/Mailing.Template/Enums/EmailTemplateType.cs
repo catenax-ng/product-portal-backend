@@ -77,9 +77,16 @@ namespace Org.CatenaX.Ng.Portal.Backend.Mailing.Template.Enums
         [Path("registration_declined.html")]
         PortalRegistrationDecline,
         
+        /// <summary>
         /// Email template for notifying app providers of subscription requests.
         /// </summary>
         [Path("appprovider_subscription_request.html")]
-        SubscriptionRequest
+        SubscriptionRequest,
+
+        /// <summary>
+        /// Email Test Template
+        /// </summary>
+        [Path("testTemplate.html")]
+        TestTemplate
     }
 }

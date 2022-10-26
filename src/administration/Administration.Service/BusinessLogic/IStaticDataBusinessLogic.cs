@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
+using Org.CatenaX.Ng.Portal.Backend.Administration.Service.Models;
 using  Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Administration.Service.BusinessLogic;
@@ -38,4 +39,9 @@ public interface IStaticDataBusinessLogic
     /// </summary>
     /// <returns>AsyncEnumerable of the result Language</returns>
     IAsyncEnumerable<LanguageData> GetAllLanguage();
+
+    /// <summary>
+    /// Sends a mail to the given email for the given template
+    /// </summary>
+    Task SendMail(TestMailData data);
 }
