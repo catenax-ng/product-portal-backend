@@ -135,6 +135,9 @@ public class OfferRepository : IOfferRepository
     /// <inheritdoc />
     public CompanyUserAssignedAppFavourite CreateAppFavourite(Guid appId, Guid companyUserId) =>
         _context.CompanyUserAssignedAppFavourites.Add(new CompanyUserAssignedAppFavourite(appId, companyUserId)).Entity;
+    
+    public CompanyUserAssignedAppFavourite DeleteAppFavourite(Guid appId, Guid companyUserId) =>
+        _context.CompanyUserAssignedAppFavourites.Remove(new CompanyUserAssignedAppFavourite(appId, companyUserId)).Entity;
 
     ///<inheritdoc/>
     public OfferAssignedDocument CreateOfferAssignedDocument(Guid offerId, Guid documentId) =>
@@ -203,10 +206,6 @@ public class OfferRepository : IOfferRepository
                     : roles.UserRoleDescriptions.SingleOrDefault(desc => desc.LanguageShortName == languageShortName)!.Description
             )).AsAsyncEnumerable();
     
-     /// <inheritdoc />
-     public Task<bool> CheckServiceExistsById(Guid serviceId) => 
-         _context.Offers.AnyAsync(x => x.Id == serviceId && x.OfferTypeId == OfferTypeId.SERVICE);
-
      /// <inheritdoc />
     public IQueryable<(Guid id, string? name, string provider, string? thumbnailUrl, string? contactEmail, string? price)> GetActiveServices() =>
         _context.Offers

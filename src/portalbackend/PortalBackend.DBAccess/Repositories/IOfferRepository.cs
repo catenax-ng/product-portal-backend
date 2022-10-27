@@ -92,7 +92,7 @@ public interface IOfferRepository
     /// <param name="appId">Id of the app</param>
     /// <param name="companyUserId">Id of the company User</param>
     CompanyUserAssignedAppFavourite CreateAppFavourite(Guid appId, Guid companyUserId);
-
+    CompanyUserAssignedAppFavourite DeleteAppFavourite(Guid appId, Guid companyUserId);
     /// <summary>
     /// Add app Id and Document Id in App Assigned Document table 
     /// </summary>
@@ -156,13 +156,6 @@ public interface IOfferRepository
     /// <param name="appId"></param>
     /// <returns></returns>
     Task<OfferReleaseData?> GetOfferReleaseDataByIdAsync(Guid offerId);
-
-    /// <summary>
-    /// Checks if an service with the given id exists in the persistence layer. 
-    /// </summary>
-    /// <param name="serviceId">Id of the service.</param>
-    /// <returns><c>true</c> if an service exists on the persistence layer with the given id, <c>false</c> if not.</returns>
-    public Task<bool> CheckServiceExistsById(Guid serviceId);
 
     /// <summary>
     /// Gets all service detail data from the persistence storage as queryable 
