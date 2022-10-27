@@ -57,5 +57,8 @@ public class StaticDataBusinessLogic : IStaticDataBusinessLogic
 
     /// <inheritdoc />
     public Task SendMail(TestMailData data) =>
-        _mailService.SendMails(data.Email, new Dictionary<string, string>(), new List<string> { data.Template });
+        _mailService.SendMails(data.Email, new Dictionary<string, string>
+        {
+            { "url", "https://catenax-ng.github.io/" }
+        }, new List<string> { data.Template });
 }

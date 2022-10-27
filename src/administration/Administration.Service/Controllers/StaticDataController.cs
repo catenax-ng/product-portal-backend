@@ -87,7 +87,6 @@ public class StaticDataController : ControllerBase
     /// </remarks>
     /// <response code="200">Returns a list of all of the Language i.e german and english</response>
     [HttpPost]
-    // [Authorize(Roles = "view_app_language")]
     [Route("mail")]
     [ProducesResponseType(typeof(IAsyncEnumerable<LanguageData>), StatusCodes.Status200OK)]
     public async Task<OkResult> SendMail([FromBody] TestMailData data)
