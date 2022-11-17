@@ -177,7 +177,7 @@ public interface IOfferRepository
     /// Gets all service detail data from the persistence storage as pagination 
     /// </summary>
     /// <returns>Returns an Pagination</returns>
-    Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int page, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds);
+    Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int take, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds);
 
     /// <summary>
     /// Gets the service details for the given id

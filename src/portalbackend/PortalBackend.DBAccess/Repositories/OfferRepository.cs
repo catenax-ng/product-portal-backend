@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
+using System.Linq.Expressions;
 using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities;
@@ -249,35 +250,34 @@ public class OfferRepository : IOfferRepository
     
      /// <inheritdoc />
      public Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int take, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds) =>
-         _context.Offers
-             .AsNoTracking()
-             .Where(x => 
-                 x.OfferTypeId == OfferTypeId.SERVICE &&
-                 x.OfferStatusId == OfferStatusId.ACTIVE &&
-                 (serviceTypeIds == null || x.ServiceTypes.Any(st => serviceTypeIds.Any(sti => sti == st.Id))))
-             .GroupBy(s => s.Id)
-             .Select(group => new Pagination.Source<ServiceOverviewData>(
-                     group.Count(),
-                     (
-                         sorting == null ? group.OrderBy(service => service) :
-                         sorting == ServiceOverviewSorting.ReleaseDateAsc ? group.OrderBy(service => service.DateReleased) :
-                         sorting == ServiceOverviewSorting.ReleaseDateDesc ? group.OrderByDescending(service => service.DateReleased) :
-                         sorting == ServiceOverviewSorting.ProviderAsc ? group.OrderBy(service => service.Provider) :
-                         sorting == ServiceOverviewSorting.ProviderDesc ? group.OrderByDescending(service => service.Provider) :
-                         group.OrderBy(service => service))
-                     .Skip(skip)
-                     .Take(take)
-                     .Select(service =>  new ServiceOverviewData(
-                         service.Id,
-                         service.Name!,
-                         service.Provider,
-                         service.ThumbnailUrl,
-                         service.ContactEmail,
-                         null,
-                         service.OfferLicenses.FirstOrDefault()!.Licensetext,
-                         service.ServiceTypes.Select(x => x.Id)))
-                 )
-             ).SingleOrDefaultAsync();
+         Pagination.CreateSourceQueryAsync(
+                 skip,
+                 take,
+                 _context.Offers
+                     .AsNoTracking()
+                     .Where(x => 
+                         x.OfferTypeId == OfferTypeId.SERVICE &&
+                         x.OfferStatusId == OfferStatusId.ACTIVE &&
+                         (serviceTypeIds == null || x.ServiceTypes.Any(st => serviceTypeIds.Any(sti => sti == st.Id))))
+                     .GroupBy(s => s.Id),
+                 sorting switch
+                 {
+                     ServiceOverviewSorting.ReleaseDateAsc => offers => offers.OrderBy(service => service.DateReleased),
+                     ServiceOverviewSorting.ReleaseDateDesc => offers => offers.OrderByDescending(service => service.DateReleased),
+                     ServiceOverviewSorting.ProviderAsc => offers => offers.OrderBy(service => service.Provider),
+                     ServiceOverviewSorting.ProviderDesc => offers => offers.OrderByDescending(service => service.Provider),
+                     _ => null
+                 },
+                 service =>  new ServiceOverviewData(
+                     service.Id,
+                     service.Name!,
+                     service.Provider,
+                     service.ThumbnailUrl,
+                     service.ContactEmail,
+                     null,
+                     service.OfferLicenses.FirstOrDefault()!.Licensetext,
+                     service.ServiceTypes.Select(x => x.Id)))
+             .SingleOrDefaultAsync();
 
      /// <inheritdoc />
     public Task<OfferDetailData?> GetOfferDetailByIdUntrackedAsync(Guid serviceId, string languageShortName, string iamUserId, OfferTypeId offerTypeId) => 
