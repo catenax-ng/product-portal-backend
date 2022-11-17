@@ -258,7 +258,7 @@ public class OfferRepository : IOfferRepository
                      .Where(x => 
                          x.OfferTypeId == OfferTypeId.SERVICE &&
                          x.OfferStatusId == OfferStatusId.ACTIVE &&
-                         (serviceTypeIds == null || x.ServiceTypes.Any(st => serviceTypeIds.Any(sti => sti == st.Id))))
+                         (serviceTypeIds == null || x.ServiceTypes.Any(st => serviceTypeIds.Contains(st.Id))))
                      .GroupBy(s => s.Id),
                  sorting switch
                  {
@@ -427,7 +427,7 @@ public class OfferRepository : IOfferRepository
             (
                 x.OfferStatusId,
                 x.ProviderCompany!.CompanyUsers.Any(cu => cu.IamUser!.UserEntityId == iamUserId),
-                x.ServiceTypes.Select(st => new ValueTuple<ServiceTypeId, bool>(st.Id, serviceTypeIds.Any(sti => sti == st.Id))),
+                x.ServiceTypes.Select(st => new ValueTuple<ServiceTypeId, bool>(st.Id, serviceTypeIds.Contains(st.Id))),
                 x.OfferLicenses.Select(ol => new ValueTuple<Guid, string, bool>(ol.Id, ol.Licensetext, ol.Offers.Count > 1)).FirstOrDefault(),
                 x.OfferDescriptions.Select(description => new ValueTuple<string,string, string>(description.LanguageShortName, description.DescriptionLong, description.DescriptionShort))
             ))
