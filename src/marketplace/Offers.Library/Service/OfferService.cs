@@ -19,6 +19,7 @@
  ********************************************************************************/
 
 using System.Text.Json;
+using Offers.Library.Models;
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
 using Org.CatenaX.Ng.Portal.Backend.Mailing.SendMail;
 using Org.CatenaX.Ng.Portal.Backend.Notification.Library;
@@ -314,7 +315,7 @@ public class OfferService : IOfferService
     }
 
     /// <inheritdoc />
-    public async Task<Guid> CreateServiceOfferingAsync(OfferingData data, string iamUserId, OfferTypeId offerTypeId)
+    public async Task<Guid> CreateServiceOfferingAsync(ServiceOfferingData data, string iamUserId, OfferTypeId offerTypeId)
     {
         var results = await _portalRepositories.GetInstance<IUserRepository>()
             .GetCompanyUserWithIamUserCheckAndCompanyShortName(iamUserId, data.SalesManager)
@@ -344,13 +345,17 @@ public class OfferService : IOfferService
         });
         var licenseId = offerRepository.CreateOfferLicenses(data.Price).Id;
         offerRepository.CreateOfferAssignedLicense(service.Id, licenseId);
+        
+        offerRepository.AddServiceAssignedServiceTypes(data.ServiceTypeIds.Select(id =>
+            new ValueTuple<Guid, ServiceTypeId>(service.Id, id)));
         offerRepository.AddOfferDescriptions(data.Descriptions.Select(d =>
             new ValueTuple<Guid, string, string, string>(service.Id, d.LanguageCode, string.Empty, d.Description)));
 
         await _portalRepositories.SaveAsync();
         return service.Id;
     }
-
+    
+    /// <inheritdoc />
     public async Task<OfferProviderResponse> GetProviderOfferDetailsForStatusAsync(Guid offerId, string userId, OfferTypeId offerTypeId)
     {
         var offerDetail = await _portalRepositories.GetInstance<IOfferRepository>().GetProviderOfferDataWithConsentStatusAsync(offerId, userId, offerTypeId).ConfigureAwait(false);
@@ -382,6 +387,76 @@ public class OfferService : IOfferService
             data.Documents.GroupBy(d => d.documentTypeId).ToDictionary(g => g.Key, g => g.Select(d => new DocumentData(d.documentId, d.documentName))));
     }
     
+    /// <inheritdoc />
+    public async Task<Guid> ValidateSalesManager(Guid salesManagerId, string iamUserId, IDictionary<string, IEnumerable<string>> salesManagerRoles)
+    {
+        var userRoleIds = await _portalRepositories.GetInstance<IUserRolesRepository>()
+            .GetUserRoleIdsUntrackedAsync(salesManagerRoles).ToListAsync().ConfigureAwait(false);
+        var responseData = await _portalRepositories.GetInstance<IUserRepository>()
+            .GetRolesAndCompanyMembershipUntrackedAsync(iamUserId, userRoleIds, salesManagerId)
+            .ConfigureAwait(false);
+        if (responseData == default)
+        {
+            throw new ControllerArgumentException($"invalid salesManagerId {salesManagerId}", nameof(salesManagerId));
+        }
+
+        if (!responseData.IsSameCompany)
+        {
+            throw new ForbiddenException($"user {iamUserId} is not a member of the company");
+        }
+
+        if (userRoleIds.Except(responseData.RoleIds).Any())
+        {
+            throw new ControllerArgumentException(
+                $"User {salesManagerId} does not have sales Manager Role", nameof(salesManagerId));
+        }
+
+        return responseData.UserCompanyId;
+    }
+    
+    public static void UpsertRemoveOfferDescription(Guid appId, IEnumerable<Localization> updateDescriptions, IEnumerable<(string LanguageShortName, string DescriptionLong, string DescriptionShort)> existingDescriptions, IOfferRepository appRepository)
+    {
+        appRepository.AddOfferDescriptions(
+            updateDescriptions.ExceptBy(existingDescriptions.Select(d => d.LanguageShortName), updateDescription => updateDescription.LanguageCode)
+                .Select(updateDescription => (appId, updateDescription.LanguageCode, updateDescription.LongDescription, updateDescription.ShortDescription))
+        );
+
+        appRepository.RemoveOfferDescriptions(
+            existingDescriptions.ExceptBy(updateDescriptions.Select(d => d.LanguageCode), existingDescription => existingDescription.LanguageShortName)
+                .Select(existingDescription => (appId, existingDescription.LanguageShortName))
+        );
+
+        foreach (var update
+                 in updateDescriptions
+                     .Where(update => existingDescriptions.Any(existing => 
+                         existing.LanguageShortName == update.LanguageCode &&
+                         (existing.DescriptionLong != update.LongDescription ||
+                          existing.DescriptionShort != update.ShortDescription))))
+        {
+            appRepository.AttachAndModifyOfferDescription(appId, update.LanguageCode, offerDescription =>
+            {
+                offerDescription.DescriptionLong = update.LongDescription;
+                offerDescription.DescriptionShort = update.ShortDescription;
+            });
+        }
+    }
+
+    public static void CreateOrUpdateAppLicense(Guid serviceId, string price, (Guid offerLicenseId, string price, bool assignedToMultipleOffers) offerLicense, IOfferRepository offerRepository)
+    {
+        if (offerLicense == default || offerLicense.price == price) return;
+        
+        if (!offerLicense.assignedToMultipleOffers)
+        {
+            offerRepository.AttachAndModifyOfferLicense(offerLicense.offerLicenseId, ol => ol.Licensetext = price);
+        }
+        else
+        {
+            offerRepository.RemoveOfferAssignedLicense(serviceId, offerLicense.offerLicenseId);
+            var licenseId = offerRepository.CreateOfferLicenses(price).Id;
+            offerRepository.CreateOfferAssignedLicense(serviceId, licenseId);
+        }
+    }
+
     private async Task CheckLanguageCodesExist(IEnumerable<string> languageCodes)
     {
         if (languageCodes.Any())

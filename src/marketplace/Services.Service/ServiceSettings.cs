@@ -40,6 +40,9 @@ public class ServiceSettings
     [Required]
     public IDictionary<string,IEnumerable<string>> ServiceManagerRoles { get; set; } = null!;
 
+    [Required]
+    public IDictionary<string,IEnumerable<string>> SalesManagerRoles { get; set; } = null!;
+    
     /// <summary>
     /// BasePortalAddress url required for subscription email 
     /// </summary>

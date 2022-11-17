@@ -1,4 +1,4 @@
-/********************************************************************************
+﻿/********************************************************************************
  * Copyright (c) 2021,2022 BMW Group AG
  * Copyright (c) 2021,2022 Contributors to the CatenaX (ng) GitHub Organisation.
  *
@@ -18,18 +18,13 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using Offers.Library.Models;
+using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-namespace Org.CatenaX.Ng.Portal.Backend.Apps.Service.ViewModels;
+namespace PortalBackend.DBAccess.Models;
 
-/// <summary>
-/// Model for updating an app.
-/// </summary>
-/// <param name="Descriptions"></param>
-/// <param name="Images"></param>
-/// <param name="ProviderUri"></param>
-/// <param name="ContactEmail"></param>
-/// <param name="ContactNumber"></param>
-/// <returns></returns>
-public record AppEditableDetail(IEnumerable<Localization> Descriptions, IEnumerable<string> Images, string? ProviderUri, string? ContactEmail, string? ContactNumber);
-
+public record ServiceUpdateData(
+    OfferStatusId OfferState,
+    bool IsUserOfProvider,
+    IEnumerable<(ServiceTypeId ServiceTypeId, bool IsMatch)> ServiceTypeIds,
+    ValueTuple<Guid, string, bool> OfferLicense,
+    IEnumerable<(string LanguageShortName ,string DescriptionLong,string DescriptionShort)> Descriptions);

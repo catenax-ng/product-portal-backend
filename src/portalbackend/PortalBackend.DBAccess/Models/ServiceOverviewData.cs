@@ -18,7 +18,9 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
+using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
+
+namespace PortalBackend.DBAccess.Models;
 
 /// <summary>
 /// View model of an application's detailed data specific for service.
@@ -30,4 +32,13 @@ namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
 /// <param name="ContactEmail">Contact email address.</param>
 /// <param name="Description">The description of the service.</param>
 /// <param name="Price">Pricing information of the service.</param>
-public record ServiceOverviewData(Guid Id, string Title, string Provider, string LeadPictureUri, string? ContactEmail, string? Description, string Price);
+/// <param name="ServiceTypeIds">Collection of the assigned serviceTypeIds.</param>
+public record ServiceOverviewData(
+    Guid Id,
+    string Title,
+    string Provider,
+    string? LeadPictureUri,
+    string? ContactEmail,
+    string? Description,
+    string Price,
+    IEnumerable<ServiceTypeId> ServiceTypeIds);

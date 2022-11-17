@@ -24,6 +24,7 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
+using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.Mailing.SendMail;
 using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Service;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess;
@@ -32,6 +33,7 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Org.CatenaX.Ng.Portal.Backend.Tests.Shared;
+using PortalBackend.DBAccess.Models;
 using Xunit;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Offers.Library.Tests.Service;
@@ -335,7 +337,8 @@ public class OfferSubscriptionServiceTests
 
     private void SetupRepositories()
     {
-        var offerDetailData = new AsyncEnumerableStub<ValueTuple<Guid, string?, string, string?, string?, string?>>(_fixture.CreateMany<ValueTuple<Guid, string?, string, string?, string?, string?>>(5));
+        var offerDetailData = _fixture.CreateMany<ServiceOverviewData>(5);
+        var paginationResult = new Pagination.Source<ServiceOverviewData>(offerDetailData.Count(), offerDetailData);
         var offerDetail = _fixture.Build<OfferDetailData>()
             .With(x => x.Id, _existingOfferId)
             .Create();
@@ -377,8 +380,9 @@ public class OfferSubscriptionServiceTests
         A.CallTo(() => _userRolesRepository.GetUserRoleIdsUntrackedAsync(A<IDictionary<string, IEnumerable<string>>>.That.Not.Matches(x => x[ClientId].First() == "Service Manager")))
             .Returns(new List<Guid>().ToAsyncEnumerable());
 
-        A.CallTo(() => _offerRepository.GetActiveServices())
-            .Returns(offerDetailData.AsQueryable());
+        
+        A.CallTo(() => _offerRepository.GetActiveServices(A<int>._, A<int>._, A<ServiceOverviewSorting>._, A<IEnumerable<ServiceTypeId>>._))
+            .ReturnsLazily(() => paginationResult);
         A.CallTo(() => _offerRepository.GetOfferDetailByIdUntrackedAsync(_existingOfferId, A<string>.That.Matches(x => x == "en"), A<string>._, A<OfferTypeId>._))
             .ReturnsLazily(() => offerDetail with {OfferSubscriptionDetailData = new []
             {

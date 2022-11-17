@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
+using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
@@ -172,10 +173,10 @@ public interface IOfferRepository
     Task<OfferReleaseData?> GetOfferReleaseDataByIdAsync(Guid offerId);
 
     /// <summary>
-    /// Gets all service detail data from the persistence storage as queryable 
+    /// Gets all service detail data from the persistence storage as pagination 
     /// </summary>
-    /// <returns>Returns an <see cref="IQueryable{ServiceDetailData}"/></returns>
-    IQueryable<(Guid id, string? name, string provider, string? thumbnailUrl, string? contactEmail, string? price)> GetActiveServices();
+    /// <returns>Returns an Pagination</returns>
+    Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int page, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds);
 
     /// <summary>
     /// Gets the service details for the given id
@@ -186,6 +187,15 @@ public interface IOfferRepository
     /// <param name="offerTypeId">Id of the offer type</param>
     /// <returns>Returns the ServiceDetailData or null</returns>
     Task<OfferDetailData?> GetOfferDetailByIdUntrackedAsync(Guid serviceId, string languageShortName, string iamUserId, OfferTypeId offerTypeId);
+
+    /// <summary>
+    /// Gets the service details for the given id
+    /// </summary>
+    /// <param name="serviceId">the service to get from the persistence storage</param>
+    /// <param name="languageShortName">the language short code for the descriptions</param>
+    /// <param name="iamUserId">Id of the iam User</param>
+    /// <returns>Returns the ServiceDetailData or null</returns>
+    Task<ServiceDetailData?> GetServiceDetailByIdUntrackedAsync(Guid serviceId, string languageShortName, string iamUserId);
 
     /// <summary>
     /// Retrieves all in review status apps in the marketplace.
@@ -257,4 +267,27 @@ public interface IOfferRepository
     /// <param name="appId">id of the app</param>
     /// <param name="offerLicenseId">id of the offer license</param>
     void RemoveOfferAssignedLicense(Guid appId, Guid offerLicenseId);
+
+    /// <summary>
+    /// Adds the service types to the service
+    /// </summary>
+    /// <param name="serviceAssignedServiceTypes"></param>
+    void AddServiceAssignedServiceTypes(IEnumerable<(Guid serviceId, ServiceTypeId serviceTypeId)> serviceAssignedServiceTypes);
+
+    /// <summary>
+    /// Removes <see cref="ServiceAssignedServiceType"/>s to the database
+    /// </summary>
+    /// <param name="serviceAssignedServiceTypes">serviceIds and serviceTypeIds of the assigned service types to be removed from the database</param>
+    void RemoveServiceAssignedServiceTypes(IEnumerable<(Guid serviceId, ServiceTypeId serviceTypeId)> serviceAssignedServiceTypes);
+
+    /// <summary>
+    /// Gets the needed update data for a service
+    /// </summary>
+    /// <param name="serviceId">Id of the service</param>
+    /// <param name="serviceTypeIds">Ids of the assigned service types</param>
+    /// <param name="salesManager">Guid of the new sales manager</param>
+    /// <param name="iamUserId">id of the current user</param>
+    /// <param name="price">the price</param>
+    /// <returns>The found service update data</returns>
+    Task<ServiceUpdateData?> GetServiceUpdateData(Guid serviceId, IEnumerable<ServiceTypeId> serviceTypeIds, Guid salesManager, string iamUserId, string price);
 }

@@ -1,4 +1,4 @@
-/********************************************************************************
+﻿/********************************************************************************
  * Copyright (c) 2021,2022 BMW Group AG
  * Copyright (c) 2021,2022 Contributors to the CatenaX (ng) GitHub Organisation.
  *
@@ -18,18 +18,30 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using Offers.Library.Models;
-
-namespace Org.CatenaX.Ng.Portal.Backend.Apps.Service.ViewModels;
+namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 
 /// <summary>
-/// Model for updating an app.
+/// Possible sorting options for the notification pagination
 /// </summary>
-/// <param name="Descriptions"></param>
-/// <param name="Images"></param>
-/// <param name="ProviderUri"></param>
-/// <param name="ContactEmail"></param>
-/// <param name="ContactNumber"></param>
-/// <returns></returns>
-public record AppEditableDetail(IEnumerable<Localization> Descriptions, IEnumerable<string> Images, string? ProviderUri, string? ContactEmail, string? ContactNumber);
-
+public enum ServiceOverviewSorting
+{
+    /// <summary>
+    /// Ascending by provider
+    /// </summary>
+    ProviderAsc = 1,
+    
+    /// <summary>
+    /// Descending by provider
+    /// </summary>
+    ProviderDesc = 2,
+    
+    /// <summary>
+    /// Ascending by the release date
+    /// </summary>
+    ReleaseDateAsc = 3,
+    
+    /// <summary>
+    /// Descending by release date
+    /// </summary>
+    ReleaseDateDesc = 4,
+}

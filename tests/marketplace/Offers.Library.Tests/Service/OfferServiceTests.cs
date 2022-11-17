@@ -50,6 +50,9 @@ public class OfferServiceTests
     private readonly Guid _validConsentId = new("9aae7a3b-b188-4a42-b46b-fb2ea5f47664");
     private readonly Guid _existingAgreementForSubscriptionId = new("9aae7a3b-b188-4a42-b46b-fb2ea5f47665");
     private readonly Guid _technicalUserId = new("9aae7a3b-b188-4a42-b46b-fb2ea5f47999");
+    private readonly Guid _differentCompanyUserId = Guid.NewGuid();
+    private readonly Guid _noSalesManagerUserId = Guid.NewGuid();
+
     private readonly string _bpn = "CAXSDUMMYCATENAZZ";
     private readonly CompanyUser _companyUser;
     private readonly IFixture _fixture;
@@ -68,7 +71,8 @@ public class OfferServiceTests
     private readonly IServiceAccountCreation _serviceAccountCreation;
     private readonly INotificationService _notificationService;
     private readonly IOfferRepository _offerRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserRepository _userRepository;    
+    private readonly IUserRolesRepository _userRolesRepository;
     private readonly ILanguageRepository _languageRepository;
 
     public OfferServiceTests()
@@ -94,6 +98,7 @@ public class OfferServiceTests
         _consentAssignedOfferSubscriptionRepository = A.Fake<IConsentAssignedOfferSubscriptionRepository>();
         _offerRepository = A.Fake<IOfferRepository>();
         _userRepository = A.Fake<IUserRepository>();
+        _userRolesRepository = A.Fake<IUserRolesRepository>();
         _languageRepository = A.Fake<ILanguageRepository>();
         _provisioningManager = A.Fake<IProvisioningManager>();
         _notificationReposiotry = A.Fake<INotificationRepository>();
@@ -131,7 +136,7 @@ public class OfferServiceTests
         var sut = new OfferService(_portalRepositories, _provisioningManager, _serviceAccountCreation, _notificationService, A.Fake<IMailingService>());
 
         // Act
-        var result = await sut.CreateServiceOfferingAsync(new OfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>()), _iamUserId, OfferTypeId.SERVICE);
+        var result = await sut.CreateServiceOfferingAsync(new ServiceOfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>(), new List<ServiceTypeId>()), _iamUserId, OfferTypeId.SERVICE);
 
         // Assert
         result.Should().Be(serviceId);
@@ -163,15 +168,20 @@ public class OfferServiceTests
         var sut = new OfferService(_portalRepositories, _provisioningManager, _serviceAccountCreation, _notificationService, A.Fake<IMailingService>());
 
         // Act
-        var serviceOfferingData = new OfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>
+        var serviceOfferingData = new ServiceOfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>
         {
             new ("en", "That's a description with a valid language code")
+        },
+        new[]
+        {
+            ServiceTypeId.DATASPACE_SERVICE
         });
         var result = await sut.CreateServiceOfferingAsync(serviceOfferingData, _iamUserId, OfferTypeId.SERVICE);
 
         // Assert
         result.Should().Be(serviceId);
         apps.Should().HaveCount(1);
+        A.CallTo(() => _offerRepository.AddServiceAssignedServiceTypes(A<IEnumerable<(Guid serviceId, ServiceTypeId serviceTypeId)>>.That.Matches(s => s.Any(x => x.serviceId == serviceId)))).MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -181,7 +191,7 @@ public class OfferServiceTests
         var sut = new OfferService(_portalRepositories, _provisioningManager, _serviceAccountCreation, _notificationService, A.Fake<IMailingService>());
 
         // Act
-        async Task Action() => await sut.CreateServiceOfferingAsync(new OfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>()), Guid.NewGuid().ToString(), OfferTypeId.SERVICE);
+        async Task Action() => await sut.CreateServiceOfferingAsync(new ServiceOfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>(), new List<ServiceTypeId>()), Guid.NewGuid().ToString(), OfferTypeId.SERVICE);
         
         // Assert
         var ex = await Assert.ThrowsAsync<ControllerArgumentException>(Action);
@@ -195,10 +205,10 @@ public class OfferServiceTests
         var sut = new OfferService(_portalRepositories, _provisioningManager, _serviceAccountCreation, _notificationService, A.Fake<IMailingService>());
 
         // Act
-        var serviceOfferingData = new OfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>
+        var serviceOfferingData = new ServiceOfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", _companyUser.Id, new List<OfferingDescription>
         {
             new ("gg", "That's a description with incorrect language short code")
-        });
+        }, new List<ServiceTypeId>());
         async Task Action() => await sut.CreateServiceOfferingAsync(serviceOfferingData, _iamUserId, OfferTypeId.SERVICE);
 
         // Assert
@@ -213,7 +223,7 @@ public class OfferServiceTests
         var sut = new OfferService(_portalRepositories, _provisioningManager, _serviceAccountCreation, _notificationService, A.Fake<IMailingService>());
 
         // Act
-        async Task Action() => await sut.CreateServiceOfferingAsync(new OfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", Guid.NewGuid(), new List<OfferingDescription>()), _iamUserId, OfferTypeId.SERVICE);
+        async Task Action() => await sut.CreateServiceOfferingAsync(new ServiceOfferingData("Newest Service", "42", "img/thumbnail.png", "mail@test.de", Guid.NewGuid(), new List<OfferingDescription>(), new List<ServiceTypeId>()), _iamUserId, OfferTypeId.SERVICE);
         
         // Assert
         var ex = await Assert.ThrowsAsync<ControllerArgumentException>(Action);
@@ -665,7 +675,75 @@ public class OfferServiceTests
 
     #endregion
 
+    #region Validate SalesManager
+    
+    [Fact]
+    public async Task AddAppAsync_WithInvalidSalesManager_ThrowsException()
+    {
+        // Arrange
+        SetupValidateSalesManager();
+        var sut = new OfferService(_portalRepositories, null!, null!, null!, null!);
+
+        //null Act
+        async Task Act() => await sut.ValidateSalesManager(Guid.NewGuid(), _iamUserId, new Dictionary<string, IEnumerable<string>>()).ConfigureAwait(false);
+
+        // Assert
+        var error = await Assert.ThrowsAsync<ControllerArgumentException>(Act).ConfigureAwait(false);
+        error.ParamName.Should().Be("salesManagerId");
+    }
+
+    [Fact]
+    public async Task AddAppAsync_WithUserFromOtherCompany_ThrowsException()
+    {
+        // Arrange
+        SetupValidateSalesManager();
+        var sut = new OfferService(_portalRepositories, null!, null!, null!, null!);
+
+        // Act
+        async Task Act() => await sut.ValidateSalesManager(_differentCompanyUserId, _iamUserId, new Dictionary<string, IEnumerable<string>>()).ConfigureAwait(false);
+
+        // Assert
+        var error = await Assert.ThrowsAsync<ForbiddenException>(Act).ConfigureAwait(false);
+        error.Message.Should().Contain("is not a member of the company");
+    }
+
+    [Fact]
+    public async Task AddAppAsync_WithUserWithoutSalesManagerRole_ThrowsException()
+    {
+        // Arrange
+        SetupValidateSalesManager();
+        var sut = new OfferService(_portalRepositories, null!, null!, null!, null!);
+     
+        // Act
+        async Task Act() => await sut.ValidateSalesManager(_noSalesManagerUserId, _iamUserId, new Dictionary<string, IEnumerable<string>>()).ConfigureAwait(false);
+
+        // Assert
+        var error = await Assert.ThrowsAsync<ControllerArgumentException>(Act).ConfigureAwait(false);
+        error.ParamName.Should().Be("salesManagerId");
+    }
+    
+    #endregion
+    
     #region Setup
+
+    private void SetupValidateSalesManager()
+    {
+        var roleIds = _fixture.CreateMany<Guid>(2);
+        A.CallTo(() => _userRolesRepository.GetUserRoleIdsUntrackedAsync(A<IDictionary<string, IEnumerable<string>>>._))
+            .Returns(roleIds.ToAsyncEnumerable());
+        A.CallTo(() => _userRepository.GetRolesAndCompanyMembershipUntrackedAsync(A<string>._, A<IEnumerable<Guid>>._, A<Guid>.That.Matches(x => x == _companyUser.Id)))
+            .ReturnsLazily(() => new ValueTuple<IEnumerable<Guid>, bool, Guid>(roleIds, true, _companyUser.CompanyId));
+        A.CallTo(() => _userRepository.GetRolesAndCompanyMembershipUntrackedAsync(A<string>._, A<IEnumerable<Guid>>._, A<Guid>.That.Matches(x => x == _differentCompanyUserId)))
+            .ReturnsLazily(() => new ValueTuple<IEnumerable<Guid>, bool, Guid>(Enumerable.Repeat(roleIds.First(), 1), false, Guid.NewGuid()));
+        A.CallTo(() => _userRepository.GetRolesAndCompanyMembershipUntrackedAsync(A<string>._, A<IEnumerable<Guid>>._, A<Guid>.That.Matches(x => x == _noSalesManagerUserId)))
+            .ReturnsLazily(() => new ValueTuple<IEnumerable<Guid>, bool, Guid>(Enumerable.Repeat(roleIds.First(), 1), true, _companyUser.CompanyId));
+        A.CallTo(() => _userRepository.GetRolesAndCompanyMembershipUntrackedAsync(A<string>._, A<IEnumerable<Guid>>._, A<Guid>.That.Not.Matches(x => x == _companyUser.Id || x == _differentCompanyUserId || x == _noSalesManagerUserId)))
+            .ReturnsLazily(() => new ValueTuple<IEnumerable<Guid>, bool, Guid>());
+        A.CallTo(() => _userRepository.GetOwnCompanyId(A<string>.That.IsEqualTo(_iamUserId))).Returns(_companyUser.CompanyId);
+        A.CallTo(() => _portalRepositories.GetInstance<IUserRolesRepository>()).Returns(_userRolesRepository);
+        A.CallTo(() => _portalRepositories.GetInstance<IUserRepository>()).Returns(_userRepository);
+        A.CallTo(() => _portalRepositories.GetInstance<ILanguageRepository>()).Returns(_languageRepository);
+    }
 
     private void SetupRepositories()
     {
