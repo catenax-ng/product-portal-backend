@@ -460,6 +460,13 @@ public class ServiceBusinessLogicTests
                 { "portal", new[] { "SalesManager" } }
             }
         };
+        var existingOffer = _fixture.Create<Offer>();
+        A.CallTo(() => _offerRepository.AttachAndModifyOffer(A<Guid>._, A<Action<Offer>?>._))
+            .Invokes(x =>
+            {
+                var action = x.Arguments.Get<Action<Offer?>>("setOptionalParameters");
+                action?.Invoke(existingOffer);
+            });
         var sut = new ServiceBusinessLogic(_portalRepositories, _offerService, _offerSubscriptionService, Options.Create(settings));
 
         // Act
@@ -476,6 +483,7 @@ public class ServiceBusinessLogicTests
             .MustHaveHappenedOnceExactly();
         A.CallTo(() => _offerRepository.RemoveServiceAssignedServiceTypes(A<IEnumerable<(Guid serviceId, ServiceTypeId serviceTypeId)>>._))
             .MustHaveHappenedOnceExactly();
+        existingOffer.Name.Should().Be("test");
     }
 
     #endregion
