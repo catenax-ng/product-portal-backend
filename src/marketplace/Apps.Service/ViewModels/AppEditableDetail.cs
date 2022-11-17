@@ -32,4 +32,3 @@ namespace Org.CatenaX.Ng.Portal.Backend.Apps.Service.ViewModels;
 /// <param name="ContactNumber"></param>
 /// <returns></returns>
 public record AppEditableDetail(IEnumerable<Localization> Descriptions, IEnumerable<string> Images, string? ProviderUri, string? ContactEmail, string? ContactNumber);
-

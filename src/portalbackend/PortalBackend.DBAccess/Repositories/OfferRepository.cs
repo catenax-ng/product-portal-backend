@@ -138,8 +138,8 @@ public class OfferRepository : IOfferRepository
     }
 
     /// <inheritdoc />
-    public void RemoveOfferAssignedLicense(Guid appId, Guid offerLicenseId) =>
-        _context.OfferAssignedLicenses.Remove(new OfferAssignedLicense(appId, offerLicenseId));
+    public void RemoveOfferAssignedLicense(Guid offerId, Guid offerLicenseId) =>
+        _context.OfferAssignedLicenses.Remove(new OfferAssignedLicense(offerId, offerLicenseId));
 
     /// <inheritdoc />
     public void AddServiceAssignedServiceTypes(IEnumerable<(Guid serviceId, ServiceTypeId serviceTypeId)> serviceAssignedServiceTypes) =>
@@ -247,21 +247,6 @@ public class OfferRepository : IOfferRepository
                     : roles.UserRoleDescriptions.SingleOrDefault(desc => desc.LanguageShortName == languageShortName)!.Description
             )).AsAsyncEnumerable();
     
-     /// <inheritdoc />
-    public IQueryable<(Guid id, string? name, string provider, string? thumbnailUrl, string? contactEmail, string? price, IEnumerable<ServiceTypeId> serviceTypeIds)> GetActiveServices() =>
-        _context.Offers
-            .AsNoTracking()
-            .Where(x => x.OfferTypeId == OfferTypeId.SERVICE && x.OfferStatusId == OfferStatusId.ACTIVE)
-            .Select(service => new ValueTuple<Guid, string?, string, string?, string?, string?, IEnumerable<ServiceTypeId>>(
-                service.Id,
-                service.Name,
-                service.Provider,
-                service.ThumbnailUrl,
-                service.ContactEmail,
-                service.OfferLicenses.FirstOrDefault()!.Licensetext,
-                service.ServiceTypes.Select(x => x.Id)
-            ));
-
      /// <inheritdoc />
      public Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int take, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds) =>
          _context.Offers
@@ -434,7 +419,7 @@ public class OfferRepository : IOfferRepository
             .SingleOrDefaultAsync();
     
     /// <inheritdoc />
-    public Task<ServiceUpdateData?> GetServiceUpdateData(Guid serviceId, IEnumerable<ServiceTypeId> serviceTypeIds, Guid salesManager, string iamUserId, string price) =>
+    public Task<ServiceUpdateData?> GetServiceUpdateData(Guid serviceId, IEnumerable<ServiceTypeId> serviceTypeIds,  string iamUserId) =>
         _context.Offers
             .AsNoTracking()
             .Where(offer => offer.Id == serviceId && offer.OfferTypeId == OfferTypeId.SERVICE)

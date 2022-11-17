@@ -130,7 +130,7 @@ public class ServiceBusinessLogic : IServiceBusinessLogic
     {
         var serviceData = await _portalRepositories
             .GetInstance<IOfferRepository>()
-            .GetServiceUpdateData(serviceId, data.ServiceTypeIds, data.SalesManager, iamUserId, data.Price)
+            .GetServiceUpdateData(serviceId, data.ServiceTypeIds, iamUserId)
             .ConfigureAwait(false);
         if (serviceData is null)
         {

@@ -72,6 +72,7 @@ public interface IOfferRepository
     /// <param name="iamUserId">OPTIONAL: iamUserId of the company the calling user belongs to</param>
     /// <param name="languageShortName">language shortName</param>
     /// <param name="defaultLanguageShortName">default language shortName</param>
+    /// <param name="offerTypeId">Id of the offer type</param>
     /// <returns>Returns the details of the application</returns>
     Task<OfferDetailsData?> GetOfferDetailsByIdAsync(Guid offerId, string iamUserId, string? languageShortName, string defaultLanguageShortName, OfferTypeId offerTypeId);
 
@@ -106,7 +107,7 @@ public interface IOfferRepository
     /// <summary>
     /// Adds <see cref="AppAssignedUseCase"/>s to the database
     /// </summary>
-    /// <param name="useCases">The use cases that should be added to the database</param>
+    /// <param name="appUseCases">The use cases that should be added to the database</param>
     void AddAppAssignedUseCases(IEnumerable<(Guid appId, Guid useCaseId)> appUseCases);
 
     /// <summary>
@@ -168,7 +169,7 @@ public interface IOfferRepository
     /// <summary>
     /// Get App Release data by App Id
     /// </summary>
-    /// <param name="appId"></param>
+    /// <param name="offerId"></param>
     /// <returns></returns>
     Task<OfferReleaseData?> GetOfferReleaseDataByIdAsync(Guid offerId);
 
@@ -201,12 +202,13 @@ public interface IOfferRepository
     /// Retrieves all in review status apps in the marketplace.
     /// </summary>
     IQueryable<Offer> GetAllInReviewStatusAppsAsync();
-    
+
     /// <summary>
     /// Retrieve Offer Detail with Status
     /// </summary>
-    /// <param name="appId"></param>
+    /// <param name="offerId"></param>
     /// <param name="userId"></param>
+    /// <param name="offerTypeId"></param>
     /// <returns></returns>
     Task<(OfferProviderData OfferProviderData, bool IsProviderCompanyUser)> GetProviderOfferDataWithConsentStatusAsync(Guid offerId, string userId, OfferTypeId offerTypeId);
 
@@ -224,6 +226,8 @@ public interface IOfferRepository
     /// </summary>
     /// <param name="offerId"></param>
     /// <param name="userId"></param>
+    /// <param name="offerStatusId"></param>
+    /// <param name="offerTypeId"></param>
     /// <returns></returns>
     Task<(bool OfferExists, Guid CompanyUserId)> GetProviderCompanyUserIdForOfferUntrackedAsync(Guid offerId, string userId, OfferStatusId offerStatusId, OfferTypeId offerTypeId);
     
@@ -262,11 +266,11 @@ public interface IOfferRepository
     OfferLicense AttachAndModifyOfferLicense(Guid offerLicenseId, Action<OfferLicense>? setOptionalParameters = null);
 
     /// <summary>
-    /// Removes the app assigned offer license from the database
+    /// Removes the offer assigned offer license from the database
     /// </summary>
-    /// <param name="appId">id of the app</param>
+    /// <param name="offerId">id of the app</param>
     /// <param name="offerLicenseId">id of the offer license</param>
-    void RemoveOfferAssignedLicense(Guid appId, Guid offerLicenseId);
+    void RemoveOfferAssignedLicense(Guid offerId, Guid offerLicenseId);
 
     /// <summary>
     /// Adds the service types to the service
@@ -285,9 +289,7 @@ public interface IOfferRepository
     /// </summary>
     /// <param name="serviceId">Id of the service</param>
     /// <param name="serviceTypeIds">Ids of the assigned service types</param>
-    /// <param name="salesManager">Guid of the new sales manager</param>
     /// <param name="iamUserId">id of the current user</param>
-    /// <param name="price">the price</param>
     /// <returns>The found service update data</returns>
-    Task<ServiceUpdateData?> GetServiceUpdateData(Guid serviceId, IEnumerable<ServiceTypeId> serviceTypeIds, Guid salesManager, string iamUserId, string price);
+    Task<ServiceUpdateData?> GetServiceUpdateData(Guid serviceId, IEnumerable<ServiceTypeId> serviceTypeIds, string iamUserId);
 }

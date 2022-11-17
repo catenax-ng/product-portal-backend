@@ -212,7 +212,6 @@ public class AppReleaseProcessControllerTest
     public async Task GetAppProviderSalesManagerAsync_ReturnsExpectedResult()
     {
         //Arrange
-        var appId = Guid.NewGuid();
         var data = _fixture.CreateMany<CompanyUserNameData>(5).ToAsyncEnumerable();
         A.CallTo(() => _logic.GetAppProviderSalesManagersAsync(A<string>._))
             .ReturnsLazily(() => data);
@@ -254,7 +253,7 @@ public class AppReleaseProcessControllerTest
             "Test Provider",
             "https://test.de",
             Guid.NewGuid(),
-            new Guid[]
+            new []
             {
                 Guid.NewGuid()
             },

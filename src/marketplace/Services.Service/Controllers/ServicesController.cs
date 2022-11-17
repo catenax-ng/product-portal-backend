@@ -244,11 +244,12 @@ public class ServicesController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<OfferAutoSetupResponseData> AutoSetupService([FromBody] OfferAutoSetupData data)
         => await this.WithIamUserId(iamUserId => _serviceBusinessLogic.AutoSetupServiceAsync(data, iamUserId));
-    
+
     /// <summary>
     /// Updates the service
     /// </summary>
     /// <param name="serviceId" example="D3B1ECA2-6148-4008-9E6C-C1C2AEA5C645">Id for the service to update.</param>
+    /// <param name="data">The request data to update the service</param>
     /// <remarks>Example: PUT: /api/services/{serviceId}</remarks>
     /// <response code="204">Service was successfully updated.</response>
     /// <response code="400">Offer Subscription is not in state created or user is not in the same company.</response>

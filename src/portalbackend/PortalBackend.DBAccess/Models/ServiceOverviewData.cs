@@ -42,3 +42,4 @@ public record ServiceOverviewData(
     string? Description,
     string Price,
     IEnumerable<ServiceTypeId> ServiceTypeIds);
+    

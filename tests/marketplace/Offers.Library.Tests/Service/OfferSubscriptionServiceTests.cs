@@ -418,7 +418,7 @@ public class OfferSubscriptionServiceTests
         A.CallTo(() => _offerSubscriptionsRepository.GetCompanyIdWithAssignedOfferForCompanyUserAndSubscriptionAsync(
                 A<Guid>.That.Not.Matches(x => x == _existingOfferId), A<string>.That.Matches(x => x == _iamUserId),
                 A<OfferTypeId>._))
-            .ReturnsLazily(() => new ValueTuple<Guid, OfferSubscription?, Guid>(_companyId, (OfferSubscription?)null, _companyUserId));
+            .ReturnsLazily(() => new ValueTuple<Guid, OfferSubscription?, Guid>(_companyId, null, _companyUserId));
         A.CallTo(() => _offerSubscriptionsRepository.GetCompanyIdWithAssignedOfferForCompanyUserAndSubscriptionAsync(
                 A<Guid>.That.Matches(x => x == _existingOfferId), A<string>.That.Not.Matches(x => x == _iamUserId),
                 A<OfferTypeId>._))
