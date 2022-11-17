@@ -419,7 +419,7 @@ public class OfferRepositoryTests : IAssemblyFixture<TestDbFixture>
         var sut = await CreateSut().ConfigureAwait(false);
 
         // Act
-        var offerDetail = await sut.GetActiveServices(0, 15, null, Enumerable.Repeat(ServiceTypeId.CONSULTANCE_SERVICE, 1)).ConfigureAwait(false);
+        var offerDetail = await sut.GetActiveServices(0, 15, null, ServiceTypeId.CONSULTANCE_SERVICE).ConfigureAwait(false);
 
         // Assert
         offerDetail.Should().NotBeNull();
@@ -433,7 +433,7 @@ public class OfferRepositoryTests : IAssemblyFixture<TestDbFixture>
         var sut = await CreateSut().ConfigureAwait(false);
 
         // Act
-        var offerDetail = await sut.GetActiveServices(0, 15, null, Enumerable.Repeat(ServiceTypeId.DATASPACE_SERVICE, 1)).ConfigureAwait(false);
+        var offerDetail = await sut.GetActiveServices(0, 15, null, ServiceTypeId.DATASPACE_SERVICE).ConfigureAwait(false);
 
         // Assert
         offerDetail.Should().BeNull();

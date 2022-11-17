@@ -508,7 +508,7 @@ public class ServiceBusinessLogicTests
         var serviceDetailData = _fixture.CreateMany<ServiceOverviewData>(count);
         var paginationResult = new Pagination.Source<ServiceOverviewData>(serviceDetailData.Count(), serviceDetailData);
         
-        A.CallTo(() => _offerRepository.GetActiveServices(A<int>._, A<int>._, A<ServiceOverviewSorting?>._, A<IEnumerable<ServiceTypeId>?>._))
+        A.CallTo(() => _offerRepository.GetActiveServices(A<int>._, A<int>._, A<ServiceOverviewSorting?>._, A<ServiceTypeId?>._))
             .ReturnsLazily(() => paginationResult);
         
         A.CallTo(() => _portalRepositories.GetInstance<IOfferRepository>()).Returns(_offerRepository);

@@ -66,8 +66,8 @@ public class ServicesController : ControllerBase
     [Route("active")]
     [Authorize(Roles = "view_service_offering")]
     [ProducesResponseType(typeof(Pagination.Response<ServiceOverviewData>), StatusCodes.Status200OK)]
-    public Task<Pagination.Response<ServiceOverviewData>> GetAllActiveServicesAsync([FromQuery] int page = 0, [FromQuery] int size = 15, ServiceOverviewSorting? sorting = null, IEnumerable<ServiceTypeId>? serviceTypeIds = null) =>
-        _serviceBusinessLogic.GetAllActiveServicesAsync(page, size, sorting, serviceTypeIds);
+    public Task<Pagination.Response<ServiceOverviewData>> GetAllActiveServicesAsync([FromQuery] int page = 0, [FromQuery] int size = 15, [FromQuery] ServiceOverviewSorting? sorting = null, [FromQuery] ServiceTypeId? serviceTypeId = null) =>
+        _serviceBusinessLogic.GetAllActiveServicesAsync(page, size, sorting, serviceTypeId);
 
     /// <summary>
     /// Creates a new service offering.

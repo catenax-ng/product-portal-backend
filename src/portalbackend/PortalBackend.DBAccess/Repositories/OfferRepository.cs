@@ -249,7 +249,7 @@ public class OfferRepository : IOfferRepository
             )).AsAsyncEnumerable();
     
      /// <inheritdoc />
-     public Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int take, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds) =>
+     public Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int take, ServiceOverviewSorting? sorting, ServiceTypeId? serviceTypeId) =>
          Pagination.CreateSourceQueryAsync(
                  skip,
                  take,
@@ -258,7 +258,7 @@ public class OfferRepository : IOfferRepository
                      .Where(x => 
                          x.OfferTypeId == OfferTypeId.SERVICE &&
                          x.OfferStatusId == OfferStatusId.ACTIVE &&
-                         (serviceTypeIds == null || x.ServiceTypes.Any(st => serviceTypeIds.Contains(st.Id))))
+                         (serviceTypeId == null || x.ServiceTypes.Any(st => (ServiceTypeId)st.Id == serviceTypeId)))
                      .GroupBy(s => s.Id),
                  sorting switch
                  {
@@ -276,7 +276,7 @@ public class OfferRepository : IOfferRepository
                      service.ContactEmail,
                      null,
                      service.OfferLicenses.FirstOrDefault()!.Licensetext,
-                     service.ServiceTypes.Select(x => x.Id)))
+                     service.ServiceTypes.Select(x => (ServiceTypeId)x.Id)))
              .SingleOrDefaultAsync();
 
      /// <inheritdoc />

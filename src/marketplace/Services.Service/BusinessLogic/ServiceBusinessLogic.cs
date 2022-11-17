@@ -63,7 +63,7 @@ public class ServiceBusinessLogic : IServiceBusinessLogic
     }
 
     /// <inheritdoc />
-    public Task<Pagination.Response<ServiceOverviewData>> GetAllActiveServicesAsync(int page, int size, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds) =>
+    public Task<Pagination.Response<ServiceOverviewData>> GetAllActiveServicesAsync(int page, int size, ServiceOverviewSorting? sorting, ServiceTypeId? serviceTypeIds) =>
     Pagination.CreateResponseAsync(page, size, _settings.ApplicationsMaxPageSize, (skip, take) =>
             _portalRepositories.GetInstance<IOfferRepository>()
                 .GetActiveServices(skip, take, sorting, serviceTypeIds));

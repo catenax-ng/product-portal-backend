@@ -36,7 +36,7 @@ public interface IServiceBusinessLogic
     /// Gets all active services from the database
     /// </summary>
     /// <returns>All services with pagination</returns>
-    Task<Pagination.Response<ServiceOverviewData>> GetAllActiveServicesAsync(int page, int size, ServiceOverviewSorting? sorting, IEnumerable<ServiceTypeId>? serviceTypeIds);
+    Task<Pagination.Response<ServiceOverviewData>> GetAllActiveServicesAsync(int page, int size, ServiceOverviewSorting? sorting, ServiceTypeId? serviceTypeId);
 
     /// <summary>
     /// Creates a new service offering
