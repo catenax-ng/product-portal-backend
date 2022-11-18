@@ -28,7 +28,6 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Microsoft.Extensions.Options;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
-using PortalBackend.DBAccess.Models;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.BusinessLogic;
 
@@ -63,9 +62,11 @@ public class ServiceBusinessLogic : IServiceBusinessLogic
 
     /// <inheritdoc />
     public Task<Pagination.Response<ServiceOverviewData>> GetAllActiveServicesAsync(int page, int size, ServiceOverviewSorting? sorting, ServiceTypeId? serviceTypeId) =>
-    Pagination.CreateResponseAsync(page, size, _settings.ApplicationsMaxPageSize, (skip, take) =>
-            _portalRepositories.GetInstance<IOfferRepository>()
-                .GetActiveServices(skip, take, sorting, serviceTypeId));
+        Pagination.CreateResponseAsync(
+            page,
+            size,
+            _settings.ApplicationsMaxPageSize,
+            _portalRepositories.GetInstance<IOfferRepository>().GetActiveServicesPaginationSource(sorting, serviceTypeId));
 
     /// <inheritdoc />
     public Task<Guid> CreateServiceOfferingAsync(ServiceOfferingData data, string iamUserId) =>

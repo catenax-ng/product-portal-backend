@@ -19,18 +19,17 @@
  ********************************************************************************/
 
 using AutoFixture;
+using FakeItEasy;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.BusinessLogic;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.Controllers;
-using Org.CatenaX.Ng.Portal.Backend.Tests.Shared.Extensions;
-using FakeItEasy;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
-using PortalBackend.DBAccess.Models;
+using Org.CatenaX.Ng.Portal.Backend.Tests.Shared.Extensions;
 using Xunit;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.Tests.Controllers;

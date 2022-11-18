@@ -89,7 +89,7 @@ public class ServiceRepositoryTests : IAssemblyFixture<TestDbFixture>
         var (sut, _) = await CreateSut().ConfigureAwait(false);
 
         // Act
-        var result = await sut.GetActiveServices(0, 15, null, null).ConfigureAwait(false);
+        var result = await sut.GetActiveServicesPaginationSource(null, null)(0, 15).ConfigureAwait(false);
 
         // Assert
         result.Should().NotBeNull();

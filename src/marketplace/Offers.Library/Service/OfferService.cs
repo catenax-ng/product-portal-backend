@@ -345,10 +345,8 @@ public class OfferService : IOfferService
         var licenseId = offerRepository.CreateOfferLicenses(data.Price).Id;
         offerRepository.CreateOfferAssignedLicense(service.Id, licenseId);
         
-        offerRepository.AddServiceAssignedServiceTypes(data.ServiceTypeIds.Select(id =>
-            new ValueTuple<Guid, ServiceTypeId>(service.Id, id)));
-        offerRepository.AddOfferDescriptions(data.Descriptions.Select(d =>
-            new ValueTuple<Guid, string, string, string>(service.Id, d.LanguageCode, string.Empty, d.Description)));
+        offerRepository.AddServiceAssignedServiceTypes(data.ServiceTypeIds.Select(id => (service.Id, id)));
+        offerRepository.AddOfferDescriptions(data.Descriptions.Select(d => (service.Id, d.LanguageCode, string.Empty, d.Description)));
 
         await _portalRepositories.SaveAsync();
         return service.Id;

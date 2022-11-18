@@ -34,7 +34,6 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.BusinessLogic;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
-using PortalBackend.DBAccess.Models;
 using Xunit;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.Tests.BusinessLogic;
@@ -504,9 +503,9 @@ public class ServiceBusinessLogicTests
     private void SetupPagination(int count = 5)
     {
         var serviceDetailData = _fixture.CreateMany<ServiceOverviewData>(count);
-        var paginationResult = new Pagination.Source<ServiceOverviewData>(serviceDetailData.Count(), serviceDetailData);
+        var paginationResult = (int skip, int take) => Task.FromResult(new Pagination.Source<ServiceOverviewData>(serviceDetailData.Count(), serviceDetailData.Skip(skip).Take(take)));
         
-        A.CallTo(() => _offerRepository.GetActiveServices(A<int>._, A<int>._, A<ServiceOverviewSorting?>._, A<ServiceTypeId?>._))
+        A.CallTo(() => _offerRepository.GetActiveServicesPaginationSource(A<ServiceOverviewSorting?>._, A<ServiceTypeId?>._))
             .ReturnsLazily(() => paginationResult);
         
         A.CallTo(() => _portalRepositories.GetInstance<IOfferRepository>()).Returns(_offerRepository);

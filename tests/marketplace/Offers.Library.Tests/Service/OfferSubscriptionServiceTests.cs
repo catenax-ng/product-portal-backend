@@ -32,8 +32,6 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
-using Org.CatenaX.Ng.Portal.Backend.Tests.Shared;
-using PortalBackend.DBAccess.Models;
 using Xunit;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Offers.Library.Tests.Service;
@@ -338,7 +336,7 @@ public class OfferSubscriptionServiceTests
     private void SetupRepositories()
     {
         var offerDetailData = _fixture.CreateMany<ServiceOverviewData>(5);
-        var paginationResult = new Pagination.Source<ServiceOverviewData>(offerDetailData.Count(), offerDetailData);
+        var paginationResult = (int skip, int take) => Task.FromResult(new Pagination.Source<ServiceOverviewData>(offerDetailData.Count(), offerDetailData.Skip(skip).Take(take)));
         var offerDetail = _fixture.Build<OfferDetailData>()
             .With(x => x.Id, _existingOfferId)
             .Create();
@@ -381,8 +379,8 @@ public class OfferSubscriptionServiceTests
             .Returns(new List<Guid>().ToAsyncEnumerable());
 
         
-        A.CallTo(() => _offerRepository.GetActiveServices(A<int>._, A<int>._, A<ServiceOverviewSorting>._, A<ServiceTypeId>._))
-            .ReturnsLazily(() => paginationResult);
+        A.CallTo(() => _offerRepository.GetActiveServicesPaginationSource(A<ServiceOverviewSorting>._, A<ServiceTypeId>._))
+            .Returns(paginationResult);
         A.CallTo(() => _offerRepository.GetOfferDetailByIdUntrackedAsync(_existingOfferId, A<string>.That.Matches(x => x == "en"), A<string>._, A<OfferTypeId>._))
             .ReturnsLazily(() => offerDetail with {OfferSubscriptionDetailData = new []
             {

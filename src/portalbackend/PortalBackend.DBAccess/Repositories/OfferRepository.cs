@@ -18,14 +18,12 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
-using Microsoft.EntityFrameworkCore;
-using PortalBackend.DBAccess.Models;
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 
@@ -249,35 +247,35 @@ public class OfferRepository : IOfferRepository
             )).AsAsyncEnumerable();
     
      /// <inheritdoc />
-     public Task<Pagination.Source<ServiceOverviewData>?> GetActiveServices(int skip, int take, ServiceOverviewSorting? sorting, ServiceTypeId? serviceTypeId) =>
-         Pagination.CreateSourceQueryAsync(
-                 skip,
-                 take,
-                 _context.Offers
-                     .AsNoTracking()
-                     .Where(x => 
-                         x.OfferTypeId == OfferTypeId.SERVICE &&
-                         x.OfferStatusId == OfferStatusId.ACTIVE &&
-                         (serviceTypeId == null || x.ServiceTypes.Any(st => st.Id == serviceTypeId)))
-                     .GroupBy(s => s.Id),
-                 sorting switch
-                 {
-                     ServiceOverviewSorting.ReleaseDateAsc => offers => offers.OrderBy(service => service.DateReleased),
-                     ServiceOverviewSorting.ReleaseDateDesc => offers => offers.OrderByDescending(service => service.DateReleased),
-                     ServiceOverviewSorting.ProviderAsc => offers => offers.OrderBy(service => service.Provider),
-                     ServiceOverviewSorting.ProviderDesc => offers => offers.OrderByDescending(service => service.Provider),
-                     _ => null
-                 },
-                 service =>  new ServiceOverviewData(
-                     service.Id,
-                     service.Name!,
-                     service.Provider,
-                     service.ThumbnailUrl,
-                     service.ContactEmail,
-                     null,
-                     service.OfferLicenses.FirstOrDefault()!.Licensetext,
-                     service.ServiceTypes.Select(x => x.Id)))
-             .SingleOrDefaultAsync();
+     public Func<int,int,Task<Pagination.Source<ServiceOverviewData>?>> GetActiveServicesPaginationSource(ServiceOverviewSorting? sorting, ServiceTypeId? serviceTypeId) =>
+        (int skip, int take) => Pagination.CreateSourceQueryAsync(
+            skip,
+            take,
+            _context.Offers
+                .AsNoTracking()
+                .Where(x => 
+                    x.OfferTypeId == OfferTypeId.SERVICE &&
+                    x.OfferStatusId == OfferStatusId.ACTIVE &&
+                    (serviceTypeId == null || x.ServiceTypes.Any(st => st.Id == serviceTypeId)))
+                .GroupBy(s => s.OfferTypeId),
+            sorting switch
+            {
+                ServiceOverviewSorting.ReleaseDateAsc => offers => offers.OrderBy(service => service.DateReleased),
+                ServiceOverviewSorting.ReleaseDateDesc => offers => offers.OrderByDescending(service => service.DateReleased),
+                ServiceOverviewSorting.ProviderAsc => offers => offers.OrderBy(service => service.Provider),
+                ServiceOverviewSorting.ProviderDesc => offers => offers.OrderByDescending(service => service.Provider),
+                _ => null
+            },
+            service =>  new ServiceOverviewData(
+                service.Id,
+                service.Name!,
+                service.Provider,
+                service.ThumbnailUrl,
+                service.ContactEmail,
+                null,
+                service.OfferLicenses.FirstOrDefault()!.Licensetext,
+                service.ServiceTypes.Select(x => x.Id)))
+        .SingleOrDefaultAsync();
 
      /// <inheritdoc />
     public Task<OfferDetailData?> GetOfferDetailByIdUntrackedAsync(Guid serviceId, string languageShortName, string iamUserId, OfferTypeId offerTypeId) => 

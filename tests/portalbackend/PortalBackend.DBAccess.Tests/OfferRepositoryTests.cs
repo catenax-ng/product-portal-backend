@@ -28,7 +28,6 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Tests.Setup;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
-using PortalBackend.DBAccess.Models;
 using Xunit;
 using Xunit.Extensions.AssemblyFixture;
 
@@ -405,7 +404,7 @@ public class OfferRepositoryTests : IAssemblyFixture<TestDbFixture>
         var sut = await CreateSut().ConfigureAwait(false);
 
         // Act
-        var offerDetail = await sut.GetActiveServices(0, 15, sorting, null).ConfigureAwait(false);
+        var offerDetail = await sut.GetActiveServicesPaginationSource(sorting, null)(0, 15).ConfigureAwait(false);
 
         // Assert
         offerDetail.Should().NotBeNull();
@@ -419,7 +418,7 @@ public class OfferRepositoryTests : IAssemblyFixture<TestDbFixture>
         var sut = await CreateSut().ConfigureAwait(false);
 
         // Act
-        var offerDetail = await sut.GetActiveServices(0, 15, null, ServiceTypeId.CONSULTANCE_SERVICE).ConfigureAwait(false);
+        var offerDetail = await sut.GetActiveServicesPaginationSource(null, ServiceTypeId.CONSULTANCE_SERVICE)(0, 15).ConfigureAwait(false);
 
         // Assert
         offerDetail.Should().NotBeNull();
@@ -433,7 +432,7 @@ public class OfferRepositoryTests : IAssemblyFixture<TestDbFixture>
         var sut = await CreateSut().ConfigureAwait(false);
 
         // Act
-        var offerDetail = await sut.GetActiveServices(0, 15, null, ServiceTypeId.DATASPACE_SERVICE).ConfigureAwait(false);
+        var offerDetail = await sut.GetActiveServicesPaginationSource(null, ServiceTypeId.DATASPACE_SERVICE)(0, 15).ConfigureAwait(false);
 
         // Assert
         offerDetail.Should().BeNull();
