@@ -23,7 +23,6 @@ using AutoFixture.AutoFakeItEasy;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
-using Offers.Library.Models;
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
 using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
@@ -35,7 +34,6 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.BusinessLogic;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
-using Org.CatenaX.Ng.Portal.Backend.Tests.Shared;
 using PortalBackend.DBAccess.Models;
 using Xunit;
 

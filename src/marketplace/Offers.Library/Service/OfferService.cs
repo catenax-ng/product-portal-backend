@@ -19,7 +19,6 @@
  ********************************************************************************/
 
 using System.Text.Json;
-using Offers.Library.Models;
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
 using Org.CatenaX.Ng.Portal.Backend.Mailing.SendMail;
 using Org.CatenaX.Ng.Portal.Backend.Notification.Library;

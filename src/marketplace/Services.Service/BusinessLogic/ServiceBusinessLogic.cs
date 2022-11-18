@@ -27,7 +27,6 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Microsoft.Extensions.Options;
-using Offers.Library.Models;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
 using PortalBackend.DBAccess.Models;
 

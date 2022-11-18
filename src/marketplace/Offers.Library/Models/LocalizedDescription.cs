@@ -20,7 +20,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Offers.Library.Models;
+namespace Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
 
 /// <summary>
 /// Simple model to specify descriptions for a language.
