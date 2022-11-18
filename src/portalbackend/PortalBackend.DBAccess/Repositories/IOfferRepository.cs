@@ -292,4 +292,13 @@ public interface IOfferRepository
     /// <param name="iamUserId">id of the current user</param>
     /// <returns>The found service update data</returns>
     Task<ServiceUpdateData?> GetServiceUpdateData(Guid serviceId, IEnumerable<ServiceTypeId> serviceTypeIds, string iamUserId);
+    
+    /// <summary>
+    /// Validate Company User and Retrieve CompanyUserid with App Name
+    /// </summary>
+    /// <param name="offerId"></param>
+    /// <param name="userId"></param>
+    /// <param name="offerTypeId"></param>
+    /// <returns></returns>
+    Task<(bool OfferExists, string? AppName, Guid CompanyUserId)> GetOfferNameProviderCompanyUserAsync(Guid offerId, string userId, OfferTypeId offerTypeId);
 }
