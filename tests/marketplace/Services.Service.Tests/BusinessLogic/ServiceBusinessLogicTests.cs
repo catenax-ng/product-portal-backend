@@ -472,9 +472,9 @@ public class ServiceBusinessLogicTests
         // Assert
         A.CallTo(() => _offerRepository.AttachAndModifyOffer(A<Guid>._, A<Action<Offer>?>._))
             .MustHaveHappenedOnceExactly();
-        A.CallTo(() => _offerRepository.AddOfferDescriptions(A<IEnumerable<(Guid serviceId, string languageShortName, string descriptionLong, string descriptionShort)>>._))
+        A.CallTo(() => _offerService.UpsertRemoveOfferDescription(A<Guid>._, A<IEnumerable<Localization>>._, A<IEnumerable<(string LanguageShortName, string DescriptionLong, string DescriptionShort)>>._))
             .MustHaveHappenedOnceExactly();
-        A.CallTo(() => _offerRepository.AttachAndModifyOfferLicense(A<Guid>._,A<Action<OfferLicense>>._))
+        A.CallTo(() => _offerService.CreateOrUpdateOfferLicense(A<Guid>._, A<string>._, A<(Guid offerLicenseId, string price, bool assignedToMultipleOffers)>._))
             .MustHaveHappenedOnceExactly();
         A.CallTo(() => _offerRepository.AddServiceAssignedServiceTypes(A<IEnumerable<(Guid serviceId, ServiceTypeId serviceTypeId)>>._))
             .MustHaveHappenedOnceExactly();

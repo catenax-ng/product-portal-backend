@@ -112,8 +112,8 @@ public interface IOfferRepository
     /// <summary>
     /// Adds <see cref="OfferDescription"/>s to the database
     /// </summary>
-    /// <param name="appDescriptions">The app descriptions that should be added to the database</param>
-    void AddOfferDescriptions(IEnumerable<(Guid appId, string languageShortName, string descriptionLong, string descriptionShort)> appDescriptions);
+    /// <param name="offerDescriptions">The app descriptions that should be added to the database</param>
+    void AddOfferDescriptions(IEnumerable<(Guid offerId, string languageShortName, string descriptionLong, string descriptionShort)> offerDescriptions);
 
     void RemoveOfferDescriptions(IEnumerable<(Guid offerId, string languageShortName)> offerDescriptionIds);
 

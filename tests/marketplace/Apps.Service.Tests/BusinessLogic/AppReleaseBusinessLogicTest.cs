@@ -298,6 +298,7 @@ public class AppReleaseBusinessLogicTest
     {
         // Arrange
         SetupUpdateApp();
+
         var data = new AppRequestModel(
             "test",
             "test", 
@@ -319,7 +320,7 @@ public class AppReleaseBusinessLogicTest
         // Assert
         A.CallTo(() => _offerRepository.AttachAndModifyOffer(A<Guid>._, A<Action<Offer>?>._))
             .MustHaveHappenedOnceExactly();
-        A.CallTo(() => _offerRepository.AddOfferDescriptions(A<IEnumerable<(Guid appId, string languageShortName, string descriptionLong, string descriptionShort)>>._))
+        A.CallTo(() => _offerService.UpsertRemoveOfferDescription(_existingAppId, A<IEnumerable<Localization>>.That.IsSameSequenceAs(new [] { new Localization("de", "Long description", "desc") }), A<IEnumerable<(string LanguageShorName, string DescriptionLong, string DescriptionShort)>>._))
             .MustHaveHappenedOnceExactly();
         A.CallTo(() => _offerRepository.AddAppLanguages(A<IEnumerable<(Guid appId, string languageShortName)>>._))
             .MustHaveHappenedOnceExactly();
@@ -327,8 +328,7 @@ public class AppReleaseBusinessLogicTest
             .MustHaveHappenedOnceExactly();
         A.CallTo(() => _offerRepository.AddAppAssignedUseCases(A<IEnumerable<(Guid appId, Guid useCaseId)>>._))
             .MustHaveHappenedOnceExactly();
-        A.CallTo(() => _offerRepository.AttachAndModifyOfferLicense(A<Guid>._,A<Action<OfferLicense>>._))
-            .MustHaveHappenedOnceExactly();
+        A.CallTo(() => _offerService.CreateOrUpdateOfferLicense(_existingAppId, A<string>._, A<(Guid OfferLicenseId, string LicenseText, bool AssingedToMultipleOffers)>._)).MustHaveHappenedOnceExactly();
     }
 
     #endregion

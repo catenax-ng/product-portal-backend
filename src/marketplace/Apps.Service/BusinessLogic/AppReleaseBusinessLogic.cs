@@ -111,7 +111,7 @@ public class AppReleaseBusinessLogic : IAppReleaseBusinessLogic
             }
         });
 
-        OfferService.UpsertRemoveOfferDescription(appId, updateModel.Descriptions, appResult.Descriptions, appRepository);
+        _offerService.UpsertRemoveOfferDescription(appId, updateModel.Descriptions, appResult.Descriptions);
         UpsertRemoveAppDetailImage(appId, updateModel.Images, appResult.ImageUrls, appRepository);
         
         await _portalRepositories.SaveAsync().ConfigureAwait(false);
@@ -444,7 +444,7 @@ public class AppReleaseBusinessLogic : IAppReleaseBusinessLogic
             app.SalesManagerId = appRequestModel.SalesManagerId;
         });
 
-        OfferService.UpsertRemoveOfferDescription(appId, appRequestModel.Descriptions.Select(x => new Localization(x.LanguageCode, x.LongDescription, x.ShortDescription)), appData.OfferDescriptions, appRepository);
+        _offerService.UpsertRemoveOfferDescription(appId, appRequestModel.Descriptions.Select(x => new Localization(x.LanguageCode, x.LongDescription, x.ShortDescription)), appData.OfferDescriptions);
         UpdateAppSupportedLanguages(appId, newSupportedLanguages, appData.Languages.Where(x => !x.IsMatch).Select(x => x.Shortname), appRepository);
 
         var newUseCases = appRequestModel.UseCaseIds.Except(appData.MatchingUseCases);
@@ -454,7 +454,7 @@ public class AppReleaseBusinessLogic : IAppReleaseBusinessLogic
                 (appId, uc)));
         }
 
-        OfferService.CreateOrUpdateAppLicense(appId, appRequestModel.Provider, appData.OfferLicense, appRepository);
+        _offerService.CreateOrUpdateOfferLicense(appId, appRequestModel.Provider, appData.OfferLicense);
         
         await _portalRepositories.SaveAsync().ConfigureAwait(false);
     }

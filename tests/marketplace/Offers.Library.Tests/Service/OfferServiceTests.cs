@@ -724,6 +724,133 @@ public class OfferServiceTests
     
     #endregion
     
+    #region UpsertRemoveOfferDescription
+
+    [Fact]
+    public void UpsertRemoveOfferDescription_ReturnsExpected()
+    {
+        var seedOfferId = _fixture.Create<Guid>();
+        var seed = new Dictionary<(Guid,string),OfferDescription>() {
+            {(seedOfferId, "de"), new OfferDescription(seedOfferId, "de", _fixture.Create<string>(), _fixture.Create<string>())},
+            {(seedOfferId, "en"), new OfferDescription(seedOfferId, "en", _fixture.Create<string>(), _fixture.Create<string>())},
+            {(seedOfferId, "fr"), new OfferDescription(seedOfferId, "fr", _fixture.Create<string>(), _fixture.Create<string>())},
+            {(seedOfferId, "cz"), new OfferDescription(seedOfferId, "cz", _fixture.Create<string>(), _fixture.Create<string>())},
+            {(seedOfferId, "it"), new OfferDescription(seedOfferId, "it", _fixture.Create<string>(), _fixture.Create<string>())},
+        };
+
+        var updateDescriptions = new [] {
+            new Localization("de", _fixture.Create<string>(), _fixture.Create<string>()),
+            new Localization("fr", _fixture.Create<string>(), _fixture.Create<string>()),
+            new Localization("sk", _fixture.Create<string>(), _fixture.Create<string>()),
+            new Localization("se", _fixture.Create<string>(), _fixture.Create<string>()),
+        };
+
+        var existingDescriptions = seed.Select((x) => x.Value).Select(y => (y.LanguageShortName, y.DescriptionLong, y.DescriptionShort)).ToList();
+
+        A.CallTo(() => _offerRepository.AddOfferDescriptions(A<IEnumerable<(Guid offerId, string languageShortName, string descriptionLong, string descriptionShort)>>._))
+            .Invokes((IEnumerable<(Guid offerId, string languageShortName, string descriptionLong, string descriptionShort)> offerDescriptions) =>
+                {
+                    foreach (var x in offerDescriptions)
+                    {
+                        seed[(x.offerId, x.languageShortName)] = new OfferDescription(x.offerId, x.languageShortName, x.descriptionLong, x.descriptionShort);
+                    }
+                });
+
+        A.CallTo(() => _offerRepository.RemoveOfferDescriptions(A<IEnumerable<(Guid offerId, string languageShortName)>>._))
+            .Invokes((IEnumerable<(Guid offerId, string languageShortName)> offerDescriptionIds) =>
+            {
+                foreach (var x in offerDescriptionIds)
+                {
+                    seed.Remove((x.offerId, x.languageShortName));
+                }
+            });
+
+        A.CallTo(() => _offerRepository.AttachAndModifyOfferDescription(A<Guid>._, A<string>._, A<Action<OfferDescription>>._)) 
+            .ReturnsLazily((Guid offerId, string languageShortName, Action<OfferDescription>? setOptionalParameters) =>
+            {
+                if (!seed.TryGetValue((offerId, languageShortName), out var offerDescription))
+                {
+                    offerDescription = new OfferDescription(offerId, languageShortName, null!, null!);
+                    seed[(offerId, languageShortName)] = offerDescription;
+                }
+                setOptionalParameters?.Invoke(offerDescription);
+                return offerDescription;
+            });
+
+        var sut = new OfferService(_portalRepositories, null!, null!, null!, null!);
+
+        sut.UpsertRemoveOfferDescription(seedOfferId, updateDescriptions, existingDescriptions);
+
+        A.CallTo(() => _offerRepository.AddOfferDescriptions(A<IEnumerable<(Guid offerId, string languageShortName, string descriptionLong, string descriptionShort)>>._))
+            .MustHaveHappenedOnceExactly();
+        A.CallTo(() => _offerRepository.RemoveOfferDescriptions(A<IEnumerable<(Guid offerId, string languageShortName)>>._))
+            .MustHaveHappenedOnceExactly();
+        A.CallTo(() => _offerRepository.AttachAndModifyOfferDescription(A<Guid>._, A<string>._, A<Action<OfferDescription>>._)) 
+            .MustHaveHappenedTwiceExactly();
+
+        seed.Should().HaveSameCount(updateDescriptions);
+        updateDescriptions.Should().AllSatisfy(x => seed.Should().ContainKey((seedOfferId, x.LanguageCode)));
+        updateDescriptions.Should().AllSatisfy(x => seed[(seedOfferId, x.LanguageCode)].DescriptionLong.Should().BeSameAs(x.LongDescription));
+        updateDescriptions.Should().AllSatisfy(x => seed[(seedOfferId, x.LanguageCode)].DescriptionShort.Should().BeSameAs(x.ShortDescription));
+    }
+
+    #endregion
+
+    #region CreateOrUpdateOfferLicense
+
+    [Fact]
+    public void CreateOrUpdateOfferLicense_AssignedToMultipleOffers_ReturnsExpected()
+    {
+        var offerId = _fixture.Create<Guid>();
+        var price = _fixture.Create<string>();
+        var offerLicense = _fixture.Build<(Guid OfferLicenseId, string LicenseText, bool AssignedToMultipleOffers)>().With(x => x.AssignedToMultipleOffers, true).Create();
+        var offerLicenseId = _fixture.Create<Guid>();
+
+        A.CallTo(() => _offerRepository.CreateOfferLicenses(A<string>._)).ReturnsLazily((string price) => new OfferLicense(offerLicenseId, price));
+
+        var sut = new OfferService(_portalRepositories, null!, null!, null!, null!);
+
+        sut.CreateOrUpdateOfferLicense(offerId, price, offerLicense);
+
+        A.CallTo(() => _offerRepository.AttachAndModifyOfferLicense(A<Guid>._, A<Action<OfferLicense>?>._)).MustNotHaveHappened();
+
+        A.CallTo(() => _offerRepository.CreateOfferLicenses(price)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _offerRepository.RemoveOfferAssignedLicense(offerId, offerLicense.OfferLicenseId)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _offerRepository.CreateOfferAssignedLicense(offerId, offerLicenseId)).MustHaveHappened();
+    }
+
+    [Fact]
+    public void CreateOrUpdateOfferLicense_NotAssignedToMultipleOffers_ReturnsExpected()
+    {
+        var offerId = _fixture.Create<Guid>();
+        var price = _fixture.Create<string>();
+        var offerLicense = _fixture.Build<(Guid OfferLicenseId, string LicenseText, bool AssignedToMultipleOffers)>().With(x => x.AssignedToMultipleOffers, false).Create();
+        OfferLicense? modifiedOfferLicense = null;
+
+        A.CallTo(() => _offerRepository.AttachAndModifyOfferLicense(offerLicense.OfferLicenseId, A<Action<OfferLicense>?>._))
+            .ReturnsLazily((Guid offerLicenseId, Action<OfferLicense>? setOptionalParameters) =>
+            {
+                modifiedOfferLicense = new OfferLicense(offerLicense.OfferLicenseId, null!);
+                setOptionalParameters?.Invoke(modifiedOfferLicense);
+                return modifiedOfferLicense;
+            });
+
+        var sut = new OfferService(_portalRepositories, null!, null!, null!, null!);
+
+        sut.CreateOrUpdateOfferLicense(offerId, price, offerLicense);
+
+        A.CallTo(() => _offerRepository.CreateOfferLicenses(A<string>._)).MustNotHaveHappened();
+        A.CallTo(() => _offerRepository.RemoveOfferAssignedLicense(A<Guid>._, A<Guid>._)).MustNotHaveHappened();
+        A.CallTo(() => _offerRepository.CreateOfferAssignedLicense(A<Guid>._, A<Guid>._)).MustNotHaveHappened();
+
+        A.CallTo(() => _offerRepository.AttachAndModifyOfferLicense(A<Guid>._, A<Action<OfferLicense>?>._)).MustHaveHappenedOnceExactly();
+        modifiedOfferLicense.Should().NotBeNull();
+        modifiedOfferLicense!.Licensetext.Should().NotBeNull(); 
+        modifiedOfferLicense!.Licensetext.Should().BeSameAs(price);
+    }
+
+    #endregion
+
     #region Setup
 
     private void SetupValidateSalesManager()

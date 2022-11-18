@@ -30,4 +30,3 @@ public record ServiceUpdateRequestData(
     string Price,
     string ContactEmail,
     Guid SalesManager);
-    

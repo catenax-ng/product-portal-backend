@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
+using Microsoft.Extensions.Options;
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
 using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
@@ -26,7 +27,6 @@ using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
-using Microsoft.Extensions.Options;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.BusinessLogic;
@@ -150,15 +150,15 @@ public class ServiceBusinessLogic : IServiceBusinessLogic
         await _offerService.ValidateSalesManager(data.SalesManager, iamUserId, _settings.SalesManagerRoles).ConfigureAwait(false);
 
         var offerRepository = _portalRepositories.GetInstance<IOfferRepository>();
-        offerRepository.AttachAndModifyOffer(serviceId, app =>
+        offerRepository.AttachAndModifyOffer(serviceId, offer =>
         {
-            app.Name = data.Title;
-            app.SalesManagerId = data.SalesManager;
-            app.ContactEmail = data.ContactEmail;
+            offer.Name = data.Title;
+            offer.SalesManagerId = data.SalesManager;
+            offer.ContactEmail = data.ContactEmail;
         });
 
-        OfferService.UpsertRemoveOfferDescription(serviceId, data.Descriptions.Select(x => new Localization(x.LanguageCode, x.LongDescription, x.ShortDescription)), serviceData.Descriptions, offerRepository);
-        OfferService.CreateOrUpdateAppLicense(serviceId, data.Price, serviceData.OfferLicense, offerRepository);
+        _offerService.UpsertRemoveOfferDescription(serviceId, data.Descriptions.Select(x => new Localization(x.LanguageCode, x.LongDescription, x.ShortDescription)), serviceData.Descriptions);
+        _offerService.CreateOrUpdateOfferLicense(serviceId, data.Price, serviceData.OfferLicense);
         var newServiceTypes = data.ServiceTypeIds
             .Except(serviceData.ServiceTypeIds.Where(x => x.IsMatch).Select(x => x.ServiceTypeId))
             .Select(sti => (serviceId, sti));

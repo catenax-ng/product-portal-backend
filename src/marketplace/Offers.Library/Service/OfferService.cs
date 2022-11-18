@@ -411,16 +411,17 @@ public class OfferService : IOfferService
         return responseData.UserCompanyId;
     }
     
-    public static void UpsertRemoveOfferDescription(Guid appId, IEnumerable<Localization> updateDescriptions, IEnumerable<(string LanguageShortName, string DescriptionLong, string DescriptionShort)> existingDescriptions, IOfferRepository appRepository)
+    public void UpsertRemoveOfferDescription(Guid offerId, IEnumerable<Localization> updateDescriptions, IEnumerable<(string LanguageShortName, string DescriptionLong, string DescriptionShort)> existingDescriptions)
     {
-        appRepository.AddOfferDescriptions(
+        var offerRepository = _portalRepositories.GetInstance<IOfferRepository>();
+        offerRepository.AddOfferDescriptions(
             updateDescriptions.ExceptBy(existingDescriptions.Select(d => d.LanguageShortName), updateDescription => updateDescription.LanguageCode)
-                .Select(updateDescription => (appId, updateDescription.LanguageCode, updateDescription.LongDescription, updateDescription.ShortDescription))
+                .Select(updateDescription => (offerId, updateDescription.LanguageCode, updateDescription.LongDescription, updateDescription.ShortDescription))
         );
 
-        appRepository.RemoveOfferDescriptions(
+        offerRepository.RemoveOfferDescriptions(
             existingDescriptions.ExceptBy(updateDescriptions.Select(d => d.LanguageCode), existingDescription => existingDescription.LanguageShortName)
-                .Select(existingDescription => (appId, existingDescription.LanguageShortName))
+                .Select(existingDescription => (offerId, existingDescription.LanguageShortName))
         );
 
         foreach (var update
@@ -430,7 +431,7 @@ public class OfferService : IOfferService
                          (existing.DescriptionLong != update.LongDescription ||
                           existing.DescriptionShort != update.ShortDescription))))
         {
-            appRepository.AttachAndModifyOfferDescription(appId, update.LanguageCode, offerDescription =>
+            offerRepository.AttachAndModifyOfferDescription(offerId, update.LanguageCode, offerDescription =>
             {
                 offerDescription.DescriptionLong = update.LongDescription;
                 offerDescription.DescriptionShort = update.ShortDescription;
@@ -438,19 +439,20 @@ public class OfferService : IOfferService
         }
     }
 
-    public static void CreateOrUpdateAppLicense(Guid serviceId, string price, (Guid offerLicenseId, string price, bool assignedToMultipleOffers) offerLicense, IOfferRepository offerRepository)
+    public void CreateOrUpdateOfferLicense(Guid offerId, string licenseText, (Guid OfferLicenseId, string LicenseText, bool AssignedToMultipleOffers) offerLicense)
     {
-        if (offerLicense == default || offerLicense.price == price) return;
+        var offerRepository = _portalRepositories.GetInstance<IOfferRepository>();
+        if (offerLicense == default || offerLicense.LicenseText == licenseText) return;
         
-        if (!offerLicense.assignedToMultipleOffers)
+        if (!offerLicense.AssignedToMultipleOffers)
         {
-            offerRepository.AttachAndModifyOfferLicense(offerLicense.offerLicenseId, ol => ol.Licensetext = price);
+            offerRepository.AttachAndModifyOfferLicense(offerLicense.OfferLicenseId, ol => ol.Licensetext = licenseText);
         }
         else
         {
-            offerRepository.RemoveOfferAssignedLicense(serviceId, offerLicense.offerLicenseId);
-            var licenseId = offerRepository.CreateOfferLicenses(price).Id;
-            offerRepository.CreateOfferAssignedLicense(serviceId, licenseId);
+            offerRepository.RemoveOfferAssignedLicense(offerId, offerLicense.OfferLicenseId);
+            var licenseId = offerRepository.CreateOfferLicenses(licenseText).Id;
+            offerRepository.CreateOfferAssignedLicense(offerId, licenseId);
         }
     }
 
