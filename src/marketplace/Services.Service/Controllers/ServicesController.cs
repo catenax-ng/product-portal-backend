@@ -58,7 +58,7 @@ public class ServicesController : ControllerBase
     /// <param name="page" example="0">Optional the page of the services.</param>
     /// <param name="size" example="15">Amount of services that should be returned, default is 15.</param>
     /// <param name="sorting" example="ProviderAsc">Optional Sorting of the pagination</param>
-    /// <param name="serviceTypeIds">Optional filter for service type ids</param>
+    /// <param name="serviceTypeId">Optional filter for service type ids</param>
     /// <returns>Collection of all active services.</returns>
     /// <remarks>Example: GET: /api/services/active</remarks>
     /// <response code="200">Returns the list of all active services.</response>

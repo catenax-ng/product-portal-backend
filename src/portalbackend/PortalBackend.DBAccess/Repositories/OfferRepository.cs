@@ -258,7 +258,7 @@ public class OfferRepository : IOfferRepository
                      .Where(x => 
                          x.OfferTypeId == OfferTypeId.SERVICE &&
                          x.OfferStatusId == OfferStatusId.ACTIVE &&
-                         (serviceTypeId == null || x.ServiceTypes.Any(st => (ServiceTypeId)st.Id == serviceTypeId)))
+                         (serviceTypeId == null || x.ServiceTypes.Any(st => st.Id == serviceTypeId)))
                      .GroupBy(s => s.Id),
                  sorting switch
                  {
@@ -276,7 +276,7 @@ public class OfferRepository : IOfferRepository
                      service.ContactEmail,
                      null,
                      service.OfferLicenses.FirstOrDefault()!.Licensetext,
-                     service.ServiceTypes.Select(x => (ServiceTypeId)x.Id)))
+                     service.ServiceTypes.Select(x => x.Id)))
              .SingleOrDefaultAsync();
 
      /// <inheritdoc />
