@@ -30,6 +30,7 @@ using Org.CatenaX.Ng.Portal.Backend.Tests.Shared.Extensions;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Org.CatenaX.Ng.Portal.Backend.Tests.Shared;
 using Xunit;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.Tests.Controllers;
@@ -231,5 +232,23 @@ public class ServiceControllerTest
         A.CallTo(() => _logic.AutoSetupServiceAsync(data, IamUserId)).MustHaveHappenedOnceExactly();
         Assert.IsType<OfferAutoSetupResponseData>(result);
         result.Should().Be(responseData);
+    }
+    
+    [Fact]
+    public async Task GetCompanyProvidedServiceSubscriptionStatusesForCurrentUserAsync_ReturnsExpectedCount()
+    {
+        //Arrange
+        var data = _fixture.CreateMany<OfferCompanySubscriptionStatusData>(5);
+        var pagination = new Pagination.Response<OfferCompanySubscriptionStatusData>(new Pagination.Metadata(data.Count(), 1, 0, data.Count()), data);
+        A.CallTo(() => _logic.GetCompanyProvidedServiceSubscriptionStatusesForUserAsync(A<int>._, A<int>._, A<string>._, A<SubscriptionStatusSorting?>._, A<OfferSubscriptionStatusId?>._))
+                    .ReturnsLazily(() => pagination);
+
+
+        //Act
+        var result = await this._controller.GetCompanyProvidedServiceSubscriptionStatusesForCurrentUserAsync().ConfigureAwait(false);
+
+        //Assert
+        A.CallTo(() => _logic.GetCompanyProvidedServiceSubscriptionStatusesForUserAsync(0, 15, IamUserId, null, null)).MustHaveHappenedOnceExactly();
+        result.Content.Should().HaveCount(5);
     }
 }

@@ -21,6 +21,7 @@
 using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
+using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.BusinessLogic;
@@ -109,4 +110,15 @@ public interface IServiceBusinessLogic
     /// <param name="iamUserId">Id of the iam user</param>
     /// <returns>Returns the response data</returns>
     Task<OfferAutoSetupResponseData> AutoSetupServiceAsync(OfferAutoSetupData data, string iamUserId);
+
+    /// <summary>
+    /// Retrieves subscription statuses of provided services of the provided user's company.
+    /// </summary>
+    /// <param name="page"></param>
+    /// <param name="size"></param>
+    /// <param name="iamUserId">IAM ID of the user to retrieve app subscription statuses for.</param>
+    /// <param name="sorting"></param>
+    /// <param name="statusIds"></param>
+    /// <returns>Pagination of user's company's provided service' statuses.</returns>
+    public Task<Pagination.Response<OfferCompanySubscriptionStatusData>> GetCompanyProvidedServiceSubscriptionStatusesForUserAsync(int page, int size, string iamUserId, SubscriptionStatusSorting? sorting, OfferSubscriptionStatusId? statusId);
 }

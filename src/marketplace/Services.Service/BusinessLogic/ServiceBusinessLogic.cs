@@ -142,4 +142,10 @@ public class ServiceBusinessLogic : IServiceBusinessLogic
     /// <inheritdoc />
     public Task<OfferAutoSetupResponseData> AutoSetupServiceAsync(OfferAutoSetupData data, string iamUserId) =>
         _offerService.AutoSetupServiceAsync(data, _settings.ServiceAccountRoles, _settings.CompanyAdminRoles, iamUserId, OfferTypeId.SERVICE, _settings.BasePortalAddress);
+
+    /// <inheritdoc/>
+    public Task<Pagination.Response<OfferCompanySubscriptionStatusData>> GetCompanyProvidedServiceSubscriptionStatusesForUserAsync(int page, int size, string iamUserId, SubscriptionStatusSorting? sorting, OfferSubscriptionStatusId? statusId) =>
+        Pagination.CreateResponseAsync(page, size, _settings.ApplicationsMaxPageSize, (skip, take) => _portalRepositories.GetInstance<IOfferSubscriptionsRepository>()
+            .GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(skip, take, iamUserId, OfferTypeId.SERVICE, sorting ?? default, statusId));
+
 }

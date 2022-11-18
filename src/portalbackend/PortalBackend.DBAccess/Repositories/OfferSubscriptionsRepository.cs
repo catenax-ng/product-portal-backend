@@ -18,11 +18,13 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
+using System.Linq.Expressions;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 using Microsoft.EntityFrameworkCore;
+using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 
 namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Repositories;
 
@@ -53,17 +55,33 @@ public class OfferSubscriptionsRepository : IOfferSubscriptionsRepository
             .ToAsyncEnumerable();
 
     /// <inheritdoc />
-    public IAsyncEnumerable<AppCompanySubscriptionStatusData> GetOwnCompanyProvidedAppSubscriptionStatusesUntrackedAsync(string iamUserId) =>
-        _context.OfferSubscriptions.AsNoTracking()
-            .Where(s => s.Offer!.ProviderCompany!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUserId))
-            .GroupBy(s => s.OfferId)
-            .Select(g => new AppCompanySubscriptionStatusData
-            {
-                AppId = g.Key,
-                CompanySubscriptionStatuses = g.Select(s =>
-                    new CompanySubscriptionStatusData(s.CompanyId, s.OfferSubscriptionStatusId))
-            })
-            .ToAsyncEnumerable();
+    public Task<Pagination.Source<OfferCompanySubscriptionStatusData>?> GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(int skip, int take, string iamUserId, OfferTypeId offerTypeId, SubscriptionStatusSorting sorting, OfferSubscriptionStatusId? statusId) =>
+        Pagination.CreateSourceWithGroupedQueryAsync(
+                skip,
+                take,
+                _context.OfferSubscriptions
+                    .AsNoTracking()
+                    .Where(os => 
+                        os.Offer!.OfferTypeId == offerTypeId &&
+                        os.Offer!.ProviderCompany!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUserId) &&
+                        (statusId == null || statusId == os.OfferSubscriptionStatusId))
+                    .GroupBy(s => new { s.OfferId, s.DisplayName }),
+                sorting switch
+                {
+                    SubscriptionStatusSorting.CompanyNameAsc => (IEnumerable<OfferSubscription> os) => os.OrderBy(subscription => subscription.Company!.Name),
+                    SubscriptionStatusSorting.CompanyNameDesc => (IEnumerable<OfferSubscription> os) => os.OrderByDescending(subscription => subscription.Company!.Name),
+                    SubscriptionStatusSorting.OfferIdAsc => (IEnumerable<OfferSubscription> os) => os.OrderBy(subscription => subscription.OfferId),
+                    SubscriptionStatusSorting.OfferIdDesc => (IEnumerable<OfferSubscription> os) => os.OrderByDescending(subscription => subscription.OfferId),
+                    _ =>(Expression<Func<IEnumerable<OfferSubscription>,IOrderedEnumerable<OfferSubscription>>>?)null
+                },
+                g => new OfferCompanySubscriptionStatusData
+                {
+                    OfferId = g.Key.OfferId,
+                    ServiceName = g.Key.DisplayName,
+                    CompanySubscriptionStatuses = g.Select(s =>
+                        new CompanySubscriptionStatusData(s.CompanyId, s.Company!.Name, s.Id, s.OfferSubscriptionStatusId))
+                })
+            .SingleOrDefaultAsync();
 
     /// <inheritdoc />
     public Task<(OfferSubscription? companyAssignedApp, bool isMemberOfCompanyProvidingApp, string? appName, Guid companyUserId)> GetCompanyAssignedAppDataForProvidingCompanyUserAsync(Guid appId, Guid companyId, string iamUserId) =>

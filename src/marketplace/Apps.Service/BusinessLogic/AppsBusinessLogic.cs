@@ -154,9 +154,9 @@ public class AppsBusinessLogic : IAppsBusinessLogic
             .GetOwnCompanySubscribedAppSubscriptionStatusesUntrackedAsync(iamUserId);
 
     /// <inheritdoc/>
-    public IAsyncEnumerable<AppCompanySubscriptionStatusData> GetCompanyProvidedAppSubscriptionStatusesForUserAsync(string iamUserId) =>
-        _portalRepositories.GetInstance<IOfferSubscriptionsRepository>()
-            .GetOwnCompanyProvidedAppSubscriptionStatusesUntrackedAsync(iamUserId);
+    public Task<Pagination.Response<OfferCompanySubscriptionStatusData>> GetCompanyProvidedAppSubscriptionStatusesForUserAsync(int page, int size, string iamUserId, SubscriptionStatusSorting? sorting, OfferSubscriptionStatusId? statusId) =>
+        Pagination.CreateResponseAsync(page, size, _settings.ApplicationsMaxPageSize, (skip, take) => _portalRepositories.GetInstance<IOfferSubscriptionsRepository>()
+            .GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(skip, take, iamUserId, OfferTypeId.APP, sorting ?? default, statusId));
 
     /// <inheritdoc/>
     public Task<Guid> AddOwnCompanyAppSubscriptionAsync(Guid appId, IEnumerable<OfferAgreementConsentData> offerAgreementConsentData, string iamUserId, string accessToken) =>

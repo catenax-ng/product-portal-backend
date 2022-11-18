@@ -24,6 +24,7 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
+using Org.CatenaX.Ng.Portal.Backend.Framework.Models;
 using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
 using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Service;
 using Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess;
@@ -173,6 +174,34 @@ public class ServiceBusinessLogicTests
             A<OfferTypeId>.That.Matches(x => x == OfferTypeId.SERVICE),
             A<string>._))
             .MustHaveHappenedOnceExactly();
+    }
+
+    #endregion
+
+    #region GetCompanyProvidedServiceSubscriptionStatusesForUser
+    
+    [Fact]
+    public async Task GetCompanyProvidedServiceSubscriptionStatusesForUserAsync_ReturnsExpectedCount()
+    {
+        // Arrange
+        var (_, iamUser) = CreateTestUserPair();
+
+        var data = _fixture.CreateMany<OfferCompanySubscriptionStatusData>(5);
+        var pagination = new Pagination.Source<OfferCompanySubscriptionStatusData>(data.Count(), data);
+        A.CallTo(() => _offerSubscriptionsRepository.GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(A<int>._, A<int>._, iamUser.UserEntityId, OfferTypeId.SERVICE, default, null))
+            .ReturnsLazily(() => pagination);
+
+        var serviceSettings = new ServiceSettings
+        {
+            ApplicationsMaxPageSize = 15
+        };
+        var sut = new ServiceBusinessLogic(_portalRepositories, A.Fake<IOfferService>(), A.Fake<IOfferSubscriptionService>(), Options.Create(serviceSettings));
+
+        // Act
+        var result = await sut.GetCompanyProvidedServiceSubscriptionStatusesForUserAsync(0, 10, iamUser.UserEntityId, null, null).ConfigureAwait(false);
+
+        // Assert
+        result.Content.Should().HaveCount(5);
     }
 
     #endregion
