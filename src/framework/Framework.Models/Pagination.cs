@@ -20,6 +20,7 @@
 
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Framework.Models;
@@ -151,7 +152,7 @@ public class Pagination
             Expression.New(typeof(Pagination.Source<T>).GetConstructor(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance, new [] { typeof(int), typeof(IEnumerable<T>) })!,
                 new Expression[] {
                     Expression.Call(typeof(Enumerable), "Count", new Type[] { typeof(TEntity) }, paramGroup),
-                    Expression.Call(typeof(Enumerable), "Select", new Type[] { typeof(TEntity), typeof(T) }, new Expression[] {
+                    Expression.Call(typeof(Enumerable), "Select", new Type[] { typeof(IGrouping<TKey, TEntity>), typeof(T) }, new Expression[] {
                         Expression.Call(typeof(Enumerable), "Take", new Type[] { typeof(TEntity) }, new Expression [] {
                             Expression.Call(typeof(Enumerable), "Skip", new Type[] { typeof(TEntity) }, new Expression[] {
                                 orderBy == null ? paramGroup : Expression.Invoke(orderBy, paramGroup),

@@ -118,7 +118,7 @@ public interface IServiceBusinessLogic
     /// <param name="size"></param>
     /// <param name="iamUserId">IAM ID of the user to retrieve app subscription statuses for.</param>
     /// <param name="sorting"></param>
-    /// <param name="statusIds"></param>
+    /// <param name="statusId"></param>
     /// <returns>Pagination of user's company's provided service' statuses.</returns>
     public Task<Pagination.Response<OfferCompanySubscriptionStatusData>> GetCompanyProvidedServiceSubscriptionStatusesForUserAsync(int page, int size, string iamUserId, SubscriptionStatusSorting? sorting, OfferSubscriptionStatusId? statusId);
 }
