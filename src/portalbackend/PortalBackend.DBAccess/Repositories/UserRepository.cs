@@ -422,7 +422,8 @@ public class UserRepository : IUserRepository
 
         return _dbContext.CompanyUsers.AsNoTracking()
             .Where(companyUser => companyUser.IamUser!.UserEntityId == iamUserId && 
-                                  companyUser.Company!.OfferSubscriptions.Any(subscription => subscription.OfferId == appId && statusIds.Contains(subscription.OfferSubscriptionStatusId)))
+                                  companyUser.Company!.OfferSubscriptions.Any(subscription => subscription.OfferId == appId && statusIds.Contains(subscription.OfferSubscriptionStatusId)) &&
+                                  companyUser.CompanyUserStatusId != CompanyUserStatusId.DELETED)
             .SelectMany(companyUser => companyUser.Company!.CompanyUsers)
             .Where(companyUser => 
                 (firstName == null || EF.Functions.ILike(companyUser.Firstname!, $"%{firstName}%")) &&
