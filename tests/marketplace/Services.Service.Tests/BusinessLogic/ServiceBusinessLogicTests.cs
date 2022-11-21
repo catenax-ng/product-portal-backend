@@ -187,9 +187,8 @@ public class ServiceBusinessLogicTests
         var (_, iamUser) = CreateTestUserPair();
 
         var data = _fixture.CreateMany<OfferCompanySubscriptionStatusData>(5);
-        var pagination = new Pagination.Source<OfferCompanySubscriptionStatusData>(data.Count(), data);
-        A.CallTo(() => _offerSubscriptionsRepository.GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(A<int>._, A<int>._, iamUser.UserEntityId, OfferTypeId.SERVICE, default, null))
-            .ReturnsLazily(() => pagination);
+        A.CallTo(() => _offerSubscriptionsRepository.GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(iamUser.UserEntityId, OfferTypeId.SERVICE, default, null))
+            .Returns((skip, take) => Task.FromResult(new Pagination.Source<OfferCompanySubscriptionStatusData>(data.Count(), data.Skip(skip).Take(take)))!);
 
         var serviceSettings = new ServiceSettings
         {

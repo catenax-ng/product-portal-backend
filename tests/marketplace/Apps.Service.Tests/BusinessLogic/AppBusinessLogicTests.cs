@@ -226,9 +226,8 @@ public class AppBusinessLogicTests
         // Arrange
         var iamUserId = _fixture.Create<string>();
         var data = _fixture.CreateMany<OfferCompanySubscriptionStatusData>(5);
-        var pagination = new Pagination.Source<OfferCompanySubscriptionStatusData>(data.Count(), data);
-        A.CallTo(() => _offerSubscriptionRepository.GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(0, 10, iamUserId, OfferTypeId.APP, default, null))
-            .ReturnsLazily(() => pagination);
+        A.CallTo(() => _offerSubscriptionRepository.GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(iamUserId, OfferTypeId.APP, default, null))
+            .Returns((skip, take) => Task.FromResult(new Pagination.Source<OfferCompanySubscriptionStatusData>(data.Count(), data.Skip(skip).Take(take)))!);
 
         var appsSettings = new AppsSettings
         {

@@ -135,8 +135,7 @@ public class OfferSubscriptionRepositoryTest : IAssemblyFixture<TestDbFixture>
 
     #region xy
     
-    
-    [Theory(Skip = "TODO (PS): Check group select")]
+    [Theory]
     [InlineData(SubscriptionStatusSorting.OfferIdAsc)]
     [InlineData(SubscriptionStatusSorting.OfferIdDesc)]
     [InlineData(SubscriptionStatusSorting.CompanyNameAsc)]
@@ -147,7 +146,7 @@ public class OfferSubscriptionRepositoryTest : IAssemblyFixture<TestDbFixture>
         var (sut, _) = await CreateSut().ConfigureAwait(false);
 
         // Act
-        var results = await sut.GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(0, 15, "623770c5-cf38-4b9f-9a35-f8b9ae972e2e", OfferTypeId.SERVICE, sorting, null).ConfigureAwait(false);
+        var results = await sut.GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync("623770c5-cf38-4b9f-9a35-f8b9ae972e2e", OfferTypeId.SERVICE, sorting, null)(0, 15).ConfigureAwait(false);
 
         // Assert
         results.Should().NotBeNull();
@@ -155,7 +154,6 @@ public class OfferSubscriptionRepositoryTest : IAssemblyFixture<TestDbFixture>
         results.Data.Should().HaveCount(1);
         results.Data.Should().AllBeOfType<OfferCompanySubscriptionStatusData>();
     }
-
     
     #endregion
     

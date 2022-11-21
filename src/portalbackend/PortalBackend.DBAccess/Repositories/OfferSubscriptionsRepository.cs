@@ -55,30 +55,30 @@ public class OfferSubscriptionsRepository : IOfferSubscriptionsRepository
             .ToAsyncEnumerable();
 
     /// <inheritdoc />
-    public Task<Pagination.Source<OfferCompanySubscriptionStatusData>?> GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(int skip, int take, string iamUserId, OfferTypeId offerTypeId, SubscriptionStatusSorting sorting, OfferSubscriptionStatusId? statusId) =>
-        Pagination.CreateSourceWithGroupedQueryAsync(
+    public Func<int, int, Task<Pagination.Source<OfferCompanySubscriptionStatusData>?>> GetOwnCompanyProvidedOfferSubscriptionStatusesUntrackedAsync(string iamUserId, OfferTypeId offerTypeId, SubscriptionStatusSorting sorting, OfferSubscriptionStatusId? statusId) =>
+        (skip, take) => Pagination.CreateSourceQueryAsync(
                 skip,
                 take,
-                _context.OfferSubscriptions
+                _context.Offers
                     .AsNoTracking()
                     .Where(os => 
-                        os.Offer!.OfferTypeId == offerTypeId &&
-                        os.Offer!.ProviderCompany!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUserId) &&
-                        (statusId == null || statusId == os.OfferSubscriptionStatusId))
-                    .GroupBy(s => new { s.OfferId, s.DisplayName }),
+                        os.OfferTypeId == offerTypeId &&
+                        os.ProviderCompany!.CompanyUsers.Any(companyUser => companyUser.IamUser!.UserEntityId == iamUserId) &&
+                        (statusId == null || os.OfferSubscriptions.Any(x => x.OfferSubscriptionStatusId == statusId)))
+                    .GroupBy(s => s.ProviderCompanyId),
                 sorting switch
                 {
-                    SubscriptionStatusSorting.CompanyNameAsc => (IEnumerable<OfferSubscription> os) => os.OrderBy(subscription => subscription.Company!.Name),
-                    SubscriptionStatusSorting.CompanyNameDesc => (IEnumerable<OfferSubscription> os) => os.OrderByDescending(subscription => subscription.Company!.Name),
-                    SubscriptionStatusSorting.OfferIdAsc => (IEnumerable<OfferSubscription> os) => os.OrderBy(subscription => subscription.OfferId),
-                    SubscriptionStatusSorting.OfferIdDesc => (IEnumerable<OfferSubscription> os) => os.OrderByDescending(subscription => subscription.OfferId),
-                    _ =>(Expression<Func<IEnumerable<OfferSubscription>,IOrderedEnumerable<OfferSubscription>>>?)null
+                    SubscriptionStatusSorting.CompanyNameAsc => (IEnumerable<Offer> o) => o.OrderBy(offer => offer.ProviderCompany!.Name),
+                    SubscriptionStatusSorting.CompanyNameDesc => (IEnumerable<Offer> o) => o.OrderByDescending(offer => offer.ProviderCompany!.Name),
+                    SubscriptionStatusSorting.OfferIdAsc => (IEnumerable<Offer> o) => o.OrderBy(offer => offer.Id),
+                    SubscriptionStatusSorting.OfferIdDesc => (IEnumerable<Offer> o) => o.OrderByDescending(offer => offer.Id),
+                    _ =>(Expression<Func<IEnumerable<Offer>,IOrderedEnumerable<Offer>>>?)null
                 },
                 g => new OfferCompanySubscriptionStatusData
                 {
-                    OfferId = g.Key.OfferId,
-                    ServiceName = g.Key.DisplayName,
-                    CompanySubscriptionStatuses = g.Select(s =>
+                    OfferId = g.Id,
+                    ServiceName = g.Name,
+                    CompanySubscriptionStatuses = g.OfferSubscriptions.Select(s =>
                         new CompanySubscriptionStatusData(s.CompanyId, s.Company!.Name, s.Id, s.OfferSubscriptionStatusId))
                 })
             .SingleOrDefaultAsync();

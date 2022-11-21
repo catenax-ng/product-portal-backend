@@ -144,28 +144,6 @@ public class Pagination
         return query.Select(selector);
     }
 
-    public static IQueryable<Pagination.Source<T>?> CreateSourceWithGroupedQueryAsync<TEntity,TKey,T>(int skip, int take, IQueryable<IGrouping<TKey,TEntity>> query, Expression<Func<IEnumerable<TEntity>, IOrderedEnumerable<TEntity>>>? orderBy, Expression<Func<IGrouping<TKey,TEntity>,T>> select) where TEntity : class
-    {
-        var paramGroup = Expression.Parameter(typeof(IGrouping<TKey,TEntity>), "group");
-
-        var selector = Expression.Lambda<Func<IGrouping<TKey,TEntity>,Pagination.Source<T>>>(
-            Expression.New(typeof(Pagination.Source<T>).GetConstructor(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance, new [] { typeof(int), typeof(IEnumerable<T>) })!,
-                new Expression[] {
-                    Expression.Call(typeof(Enumerable), "Count", new Type[] { typeof(TEntity) }, paramGroup),
-                    Expression.Call(typeof(Enumerable), "Select", new Type[] { typeof(IGrouping<TKey, TEntity>), typeof(T) }, new Expression[] {
-                        Expression.Call(typeof(Enumerable), "Take", new Type[] { typeof(TEntity) }, new Expression [] {
-                            Expression.Call(typeof(Enumerable), "Skip", new Type[] { typeof(TEntity) }, new Expression[] {
-                                orderBy == null ? paramGroup : Expression.Invoke(orderBy, paramGroup),
-                                Expression.Constant(skip) }),
-                            Expression.Constant(take) }),
-                        select })
-                }
-            ),
-            paramGroup);
-
-        return query.Select(selector);
-    }
-
     private static void ValidatePaginationParameters(int page, int size, int maxSize)
     {
         if (page < 0)
