@@ -18,17 +18,24 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
+using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-namespace Org.CatenaX.Ng.Portal.Backend.Apps.Service.ViewModels;
+namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 
-/// <summary>
-/// Model for updating an app.
-/// </summary>
-/// <param name="Descriptions"></param>
-/// <param name="Images"></param>
-/// <param name="ProviderUri"></param>
-/// <param name="ContactEmail"></param>
-/// <param name="ContactNumber"></param>
-/// <returns></returns>
-public record AppEditableDetail(IEnumerable<Localization> Descriptions, IEnumerable<string> Images, string? ProviderUri, string? ContactEmail, string? ContactNumber);
+public class ServiceAssignedServiceType
+{
+    private ServiceAssignedServiceType() {}
+
+    public ServiceAssignedServiceType(Guid serviceId, ServiceTypeId serviceTypeId)
+    {
+        ServiceId = serviceId;
+        ServiceTypeId = serviceTypeId;
+    }
+
+    public Guid ServiceId { get; private set; }
+    public ServiceTypeId ServiceTypeId { get; private set; }
+
+    // Navigation properties
+    public virtual Offer? Service { get; private set; }
+    public virtual ServiceType? ServiceType { get; private set; }
+}

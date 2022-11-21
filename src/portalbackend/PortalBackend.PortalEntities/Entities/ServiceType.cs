@@ -18,16 +18,30 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-namespace Org.CatenaX.Ng.Portal.Backend.Services.Service.ViewModels;
+using System.ComponentModel.DataAnnotations;
+using Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-/// <summary>
-/// View model of an application's detailed data specific for service.
-/// </summary>
-/// <param name="Id">ID of the service.</param>
-/// <param name="Title">Title or name of the service.</param>
-/// <param name="Provider">Provider of the service.</param>
-/// <param name="LeadPictureUri">Uri to service's lead picture.</param>
-/// <param name="ContactEmail">Contact email address.</param>
-/// <param name="Description">The description of the service.</param>
-/// <param name="Price">Pricing information of the service.</param>
-public record ServiceOverviewData(Guid Id, string Title, string Provider, string LeadPictureUri, string? ContactEmail, string? Description, string Price);
+namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
+
+public class ServiceType
+{
+    private ServiceType()
+    {
+        Label = null!;
+        Services = new HashSet<Offer>();
+    }
+
+    public ServiceType(ServiceTypeId offerTypeId) : this()
+    {
+        Id = offerTypeId;
+        Label = offerTypeId.ToString();
+    }
+
+    public ServiceTypeId Id { get; private set; }
+
+    [MaxLength(255)]
+    public string Label { get; private set; }
+
+    // Navigation properties
+    public virtual ICollection<Offer> Services { get; private set; }
+}

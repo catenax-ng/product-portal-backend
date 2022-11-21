@@ -57,7 +57,7 @@ public static class BaseSeed
             },
         });
 
-        dbContext.ServiceProviderCompanyDetails.AddRange(new List<ServiceProviderCompanyDetail>
+        dbContext.ProviderCompanyDetails.AddRange(new List<ProviderCompanyDetail>
         {
             new(new Guid("ee8b4b4a-056e-4f0b-bc2a-cc1adbedf122"), new Guid("2dc4249f-b5ca-4d42-bef1-7a7a950a4f87"), "https://www.test-service.com", DateTimeOffset.UtcNow)
         });
@@ -178,6 +178,10 @@ public static class BaseSeed
             new(new Guid("99C5FD12-8085-4DE2-ABFD-215E1EE4BAA4"), new Guid("06b243a4-ba51-4bf3-bc40-5d79a2231b90"))
         });
         
+        dbContext.ServiceAssignedServiceTypes.AddRange(new List<ServiceAssignedServiceType>
+        {
+            new (new Guid("99C5FD12-8085-4DE2-ABFD-215E1EE4BAA5"), ServiceTypeId.CONSULTANCE_SERVICE)
+        });
         
         dbContext.UserRoles.AddRange(new List<UserRole>
         {

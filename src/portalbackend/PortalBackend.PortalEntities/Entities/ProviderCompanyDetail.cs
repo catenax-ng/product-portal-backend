@@ -1,4 +1,4 @@
-/********************************************************************************
+﻿/********************************************************************************
  * Copyright (c) 2021,2022 BMW Group AG
  * Copyright (c) 2021,2022 Contributors to the CatenaX (ng) GitHub Organisation.
  *
@@ -18,17 +18,32 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
+namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
 
-namespace Org.CatenaX.Ng.Portal.Backend.Apps.Service.ViewModels;
+public class ProviderCompanyDetail
+{
+    private ProviderCompanyDetail()
+    {
+        AutoSetupUrl = null!;
+    }
+    
+    public ProviderCompanyDetail(Guid id, Guid companyId, string autoSetupUrl, DateTimeOffset dateCreated) 
+        : this()
+    {
+        Id = id;
+        CompanyId = companyId;
+        AutoSetupUrl = autoSetupUrl;
+        DateCreated = dateCreated;
+    }
 
-/// <summary>
-/// Model for updating an app.
-/// </summary>
-/// <param name="Descriptions"></param>
-/// <param name="Images"></param>
-/// <param name="ProviderUri"></param>
-/// <param name="ContactEmail"></param>
-/// <param name="ContactNumber"></param>
-/// <returns></returns>
-public record AppEditableDetail(IEnumerable<Localization> Descriptions, IEnumerable<string> Images, string? ProviderUri, string? ContactEmail, string? ContactNumber);
+    public Guid Id { get; private set; }
+
+    public DateTimeOffset DateCreated { get; private set; }
+
+    public string AutoSetupUrl { get; set; }
+
+    public Guid CompanyId { get; set; }
+
+    // Navigation properties
+    public virtual Company? Company { get; private set; }
+}

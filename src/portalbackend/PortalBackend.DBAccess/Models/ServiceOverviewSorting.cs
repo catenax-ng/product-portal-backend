@@ -18,32 +18,30 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Entities;
+namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.DBAccess.Models;
 
-public class ServiceProviderCompanyDetail
+/// <summary>
+/// Possible sorting options for the notification pagination
+/// </summary>
+public enum ServiceOverviewSorting
 {
-    private ServiceProviderCompanyDetail()
-    {
-        AutoSetupUrl = null!;
-    }
+    /// <summary>
+    /// Ascending by provider
+    /// </summary>
+    ProviderAsc = 1,
     
-    public ServiceProviderCompanyDetail(Guid id, Guid companyId, string autoSetupUrl, DateTimeOffset dateCreated) 
-        : this()
-    {
-        Id = id;
-        CompanyId = companyId;
-        AutoSetupUrl = autoSetupUrl;
-        DateCreated = dateCreated;
-    }
-
-    public Guid Id { get; private set; }
-
-    public DateTimeOffset DateCreated { get; private set; }
-
-    public string AutoSetupUrl { get; set; }
-
-    public Guid CompanyId { get; set; }
-
-    // Navigation properties
-    public virtual Company? Company { get; private set; }
+    /// <summary>
+    /// Descending by provider
+    /// </summary>
+    ProviderDesc = 2,
+    
+    /// <summary>
+    /// Ascending by the release date
+    /// </summary>
+    ReleaseDateAsc = 3,
+    
+    /// <summary>
+    /// Descending by release date
+    /// </summary>
+    ReleaseDateDesc = 4,
 }

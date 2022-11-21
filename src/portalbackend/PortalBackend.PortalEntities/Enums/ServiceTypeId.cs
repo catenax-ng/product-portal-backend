@@ -18,17 +18,10 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-using Org.CatenaX.Ng.Portal.Backend.Offers.Library.Models;
+namespace Org.CatenaX.Ng.Portal.Backend.PortalBackend.PortalEntities.Enums;
 
-namespace Org.CatenaX.Ng.Portal.Backend.Apps.Service.ViewModels;
-
-/// <summary>
-/// Model for updating an app.
-/// </summary>
-/// <param name="Descriptions"></param>
-/// <param name="Images"></param>
-/// <param name="ProviderUri"></param>
-/// <param name="ContactEmail"></param>
-/// <param name="ContactNumber"></param>
-/// <returns></returns>
-public record AppEditableDetail(IEnumerable<Localization> Descriptions, IEnumerable<string> Images, string? ProviderUri, string? ContactEmail, string? ContactNumber);
+public enum ServiceTypeId
+{
+    DATASPACE_SERVICE = 1,
+    CONSULTANCE_SERVICE = 2
+}

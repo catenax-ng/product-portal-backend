@@ -112,13 +112,17 @@ public class PortalDbContext : DbContext
     public virtual DbSet<OfferType> OfferTypes { get; set; } = default!;
     public virtual DbSet<OfferSubscription> OfferSubscriptions { get; set; } = default!;
     public virtual DbSet<OfferSubscriptionStatus> OfferSubscriptionStatuses { get; set; } = default!;
-    public virtual DbSet<ServiceProviderCompanyDetail> ServiceProviderCompanyDetails { get; set; } = default!;
+    public virtual DbSet<ProviderCompanyDetail> ProviderCompanyDetails { get; set; } = default!;
+
+    public virtual DbSet<ServiceAssignedServiceType> ServiceAssignedServiceTypes { get; set; } = default!;
+    public virtual DbSet<ServiceType> ServiceTypes { get; set; } = default!;
     public virtual DbSet<UseCase> UseCases { get; set; } = default!;
     public virtual DbSet<UserRole> UserRoles { get; set; } = default!;
     public virtual DbSet<UserRoleAssignedCollection> UserRoleAssignedCollections { get; set; } = default!;
     public virtual DbSet<UserRoleCollection> UserRoleCollections { get; set; } = default!;
     public virtual DbSet<UserRoleCollectionDescription> UserRoleCollectionDescriptions { get; set; } = default!;
     public virtual DbSet<UserRoleDescription> UserRoleDescriptions { get; set; } = default!;
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSnakeCaseNamingConvention();
@@ -290,7 +294,7 @@ public class PortalDbContext : DbContext
                 );
             
             entity.HasMany(p => p.OfferLicenses)
-                .WithMany(p => p.Apps)
+                .WithMany(p => p.Offers)
                 .UsingEntity<OfferAssignedLicense>(
                     j => j
                         .HasOne(d => d.OfferLicense!)
@@ -343,6 +347,24 @@ public class PortalDbContext : DbContext
                         j.HasKey(e => new { e.OfferId, e.DocumentId });
                     });
 
+            entity.HasMany(p => p.ServiceTypes)
+                .WithMany(p => p.Services)
+                .UsingEntity<ServiceAssignedServiceType>(
+                    j => j
+                        .HasOne(d => d.ServiceType!)
+                        .WithMany()
+                        .HasForeignKey(d => d.ServiceTypeId)
+                        .OnDelete(DeleteBehavior.ClientSetNull),
+                    j => j
+                        .HasOne(d => d.Service!)
+                        .WithMany()
+                        .HasForeignKey(d => d.ServiceId)
+                        .OnDelete(DeleteBehavior.ClientSetNull),
+                    j =>
+                    {
+                        j.HasKey(e => new { e.ServiceId, e.ServiceTypeId });
+                    });
+
             entity.HasMany(p => p.OfferSubscriptions)
                 .WithOne(d => d.Offer)
                 .HasForeignKey(d => d.OfferId)
@@ -366,6 +388,13 @@ public class PortalDbContext : DbContext
                 Enum.GetValues(typeof(OfferTypeId))
                     .Cast<OfferTypeId>()
                     .Select(e => new OfferType(e))
+            );
+
+        modelBuilder.Entity<ServiceType>()
+            .HasData(
+                Enum.GetValues(typeof(ServiceTypeId))
+                    .Cast<ServiceTypeId>()
+                    .Select(e => new ServiceType(e))
             );
 
         modelBuilder.Entity<AppInstance>(entity =>
@@ -501,10 +530,10 @@ public class PortalDbContext : DbContext
                 );
         });
 
-        modelBuilder.Entity<ServiceProviderCompanyDetail>(entity =>
+        modelBuilder.Entity<ProviderCompanyDetail>(entity =>
         {
             entity.HasOne(e => e.Company)
-                .WithOne(e => e.ServiceProviderCompanyDetail)
+                .WithOne(e => e.ProviderCompanyDetail)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
