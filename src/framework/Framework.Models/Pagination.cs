@@ -20,7 +20,6 @@
 
 using Org.CatenaX.Ng.Portal.Backend.Framework.ErrorHandling;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Org.CatenaX.Ng.Portal.Backend.Framework.Models;
