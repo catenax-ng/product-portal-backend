@@ -1,4 +1,4 @@
-name: PR-Checks
+name: PR-Quality
 
 on:
   push:
@@ -10,11 +10,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: ['6.0']
+        dotnet-version: ["6.0"]
 
     steps:
       - uses: actions/checkout@v3
@@ -29,6 +28,6 @@ jobs:
       - name: Build
         run: dotnet build src --configuration Release --no-restore
       - name: Check Format
-        run: dotnet format .\src\Portal.Backend.sln --verify-no-changes --no-restore
+        run: dotnet format src --verify-no-changes --no-restore
       - name: Test
         run: dotnet test src --no-restore --verbosity normal
