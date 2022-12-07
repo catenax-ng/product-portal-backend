@@ -1,16 +1,11 @@
 # product-portal-backend
 
-Backend code for the Catena-X Portal written in C#.
+The portal-backend has been moved and this repository is now **deprecated**.
+You can find the code at the new location:
 
-* INT: https://portal-backend.int.demo.catena-x.net/
-* DEV: https://portal-backend.dev.demo.catena-x.net/
+https://github.com/catenax-ng/tx-portal-backend
 
-## How to build
+If you want to check out previous versions of the code just open the according release version.
+The last state in main is the following:
 
-Install [the .NET 6.0 SDK](https://www.microsoft.com/net/download).
-Then run these commands from the CLI in the intended directory:
-
-```console
-dotnet build
-dotnet run
-```
+https://github.com/catenax-ng/product-portal-backend/releases/tag/move-to-tx-portal-backend
