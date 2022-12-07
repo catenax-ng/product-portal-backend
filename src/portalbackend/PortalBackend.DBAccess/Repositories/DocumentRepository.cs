@@ -69,10 +69,9 @@ public class DocumentRepository : IDocumentRepository
             .SingleOrDefaultAsync();
 
     public IAsyncEnumerable<UploadDocuments> GetUploadedDocumentsAsync(Guid applicationId, DocumentTypeId documentTypeId) =>
-        _dbContext.IamUsers
+        _dbContext.Documents
             .AsNoTracking()
-            .Where(iamUser => iamUser.CompanyUser!.Company!.CompanyApplications.Any(application => application.Id == applicationId))
-            .SelectMany(iamUser => iamUser.CompanyUser!.Documents.Where(docu => docu.DocumentTypeId == documentTypeId && docu.DocumentStatusId != DocumentStatusId.INACTIVE))
+            .Where(document => document.CompanyUser!.Company!.CompanyApplications.Any(application => application.Id == applicationId) && document.DocumentTypeId == documentTypeId && document.DocumentStatusId != DocumentStatusId.INACTIVE)
             .Select(document =>
                 new UploadDocuments(
                     document!.Id,
